@@ -11,6 +11,8 @@ headers = {
 params = urllib.parse.urlencode({
 })
 
+# Production = https://gtfsr.transportforireland.ie/v1/?format=json
+# testing = https://api.nationaltransport.ie/gtfsrtest/?format=json
 url = 'https://api.nationaltransport.ie/gtfsrtest/?format=json'
 req = urllib.request.Request(url, None, headers)
 
