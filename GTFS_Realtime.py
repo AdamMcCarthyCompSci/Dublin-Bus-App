@@ -5,6 +5,9 @@ import numpy as np
 import config
 from sqlalchemy import create_engine
 
+# Create engine
+engine = create_engine(config.CONNECTION_STRING, echo=False)
+
 headers = {
     # Request headers
     'Cache-Control': 'no-cache',
@@ -27,10 +30,7 @@ my_json = response.decode('utf8').replace("'", '"')
 data = json.loads(my_json)
 s = json.dumps(data, indent=4, sort_keys=True)
 
-# a_json = json.loads(s)data_nested = pd.DataFrame.from_dict(a_json, orient="index")
-
 data_nested = json.loads(s)
-# data_nested = pd.DataFrame.from_dict(a_json, orient="index")
 
 
 records = []
@@ -50,7 +50,6 @@ for datum in data_nested['entity']:
         pass
 
 df = pd.DataFrame.from_records(records)
-# df = pd.DataFrame.df['departure']
 
 df = df.explode('stop_sequence')
 df = pd.concat([df.drop(['stop_sequence'], axis=1), df['stop_sequence'].apply(pd.Series)], axis=1)
@@ -64,11 +63,13 @@ arrival = arrival.rename(columns={'delay': 'arrival_delay', 'time': 'arrival_tim
 df_final = pd.concat([df, arrival['arrival_delay'], arrival['arrival_time'],
                       departure['departure_delay'], departure['departure_time']],
                      axis=1)
+
 df_final.drop(['departure', 'arrival'], axis=1, inplace=True)
 df_final = df_final.loc[:, ~df_final.columns.duplicated()]
 
 df_final = df_final.reset_index(drop=True)
 df_final['id'] = df_final.index
+
 # shift column 'Name' to first position
 first_column = df_final.pop('id')
 
@@ -79,11 +80,6 @@ data = df_final
 
 # Split data into smaller sets (only useful for very large sets)
 split_data = np.array_split(data, 1)
-
-# Create engine
-engine = create_engine(
-    'mysql+mysqlconnector://admin:DublinBus123.@dublinbus.ccfxbrwhc5i2.us-east-1.rds.amazonaws.com:3306/dublinbus',
-    echo=False)
 
 for dataset in split_data:
     dataset.to_sql(name='tfi_realtime', con=engine, if_exists='replace', index=False)
