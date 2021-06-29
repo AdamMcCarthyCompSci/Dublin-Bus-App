@@ -1,6 +1,8 @@
-import React from 'react'
+import React from 'react';
 import { GoogleMap, LoadScript, StandaloneSearchBox } from '@react-google-maps/api';
 import styles from './Map.module.css';
+import { PlacesSearch } from "./PlacesSearch";
+
 
 const containerStyle = {
   width: '100%',
@@ -17,7 +19,8 @@ const center = { lat: 53.345804, lng: -6.26031 }
 //   west: -7.26031,
 // }
 
-function MapContainer() {
+
+function MapContainer({handleNextStep, handleLastStep, activeStepper}) {
   const [searchBox, setSearchBox] = React.useState(null);
 
   const lib = ['places'];
@@ -26,12 +29,6 @@ function MapContainer() {
   const onSBLoad = ref => {
     setSearchBox(ref);
   };
-
-
-  // const onLoad = ref => searchBox = ref;
-
-  // const onPlacesChanged = () => console.log(searchBox.getPlaces());
-
 
 
   return (
@@ -46,32 +43,9 @@ function MapContainer() {
         zoom = { 14 }
         options={{streetViewControl: false, strictBounds: false, mapTypeControl: false}}
       >
-            <StandaloneSearchBox
-      onLoad={onSBLoad}
-      onPlacesChanged={
-        onPlacesChanged
-      }
-    >
-      <input
-        type="text"
-        placeholder="Customized your placeholder"
-        style={{
-          boxSizing: `border-box`,
-          border: `1px solid transparent`,
-          width: `240px`,
-          height: `32px`,
-          padding: `0 12px`,
-          borderRadius: `3px`,
-          boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-          fontSize: `14px`,
-          outline: `none`,
-          textOverflow: `ellipses`,
-          position: "absolute",
-          left: "50%",
-          marginLeft: "-120px"
-        }}
-      />
-    </StandaloneSearchBox>
+        {activeStepper == 0 && <PlacesSearch onPlacesChanged={onPlacesChanged} onSBLoad={onSBLoad} handleLastStep={handleLastStep} handleNextStep={handleNextStep} bottom={"25%"} back={true}/>}
+        {activeStepper == 1 && <PlacesSearch onPlacesChanged={onPlacesChanged} onSBLoad={onSBLoad} handleLastStep={handleLastStep} handleNextStep={handleNextStep} bottom={"17%"} back={false}/>}
+
         { /* Child components, such as markers, info windows, etc. */ }
         <></>
       </GoogleMap>

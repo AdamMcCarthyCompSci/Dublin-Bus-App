@@ -14,12 +14,7 @@ import DayJsUtils from '@date-io/dayjs';
 import { DateTimePicker } from "@material-ui/pickers";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
-import InputBase from '@material-ui/core/InputBase';
-import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import DirectionsIcon from '@material-ui/icons/Directions';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const useStyles = makeStyles((theme) => ({
@@ -43,10 +38,9 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 
-export function Results() {
+export function Results({activeStepper, handleLastStep}) {
     const [results, setResults] = React.useState([])
     const [showResults, setShowResults] = React.useState(false)
-    const [stepper, setStepper] = React.useState(0)
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     
     const classes = useStyles();
@@ -60,14 +54,6 @@ export function Results() {
 
     const handleShowResults = () => {
         setShowResults(!showResults);
-    }
-
-    const handleLastStep = () => {
-        setStepper(stepper - 1);
-    }
-
-    const handleNextStep = () => {
-        setStepper(stepper + 1);
     }
 
     return (
@@ -95,46 +81,18 @@ export function Results() {
                     </Slide>
                     </div>
             )))}
-                    {!showResults && <Paper elevation={3} className={styles.paper}>
-                        <Stepper activeStep={stepper} orientation="vertical">
+                    {!showResults && <Paper elevation={3} className={styles.paper} style={{marginBottom:"1%"}}>
+                        <Stepper activeStep={activeStepper} orientation="vertical">
                             <Step>
                                 <StepLabel>Current Location</StepLabel>
                                 <StepContent>
-                                    <Paper component="form" className={classes.root}>
-                                    {/* <IconButton className={classes.iconButton} aria-label="menu" onClick={() => { handleLastStep() }}>
-                                        <ArrowBackIcon />
-                                    </IconButton> */}
-                                    <InputBase
-                                        className={classes.input}
-                                        placeholder="Search Google Maps"
-                                        inputProps={{ 'aria-label': 'search google maps' }}
-                                    />
-                                        <SearchIcon />
-                                    <Divider className={classes.divider} orientation="vertical" />
-                                    <IconButton color="primary" className={classes.iconButton} aria-label="directions" onClick={() => { handleNextStep() }}>
-                                        <DirectionsIcon />
-                                    </IconButton>
-                                    </Paper>
+                                <div style={{height:'5vh'}} />
                                 </StepContent>
                             </Step>
                             <Step>
                                 <StepLabel>Destination</StepLabel>
                                 <StepContent>
-                                <Paper component="form" className={classes.root}>
-                                    <IconButton className={classes.iconButton} aria-label="menu" onClick={() => { handleLastStep() }}>
-                                        <ArrowBackIcon />
-                                    </IconButton>
-                                    <InputBase
-                                        className={classes.input}
-                                        placeholder="Search Google Maps"
-                                        inputProps={{ 'aria-label': 'search google maps' }}
-                                    />
-                                        <SearchIcon />
-                                    <Divider className={classes.divider} orientation="vertical" />
-                                    <IconButton color="primary" className={classes.iconButton} aria-label="directions" onClick={() => { handleNextStep() }}>
-                                        <DirectionsIcon />
-                                    </IconButton>
-                                    </Paper>
+                                    <div style={{height:'5vh'}} />
                                 </StepContent>
                             </Step>
                             <Step>
@@ -143,15 +101,15 @@ export function Results() {
                                     <IconButton className={classes.iconButton} aria-label="menu" onClick={() => { handleLastStep() }}>
                                         <ArrowBackIcon />
                                     </IconButton>
-                                <MuiPickersUtilsProvider utils={DayJsUtils}>
-                                <DateTimePicker
-                                    value={selectedDate}
-                                    disablePast
-                                    onChange={setSelectedDate}
-                                    label="Select a date and time"
-                                    showTodayButton
-                                />
-                                </MuiPickersUtilsProvider>
+                                    <MuiPickersUtilsProvider utils={DayJsUtils}>
+                                    <DateTimePicker
+                                        value={selectedDate}
+                                        disablePast
+                                        onChange={setSelectedDate}
+                                        label="Select a date and time"
+                                        showTodayButton
+                                    />
+                                    </MuiPickersUtilsProvider>
                                 </StepContent>
                             </Step>
                         </Stepper>
