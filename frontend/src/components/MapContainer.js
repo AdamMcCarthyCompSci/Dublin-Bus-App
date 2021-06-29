@@ -1,5 +1,5 @@
 import React from 'react'
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, StandaloneSearchBox } from '@react-google-maps/api';
 import styles from './Map.module.css';
 
 const containerStyle = {
@@ -18,9 +18,26 @@ const center = { lat: 53.345804, lng: -6.26031 }
 // }
 
 function MapContainer() {
+  const [searchBox, setSearchBox] = React.useState(null);
+
+  const lib = ['places'];
+
+  const onPlacesChanged = () => console.log(searchBox.getPlaces());
+  const onSBLoad = ref => {
+    setSearchBox(ref);
+  };
+
+
+  // const onLoad = ref => searchBox = ref;
+
+  // const onPlacesChanged = () => console.log(searchBox.getPlaces());
+
+
+
   return (
     <div className = {styles.MapContainer}>
     <LoadScript
+      libraries={lib}
       googleMapsApiKey="AIzaSyAbXR_N5FTc0sO4lMQcsXgPQat7wUnVKl4"
     >
       <GoogleMap
@@ -29,6 +46,32 @@ function MapContainer() {
         zoom = { 14 }
         options={{streetViewControl: false, strictBounds: false, mapTypeControl: false}}
       >
+            <StandaloneSearchBox
+      onLoad={onSBLoad}
+      onPlacesChanged={
+        onPlacesChanged
+      }
+    >
+      <input
+        type="text"
+        placeholder="Customized your placeholder"
+        style={{
+          boxSizing: `border-box`,
+          border: `1px solid transparent`,
+          width: `240px`,
+          height: `32px`,
+          padding: `0 12px`,
+          borderRadius: `3px`,
+          boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+          fontSize: `14px`,
+          outline: `none`,
+          textOverflow: `ellipses`,
+          position: "absolute",
+          left: "50%",
+          marginLeft: "-120px"
+        }}
+      />
+    </StandaloneSearchBox>
         { /* Child components, such as markers, info windows, etc. */ }
         <></>
       </GoogleMap>

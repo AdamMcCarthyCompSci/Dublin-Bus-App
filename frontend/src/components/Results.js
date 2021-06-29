@@ -13,6 +13,35 @@ import StepContent from '@material-ui/core/StepContent';
 import DayJsUtils from '@date-io/dayjs';
 import { DateTimePicker } from "@material-ui/pickers";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { makeStyles } from '@material-ui/core/styles';
+import InputBase from '@material-ui/core/InputBase';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import SearchIcon from '@material-ui/icons/Search';
+import DirectionsIcon from '@material-ui/icons/Directions';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+      padding: '2px 4px',
+      display: 'flex',
+      alignItems: 'center',
+      width: 400,
+    },
+    input: {
+      marginLeft: theme.spacing(1),
+      flex: 1,
+    },
+    iconButton: {
+      padding: 10,
+    },
+    divider: {
+      height: 28,
+      margin: 4,
+    },
+  }));
+
 
 export function Results() {
     const [results, setResults] = React.useState([])
@@ -20,6 +49,8 @@ export function Results() {
     const [stepper, setStepper] = React.useState(0)
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     
+    const classes = useStyles();
+
     useEffect(async () => {
         const result = await axios(
             'http://localhost:8000/bus/',
@@ -29,6 +60,10 @@ export function Results() {
 
     const handleShowResults = () => {
         setShowResults(!showResults);
+    }
+
+    const handleLastStep = () => {
+        setStepper(stepper - 1);
     }
 
     const handleNextStep = () => {
@@ -65,22 +100,49 @@ export function Results() {
                             <Step>
                                 <StepLabel>Current Location</StepLabel>
                                 <StepContent>
-                                <Button className={styles.ResultsButton} style={{textTransform: 'none', marginBottom: '1%'}} fullWidth="true" variant="contained" color="primary" onClick={() => { handleNextStep() }}>
-                                    Next Step
-                                </Button>
+                                    <Paper component="form" className={classes.root}>
+                                    {/* <IconButton className={classes.iconButton} aria-label="menu" onClick={() => { handleLastStep() }}>
+                                        <ArrowBackIcon />
+                                    </IconButton> */}
+                                    <InputBase
+                                        className={classes.input}
+                                        placeholder="Search Google Maps"
+                                        inputProps={{ 'aria-label': 'search google maps' }}
+                                    />
+                                        <SearchIcon />
+                                    <Divider className={classes.divider} orientation="vertical" />
+                                    <IconButton color="primary" className={classes.iconButton} aria-label="directions" onClick={() => { handleNextStep() }}>
+                                        <DirectionsIcon />
+                                    </IconButton>
+                                    </Paper>
                                 </StepContent>
                             </Step>
                             <Step>
                                 <StepLabel>Destination</StepLabel>
                                 <StepContent>
-                                <Button className={styles.ResultsButton} style={{textTransform: 'none', marginBottom: '1%'}} fullWidth="true" variant="contained" color="primary" onClick={() => { handleNextStep() }}>
-                                    Next Step
-                                </Button>
+                                <Paper component="form" className={classes.root}>
+                                    <IconButton className={classes.iconButton} aria-label="menu" onClick={() => { handleLastStep() }}>
+                                        <ArrowBackIcon />
+                                    </IconButton>
+                                    <InputBase
+                                        className={classes.input}
+                                        placeholder="Search Google Maps"
+                                        inputProps={{ 'aria-label': 'search google maps' }}
+                                    />
+                                        <SearchIcon />
+                                    <Divider className={classes.divider} orientation="vertical" />
+                                    <IconButton color="primary" className={classes.iconButton} aria-label="directions" onClick={() => { handleNextStep() }}>
+                                        <DirectionsIcon />
+                                    </IconButton>
+                                    </Paper>
                                 </StepContent>
                             </Step>
                             <Step>
                                 <StepLabel>Time</StepLabel>
                                 <StepContent>
+                                    <IconButton className={classes.iconButton} aria-label="menu" onClick={() => { handleLastStep() }}>
+                                        <ArrowBackIcon />
+                                    </IconButton>
                                 <MuiPickersUtilsProvider utils={DayJsUtils}>
                                 <DateTimePicker
                                     value={selectedDate}
