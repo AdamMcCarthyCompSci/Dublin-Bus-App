@@ -98,9 +98,13 @@ export function Results({activeStepper, handleLastStep}) {
                             <Step>
                                 <StepLabel>Time</StepLabel>
                                 <StepContent>
+                                <Grid container spacing={0}>
+                                <Grid item xs={1}>
                                     <IconButton className={classes.iconButton} aria-label="menu" onClick={() => { handleLastStep() }}>
                                         <ArrowBackIcon />
                                     </IconButton>
+                                </Grid>
+                                <Grid item xs={11}>
                                     <MuiPickersUtilsProvider utils={DayJsUtils}>
                                     <DateTimePicker
                                         value={selectedDate}
@@ -110,6 +114,8 @@ export function Results({activeStepper, handleLastStep}) {
                                         showTodayButton
                                     />
                                     </MuiPickersUtilsProvider>
+                                </Grid>
+                                </Grid>
                                 </StepContent>
                             </Step>
                         </Stepper>

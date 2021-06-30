@@ -79,7 +79,7 @@ function MapContainer({handleNextStep, handleLastStep, activeStepper}) {
         onPlacesLoad={onOriginLoad} 
         handleLastStep={handleLastStep} 
         handleNextStep={handleNextStep} 
-        bottom={"25%"} 
+        bottom={"200px"} 
         back={true} 
         place={origin} 
         setPlace={setOrigin}
@@ -92,7 +92,7 @@ function MapContainer({handleNextStep, handleLastStep, activeStepper}) {
         onPlacesLoad={onDestinationLoad} 
         handleLastStep={handleLastStep} 
         handleNextStep={handleNextStep} 
-        bottom={"17%"} 
+        bottom={"135px"} 
         back={false} 
         place={destination} 
         setPlace={setDestination}
