@@ -84,7 +84,7 @@ export function Results({activeStepper, handleLastStep}) {
                     {!showResults && <Paper elevation={3} className={styles.paper} style={{marginBottom:"1%"}}>
                         <Stepper activeStep={activeStepper} orientation="vertical">
                             <Step>
-                                <StepLabel>Current Location</StepLabel>
+                                <StepLabel>Origin</StepLabel>
                                 <StepContent>
                                 <div style={{height:'5vh'}} />
                                 </StepContent>

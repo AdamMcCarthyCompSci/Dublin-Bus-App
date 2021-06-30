@@ -10,7 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import Grid from "@material-ui/core/Grid";
 import { StandaloneSearchBox } from '@react-google-maps/api';
 
-export function PlacesSearch({onPlacesChanged, onSBLoad, handleLastStep, handleNextStep, bottom, back}) {
+export function PlacesSearch({onPlacesChanged, onPlacesLoad, handleLastStep, handleNextStep, bottom, back, place, setPlace}) {
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -52,7 +52,7 @@ export function PlacesSearch({onPlacesChanged, onSBLoad, handleLastStep, handleN
             <ArrowBackIcon />
         </IconButton>
         <StandaloneSearchBox
-        onLoad={onSBLoad}
+        onLoad={onPlacesLoad}
         onPlacesChanged={
             onPlacesChanged
         }
