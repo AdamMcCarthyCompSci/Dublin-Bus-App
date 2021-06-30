@@ -59,7 +59,7 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, handleLastStep, han
         >
         <InputBase
             className={classes.input}
-            placeholder="Search Google Maps"
+            placeholder={place}
             inputProps={{ 'aria-label': 'search google maps' }}
         />
             </StandaloneSearchBox>

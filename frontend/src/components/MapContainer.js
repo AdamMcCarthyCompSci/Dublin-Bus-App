@@ -31,13 +31,13 @@ function MapContainer({handleNextStep, handleLastStep, activeStepper}) {
 
   const onOriginChanged = () => {
     console.log(originBox.getPlaces())
-    console.log(originBox.getPlaces()[0].address_components[0].long_name)
-    setOrigin(originBox.getPlaces()[0].address_components[0].long_name)
+    console.log(originBox.getPlaces()[0].formatted_address)
+    setOrigin(originBox.getPlaces()[0].formatted_address)
   };
 
   const onDestinationChanged = () => {
-    console.log(destinationBox.getPlaces()[0].address_components[0].long_name)
-    setDestination(destinationBox.getPlaces()[0].address_components[0].long_name)
+    console.log(destinationBox.getPlaces()[0].formatted_address)
+    setDestination(destinationBox.getPlaces()[0].formatted_address)
   }
 
   const onOriginLoad = ref => {
@@ -72,8 +72,31 @@ function MapContainer({handleNextStep, handleLastStep, activeStepper}) {
         zoom = { 14 }
         options={{streetViewControl: false, strictBounds: false, mapTypeControl: false}}
       >
-        {activeStepper == 0 && <PlacesSearch onPlacesChanged={onOriginChanged} onPlacesLoad={onOriginLoad} handleLastStep={handleLastStep} handleNextStep={handleNextStep} bottom={"25%"} back={true} place={origin} setPlace={setOrigin}/>}
-        {activeStepper == 1 && <PlacesSearch onPlacesChanged={onDestinationChanged} onPlacesLoad={onDestinationLoad} handleLastStep={handleLastStep} handleNextStep={handleNextStep} bottom={"17%"} back={false} place={destination} setPlace={setDestination}/>}
+        {activeStepper == 0 
+        && 
+        <PlacesSearch 
+        onPlacesChanged={onOriginChanged} 
+        onPlacesLoad={onOriginLoad} 
+        handleLastStep={handleLastStep} 
+        handleNextStep={handleNextStep} 
+        bottom={"25%"} 
+        back={true} 
+        place={origin} 
+        setPlace={setOrigin}
+        />}
+
+        {activeStepper == 1 
+        && 
+        <PlacesSearch 
+        onPlacesChanged={onDestinationChanged} 
+        onPlacesLoad={onDestinationLoad} 
+        handleLastStep={handleLastStep} 
+        handleNextStep={handleNextStep} 
+        bottom={"17%"} 
+        back={false} 
+        place={destination} 
+        setPlace={setDestination}
+        />}
 
         { /* Child components, such as markers, info windows, etc. */ }
 
