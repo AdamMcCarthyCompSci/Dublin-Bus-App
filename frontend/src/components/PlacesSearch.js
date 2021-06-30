@@ -17,15 +17,19 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, handleLastStep, han
           padding: '2px 4px',
           display: 'flex',
           alignItems: 'center',
-          width: "20%",
+          width: "40%",
           bottom: bottom,
           position: "absolute",
           zIndex: 2,
-          marginLeft: "15%"
+          marginLeft: "30%"
         },
         input: {
           marginLeft: theme.spacing(1),
           flex: 1,
+          width: "100%",
+          margin: "auto",
+          position: "absolute",
+          top: 0, left: 50, bottom: 0, right: 0,
         },
         iconButton: {
           padding: 10,
@@ -42,15 +46,15 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, handleLastStep, han
     const classes = useStyles();
 
     return (
-        <Grid container spacing={0}>
-        <Grid item xs={3}>
-
-        </Grid>
-        <Grid item xs={6}>
         <Paper component="form" className={classes.root}>
+        <Grid container spacing={0}>
+        <Grid item xs={1}>
         <IconButton className={classes.iconButton} aria-label="menu" disabled={back} onClick={() => { handleLastStep() }}>
             <ArrowBackIcon />
         </IconButton>
+        {/* <Divider className={classes.divider} orientation="vertical" /> */}
+        </Grid>
+        <Grid item xs={10}>
         <StandaloneSearchBox
         onLoad={onPlacesLoad}
         onPlacesChanged={
@@ -59,20 +63,18 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, handleLastStep, han
         >
         <InputBase
             className={classes.input}
-            placeholder={place}
+            placeholder={place ? place : "Search"}
             inputProps={{ 'aria-label': 'search google maps' }}
         />
             </StandaloneSearchBox>
-            <SearchIcon />
-        <Divider className={classes.divider} orientation="vertical" />
+        </Grid>
+        <Grid item xs={1}>
+        {/* <Divider className={classes.divider} orientation="vertical" /> */}
         <IconButton color="primary" className={classes.iconButton} aria-label="directions" onClick={() => { handleNextStep() }}>
             <DirectionsIcon />
         </IconButton>
+        </Grid>
+        </Grid>
         </Paper>
-        </Grid>
-        <Grid item xs={3}>
-
-        </Grid>
-        </Grid>
     )
 }
