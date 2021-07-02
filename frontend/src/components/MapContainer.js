@@ -11,16 +11,10 @@ const containerStyle = {
 
 const center = { lat: 53.345804, lng: -6.26031 }
 
-// Not implemented yet
-// const latLngBounds = {
-//   north: 54.345804,
-//   south: 52.345804,
-//   east: -5.26031,
-//   west: -7.26031,
-// }
+// Implement LatLng bounds
 
 
-function MapContainer({handleNextStep, handleLastStep, activeStepper}) {
+function MapContainer({showSearch}) {
   const [originBox, setOriginBox] = React.useState(null);
   const [destinationBox, setDestinationBox] = React.useState(null);
   const [callbackResponse, setCallbackResponse] = React.useState(null);
@@ -30,13 +24,10 @@ function MapContainer({handleNextStep, handleLastStep, activeStepper}) {
   const lib = ['places'];
 
   const onOriginChanged = () => {
-    console.log(originBox.getPlaces())
-    console.log(originBox.getPlaces()[0].formatted_address)
     setOrigin(originBox.getPlaces()[0].formatted_address)
   };
 
   const onDestinationChanged = () => {
-    console.log(destinationBox.getPlaces()[0].formatted_address)
     setDestination(destinationBox.getPlaces()[0].formatted_address)
   }
 
@@ -72,33 +63,26 @@ function MapContainer({handleNextStep, handleLastStep, activeStepper}) {
         zoom = { 14 }
         options={{streetViewControl: false, strictBounds: false, mapTypeControl: false}}
       >
-        {activeStepper == 0 
-        && 
         <PlacesSearch 
         onPlacesChanged={onOriginChanged} 
         onPlacesLoad={onOriginLoad} 
-        handleLastStep={handleLastStep} 
-        handleNextStep={handleNextStep} 
-        bottom={"200px"} 
+        bottom={"100px"} 
         back={true} 
         place={origin} 
         setPlace={setOrigin}
-        />}
-
-        {activeStepper == 1 
-        && 
+        search={"Origin Search"}
+        showSearch={showSearch}
+        />
         <PlacesSearch 
         onPlacesChanged={onDestinationChanged} 
         onPlacesLoad={onDestinationLoad} 
-        handleLastStep={handleLastStep} 
-        handleNextStep={handleNextStep} 
-        bottom={"135px"} 
+        bottom={"50px"} 
         back={false} 
         place={destination} 
         setPlace={setDestination}
-        />}
-
-        { /* Child components, such as markers, info windows, etc. */ }
+        search={"Destination Search"}
+        showSearch={showSearch}
+        />
 
         {
               (
@@ -106,13 +90,15 @@ function MapContainer({handleNextStep, handleLastStep, activeStepper}) {
                 origin !== ''
               ) && (
                 <DirectionsService
-                  // required
                   options={{
                     destination: destination,
                     origin: origin,
-                    travelMode: 'TRANSIT'
+                    travelMode: 'TRANSIT',
+                    transitOptions: {
+                      // departureTime
+                      modes: ['BUS']
+                    }
                   }}
-                  // required
                   callback={directionsCallback}
                 />
               )
@@ -121,7 +107,6 @@ function MapContainer({handleNextStep, handleLastStep, activeStepper}) {
             {
               callbackResponse !== null && (
                 <DirectionsRenderer
-                  // required
                   options={{
                     directions: callbackResponse
                   }}

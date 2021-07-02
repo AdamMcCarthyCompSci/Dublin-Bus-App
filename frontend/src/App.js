@@ -6,21 +6,33 @@ import '@fontsource/roboto';
 import Grid from "@material-ui/core/Grid";
 
 function App() {
-  const [activeStepper, setActiveStepper] = React.useState(0);
+  const [value, setValue] = React.useState(0);
+  const [showSearch, setShowSearch] = React.useState(true);
 
-  const handleLastStep = () => {
-    setActiveStepper(activeStepper - 1);
-}
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    if (newValue == 0) {
+      setShowSearch(true);
+    }
+    if (newValue == 1 || newValue == 2) {
+      setShowSearch(false);
+    }
+  };
 
-const handleNextStep = () => {
-    setActiveStepper(activeStepper + 1);
-}
-
+  const handleChangeIndex = (index) => {
+    setValue(index);
+    if (index == 0) {
+      setShowSearch(true);
+    }
+    if (index == 1 || index == 2) {
+      setShowSearch(false);
+    }
+  };
 
   return (
     <div className="App">
-            <MapContainer activeStepper={activeStepper} handleLastStep={handleLastStep} handleNextStep={handleNextStep}/>
-            <Results activeStepper={activeStepper} handleLastStep={handleLastStep}/>
+            <MapContainer showSearch={showSearch}/>
+            <Results handleChange={handleChange} handleChangeIndex={handleChangeIndex} value={value}/>
     </div>
   );
 }

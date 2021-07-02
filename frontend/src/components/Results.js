@@ -6,44 +6,57 @@ import Grid from "@material-ui/core/Grid";
 import axios from 'axios';
 import Slide from '@material-ui/core/Slide';
 import Paper from '@material-ui/core/Paper';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import StepContent from '@material-ui/core/StepContent';
 import DayJsUtils from '@date-io/dayjs';
 import { DateTimePicker } from "@material-ui/pickers";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { useTheme } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import SwipeableViews from "react-swipeable-views";
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import PropTypes from 'prop-types';
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-      padding: '2px 4px',
-      display: 'flex',
-      alignItems: 'center',
-      width: 400,
-    },
-    input: {
-      marginLeft: theme.spacing(1),
-      flex: 1,
-    },
-    iconButton: {
-      padding: 10,
-    },
-    divider: {
-      height: 28,
-      margin: 4,
-    },
-  }));
+  function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+  
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`full-width-tabpanel-${index}`}
+        aria-labelledby={`full-width-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box p={3}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
+    );
+  }
+
+  TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.any.isRequired,
+    value: PropTypes.any.isRequired,
+  };
+  
+  function a11yProps(index) {
+    return {
+      id: `full-width-tab-${index}`,
+      'aria-controls': `full-width-tabpanel-${index}`,
+    };
+  }
 
 
-export function Results({activeStepper, handleLastStep}) {
+export function Results({handleChange, handleChangeIndex, value}) {
     const [results, setResults] = React.useState([])
     const [showResults, setShowResults] = React.useState(false)
     const [selectedDate, setSelectedDate] = React.useState(new Date());
-    
-    const classes = useStyles();
+    const theme = useTheme();
 
     useEffect(async () => {
         const result = await axios(
@@ -55,6 +68,7 @@ export function Results({activeStepper, handleLastStep}) {
     const handleShowResults = () => {
         setShowResults(!showResults);
     }
+
 
     return (
             <div className={styles.resultsContainer}>
@@ -81,30 +95,30 @@ export function Results({activeStepper, handleLastStep}) {
                     </Slide>
                     </div>
             )))}
-                    {!showResults && <Paper elevation={3} className={styles.paper} style={{marginBottom:"1%"}}>
-                        <Stepper activeStep={activeStepper} orientation="vertical">
-                            <Step>
-                                <StepLabel>Origin</StepLabel>
-                                <StepContent>
-                                <div style={{height:'5vh'}} />
-                                </StepContent>
-                            </Step>
-                            <Step>
-                                <StepLabel>Destination</StepLabel>
-                                <StepContent>
-                                    <div style={{height:'5vh'}} />
-                                </StepContent>
-                            </Step>
-                            <Step>
-                                <StepLabel>Time</StepLabel>
-                                <StepContent>
-                                <Grid container spacing={0}>
-                                <Grid item xs={1}>
-                                    <IconButton className={classes.iconButton} aria-label="menu" onClick={() => { handleLastStep() }}>
-                                        <ArrowBackIcon />
-                                    </IconButton>
-                                </Grid>
-                                <Grid item xs={11}>
+                    {!showResults && <Paper elevation={3} className={styles.paper}>
+                    <AppBar position="static" color="default">
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          indicatorColor="primary"
+          textColor="primary"
+          variant="fullWidth"
+          aria-label="full width tabs example"
+        >
+          <Tab label="Directions" {...a11yProps(0)} />
+          <Tab label="Timetable" {...a11yProps(1)} />
+          <Tab label="Extra Features" {...a11yProps(2)} />
+        </Tabs>
+      </AppBar>
+      <SwipeableViews
+        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+        index={value}
+        onChangeIndex={handleChangeIndex}
+      >
+        <TabPanel value={value} index={0} dir={theme.direction} style={{height:"200px"}}>
+
+
+                                    <div style={{height:"100%"}}>
                                     <MuiPickersUtilsProvider utils={DayJsUtils}>
                                     <DateTimePicker
                                         value={selectedDate}
@@ -114,14 +128,17 @@ export function Results({activeStepper, handleLastStep}) {
                                         showTodayButton
                                     />
                                     </MuiPickersUtilsProvider>
-                                </Grid>
-                                </Grid>
-                                </StepContent>
-                            </Step>
-                        </Stepper>
-                        <Button className={styles.ResultsButton} style={{textTransform: 'none', marginBottom: '1%'}} fullWidth="true" variant="contained" color="primary" onClick={() => { handleShowResults() }}>
-                            Next
-                        </Button>
+                                    </div>
+
+        </TabPanel>
+        <TabPanel value={value} index={1} dir={theme.direction} style={{height:"200px"}}>
+          Create Timetable Here
+        </TabPanel>
+        <TabPanel value={value} index={2} dir={theme.direction} style={{height:"200px"}}>
+          Create Extra Features Here
+        </TabPanel>
+      </SwipeableViews>
+
                     </Paper>}
             </div>
     )
