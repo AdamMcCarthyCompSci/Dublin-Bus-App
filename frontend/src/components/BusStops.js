@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Circle } from '@react-google-maps/api';
 
 export function BusStops() {
+    const [busStops, setBusStops] = React.useState(["hi"])
 
     const center = {
         lat: 53.3522,
@@ -39,15 +40,17 @@ export function BusStops() {
     // })
     
     return (
-        <Circle
-        // optional
-        onLoad={onLoad}
-        // optional
-        onUnmount={onUnmount}
-        // required
-        center={center}
-        // required
-        options={options}
-      />
+        busStops.map((stop => ( 
+            <Circle
+            // optional
+            onLoad={onLoad}
+            // optional
+            onUnmount={onUnmount}
+            // required
+            center={stop}
+            // required
+            options={options}
+          />
+        )))
     )
 }
