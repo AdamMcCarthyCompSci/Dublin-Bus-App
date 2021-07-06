@@ -1,21 +1,26 @@
-import routeData from "./RouteData.js";
+import routedata from "./RouteData.js";
 import React, {useState, useEffect} from 'react';
 
 // A function to construct and add the route data to dropdown menus
 
 const RouteDropdown = () => {
+
 const [directionDropdown,setDirectionDropdown]=useState(false);
 const [boardingDropdown, setBoardingDropdown]= useState(false);
 const [alightingDropdown, setAlightingDropdown]=useState(false);
 const [route,setRoute]=useState(null);
 const [direction, setDirection]=useState(null);
 const [boardingStop, setBoardingStop]= useState(null);
+const [filteredDirections,setFilteredDirections]=useState(routedata);
+
     const activateDirectionDropdown = (e) =>{
     const { value } = e.target;
     setRoute(value);
-    if (value === "1") {
-      setDirection("none");
+    if (value === value)
+    {
+    setRoute(value);
       setDirectionDropdown(true);
+
            }
     else{
      setDirectionDropdown(false);
@@ -25,7 +30,8 @@ const [boardingStop, setBoardingStop]= useState(null);
      const activateBoardingDropdown = (e) =>{
      const { value } = e.target;
      setDirection(value);
-     if (value === "O") {
+     if (value ==value) {
+     setDirection(value);
      setBoardingDropdown(true);
      } else{
      setBoardingDropdown(false);
@@ -35,12 +41,14 @@ const [boardingStop, setBoardingStop]= useState(null);
      const activateAlightingDropdown = (e) =>{
      const { value } = e.target;
      setBoardingStop(value);
-     if (value === "Botanic Avenue Bus stop: 19") {
+     if (value ==value) {
+     setBoardingStop(value);
      setAlightingDropdown(true);
      } else{
      setAlightingDropdown(false);
      }
      }
+
     return (
 <>
 
@@ -48,7 +56,7 @@ const [boardingStop, setBoardingStop]= useState(null);
 <b> Bus Route: </b>
     <select id="dropdown1" onChange={activateDirectionDropdown}>
     <option>Select Your Route</option>
-    {routeData.map((stopdetail, index)=>(
+    {routedata.map((stopdetail, index)=>(
     <option key ={stopdetail.id} >{stopdetail.RouteName}</option>
 ))}
 </select>
@@ -57,7 +65,7 @@ const [boardingStop, setBoardingStop]= useState(null);
 {directionDropdown &&
 <select id="dropdown2" onChange={activateBoardingDropdown}>
 <option>Select Direction</option>
-{routeData.map((stopdetail, index)=>(
+{routedata.filter(stopdetail=>stopdetail.RouteName==route).map((stopdetail, index)=>(
       <option>{stopdetail.Direction}</option>
 
 ))}
@@ -68,7 +76,7 @@ const [boardingStop, setBoardingStop]= useState(null);
 {boardingDropdown &&
 <select id="dropdown3" onChange={activateAlightingDropdown}>
 <option>Select Boarding Stop</option>
-{routeData.map((stopdetail, index)=>(
+{routedata.filter(stopdetail=>stopdetail.RouteName==route).map((stopdetail, index)=>(
      <option >{stopdetail.ShortCommonName_en + " Bus stop: " + stopdetail.PlateCode}</option>
 
 
@@ -79,9 +87,9 @@ const [boardingStop, setBoardingStop]= useState(null);
 {/*Dropdown 4 alighting bus stop.
 */}
 {alightingDropdown &&
-<select id="dropdown4">
+<select id="dropdown4" >
 <option>Select Alighting Stop</option>
-{routeData.map((stopdetail, index)=>(
+{routedata.filter(stopdetail=>stopdetail.RouteName==route).map((stopdetail, index)=>(
      <option >{stopdetail.ShortCommonName_en + " Bus stop: " + stopdetail.PlateCode}</option>
 
 
