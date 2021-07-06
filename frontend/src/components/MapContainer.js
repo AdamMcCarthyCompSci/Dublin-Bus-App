@@ -2,6 +2,7 @@ import React from 'react';
 import { GoogleMap, LoadScript, StandaloneSearchBox, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 import styles from './Map.module.css';
 import { PlacesSearch } from "./PlacesSearch";
+import { BusStops } from "./BusStops";
 
 
 const containerStyle = {
@@ -113,6 +114,7 @@ function MapContainer({showSearch}) {
                 />
               )
             }
+            <BusStops />
 
 
       </GoogleMap>
