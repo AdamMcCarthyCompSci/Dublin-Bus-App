@@ -5,6 +5,20 @@ import React, {useState, useEffect} from 'react';
 
 const RouteDropdown = () => {
 
+{/* A funtion to return the unique values in the Route_data.json file.*/}
+function getUnique(routeData, comp) {
+
+    const unique =  routeData.map(e => e[comp])
+
+      // store the indexes of the unique objects
+      .map((e, i, final) => final.indexOf(e) === i && i)
+
+      // eliminate the false indexes & return unique objects
+     .filter((e) => routeData[e]).map(e => routeData[e]);
+    return unique;
+}
+
+
 const [directionDropdown,setDirectionDropdown]=useState(false);
 const [boardingDropdown, setBoardingDropdown]= useState(false);
 const [alightingDropdown, setAlightingDropdown]=useState(false);
@@ -12,6 +26,9 @@ const [route,setRoute]=useState(null);
 const [direction, setDirection]=useState(null);
 const [boardingStop, setBoardingStop]= useState(null);
 const [filteredDirections,setFilteredDirections]=useState(routedata);
+
+const routeUnique=getUnique(routedata,'RouteName');
+const directionUnique=getUnique(routedata, 'Direction');
 
     const activateDirectionDropdown = (e) =>{
     const { value } = e.target;
@@ -56,8 +73,8 @@ const [filteredDirections,setFilteredDirections]=useState(routedata);
 <b> Bus Route: </b>
     <select id="dropdown1" onChange={activateDirectionDropdown}>
     <option>Select Your Route</option>
-    {routedata.map((stopdetail, index)=>(
-    <option key ={stopdetail.id} >{stopdetail.RouteName}</option>
+    {routeUnique.map((stopdetail, index)=>(
+    <option key ={index} >{stopdetail.RouteName}</option>
 ))}
 </select>
 
@@ -65,7 +82,7 @@ const [filteredDirections,setFilteredDirections]=useState(routedata);
 {directionDropdown &&
 <select id="dropdown2" onChange={activateBoardingDropdown}>
 <option>Select Direction</option>
-{routedata.filter(stopdetail=>stopdetail.RouteName==route).map((stopdetail, index)=>(
+{directionUnique.filter(stopdetail=>stopdetail.RouteName==route).map((stopdetail, index)=>(
       <option>{stopdetail.Direction}</option>
 
 ))}
