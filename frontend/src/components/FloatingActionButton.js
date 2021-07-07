@@ -10,11 +10,16 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SettingsIcon from '@material-ui/icons/Settings';
+import HomeIcon from '@material-ui/icons/Home';
 
-export function FloatingActionButton() {
+export function FloatingActionButton({menu, setMenu}) {
     const [state, setState] = React.useState({
         left: false
     })
+
+    const handleListClick = (page) => {
+        setMenu(page);
+    }
 
     const toggleDrawer = (anchor, open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -37,13 +42,34 @@ export function FloatingActionButton() {
                       onKeyDown={toggleDrawer('left', false)}
                       >
                           <List>
-                              <ListItem button key={'Profile'}>
+                            <ListItem 
+                            button 
+                            key={'Home'} 
+                            onClick={() => handleListClick('Home')}
+                            selected={menu === 'Home'}
+                            >
+                                  <ListItemIcon>
+                                      <HomeIcon style={{paddingRight: '30'}}/>
+                                      <ListItemText primary={'Home'}/>
+                                  </ListItemIcon>
+                              </ListItem>
+                              <ListItem 
+                              button 
+                              key={'Profile'} 
+                              onClick={() => handleListClick('Profile')}
+                              selected={menu === 'Profile'}
+                              >
                                 <ListItemIcon>
                                       <AccountCircleIcon style={{paddingRight: '30'}}/>
                                       <ListItemText primary={'Profile'}/>
                                 </ListItemIcon>
                               </ListItem>
-                              <ListItem button key={'Settings'}>
+                              <ListItem 
+                              button 
+                              key={'Settings'} 
+                              onClick={() => handleListClick('Settings')}
+                              selected={menu === 'Settings'}
+                              >
                                   <ListItemIcon>
                                       <SettingsIcon style={{paddingRight: '30'}}/>
                                       <ListItemText primary={'Settings'}/>

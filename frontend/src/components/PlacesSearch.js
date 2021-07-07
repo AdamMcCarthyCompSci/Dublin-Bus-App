@@ -4,28 +4,32 @@ import InputBase from '@material-ui/core/InputBase';
 import Paper from '@material-ui/core/Paper';
 import { StandaloneSearchBox } from '@react-google-maps/api';
 import styles from './Map.module.css';
-import Zoom from '@material-ui/core/Zoom';
 
-export function PlacesSearch({onPlacesChanged, onPlacesLoad, bottom, place, search, showSearch}) {
+export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search}) {
 // Implement bias for Dublin. Right now it has no bias for autocomplete, so it gives locations all around the world.
     const useStyles = makeStyles((theme) => ({
         searchPaper: {
           padding: '2px 4px',
-          display: 'flex',
+          marginTop: '-10px',
+          marginBottom: '20px',
           alignItems: 'center',
-          width: "30%",
-          bottom: bottom,
-          position: "absolute",
+          width: "80%",
+          marginLeft: "10%",
           zIndex: 2,
-          marginLeft: "33%"
+        },
+        standaloneSearchBox: {
+          marginLeft: theme.spacing(1),
+          flex: 1,
+          position: "absolute",
+          width: "100%",
+          margin: "auto",
+          height: "auto",
         },
         input: {
           marginLeft: theme.spacing(1),
           flex: 1,
           width: "100%",
           margin: "auto",
-          position: "absolute",
-          top: 0, left: 0, bottom: 15, right: 0,
           height: "auto",
         },
       }));
@@ -33,14 +37,20 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, bottom, place, sear
     const classes = useStyles();
 
     return (
-      <Zoom in={showSearch} mountOnEnter unmountOnExit>
         <Paper component="form" className={classes.searchPaper}>
         <StandaloneSearchBox
-        className={styles.standaloneSearchBox}
+        className={classes.standaloneSearchBox}
         onLoad={onPlacesLoad}
         onPlacesChanged={
             onPlacesChanged
         }
+        bounds={{
+          north: 54.345804,
+          south: 52.345804,
+          east: -5.26031,
+          west: -7.26031,
+        }}
+        style={{top: "auto !important"}}
         >
         <InputBase
             className={classes.input}
@@ -49,6 +59,5 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, bottom, place, sear
         />
             </StandaloneSearchBox>
         </Paper>
-        </Zoom>
     )
 }

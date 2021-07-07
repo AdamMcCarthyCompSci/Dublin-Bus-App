@@ -7,15 +7,45 @@
     position: absolute;
     bottom: 0;
     margin-left: 15%;
-    /* z-index: 1; */
     height: auto;
     text-align: center;
     width: 70%;
 }
 .paper {
     width: 100%;
-    height: 250px;
-    /* margin-bottom: 200px; */
+    height: 310px;
+    margin-bottom: 10px;
+}
+
+.resultsPaper {
+    width: 100%;
+    height: 310px;
+    margin-bottom: 10px;
+}
+.profileContainer {
+    position: absolute;
+    bottom: 0;
+    margin-left: 15%;
+    height: auto;
+    text-align: center;
+    width: 70%;
+}
+.profilePaper {
+    width: 100%;
+    height: 60vh;
+    margin-bottom: 10px;
+}
+.settingsContainer {
+    position: absolute;
+    bottom: 0;
+    margin-left: 15%;
+    height: auto;
+    text-align: center;
+    width: 70%;
+}
+.settingsPaper {
+    width: 100%;
+    height: 60vh;
     margin-bottom: 10px;
 }
 

@@ -5,11 +5,6 @@ import { Circle } from '@react-google-maps/api';
 export function BusStops() {
     const [busStops, setBusStops] = React.useState([])
 
-    const center = {
-        lat: 53.3522,
-        lng: -6.26372
-    }
-
     const options = {
         strokeColor: '#FF0000',
         strokeOpacity: 0.8,
@@ -23,18 +18,6 @@ export function BusStops() {
         radius: 10,
         zIndex: 1
       }
-      
-    //   const onLoad = circle => {
-    //     console.log('Circle onLoad circle: ', circle)
-    //   }
-      
-    //   const onUnmount = circle => {
-    //     console.log('Circle onUnmount circle: ', circle)
-    //   }
-
-      const showStops = () => {
-        console.log(busStops);
-      }
 
       useEffect(async () => {
         const result = await axios(
@@ -42,18 +25,11 @@ export function BusStops() {
         )
         setBusStops(result.data)
     })
-    showStops()
     
     return (
         busStops.map((stop => ( 
             <Circle
-            // optional
-            // onLoad={onLoad}
-            // optional
-            // onUnmount={onUnmount}
-            // required
             center={{"lat": stop.stop_lat, "lng": stop.stop_lon}}
-            // required
             options={options}
           />
         )))

@@ -1,10 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styles from './Map.module.css';
-import Button from '@material-ui/core/Button';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import Grid from "@material-ui/core/Grid";
-import axios from 'axios';
-import Slide from '@material-ui/core/Slide';
 import Paper from '@material-ui/core/Paper';
 import DayJsUtils from '@date-io/dayjs';
 import { DateTimePicker } from "@material-ui/pickers";
@@ -17,6 +12,8 @@ import SwipeableViews from "react-swipeable-views";
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
+import { PlacesSearch } from "./PlacesSearch";
+import Slide from '@material-ui/core/Slide';
 
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -52,51 +49,25 @@ import PropTypes from 'prop-types';
   }
 
 
-export function Results({handleChange, handleChangeIndex, value}) {
-    const [results, setResults] = React.useState([])
-    const [showResults, setShowResults] = React.useState(false)
+export function Results({display, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination}) {
     const [selectedDate, setSelectedDate] = React.useState(new Date());
+    const [value, setValue] = React.useState(0);
     const theme = useTheme();
 
-    useEffect(async () => {
-        const result = await axios(
-            'http://localhost:8000/bus/',
-        )
-        setResults(result.data)
-    })
-
-    const handleShowResults = () => {
-        setShowResults(!showResults);
-    }
+    const handleChange = (event, newValue) => {
+      setValue(newValue);
+    };
+  
+    const handleChangeIndex = (index) => {
+      setValue(index);
+    };
 
 
     return (
-            <div className={styles.resultsContainer}>
-            {showResults && results.map((result => (
-                <div style={{ overflow: "hidden"}}>
-                <Slide direction="up" in={showResults} mountOnEnter unmountOnExit>
-                <Button className={styles.ResultsButton} style={{textTransform: 'none', marginBottom: '1%'}} fullWidth="true" variant="contained" color="primary" onClick={() => { alert('clicked') }}>
-                    <Grid container spacing={0}>
-                        <Grid item xs={2}>
-                        </Grid>
-                        <Grid item xs={8} style={{textAlign: 'left'}}>
-                            {result.title}
-                            <br />
-                            {result.directions}
-                            <br />
-                            {result.prediction}
-                        </Grid>
-                        <Grid item xs={2}>
-                            <br />
-                            <ArrowForwardIosIcon />
-                        </Grid>
-                    </Grid>
-                    </Button>
-                    </Slide>
-                    </div>
-            )))}
-                    {!showResults && <Paper elevation={3} className={styles.paper}>
-                    <AppBar position="static" color="default">
+      <div className={styles.resultsContainer}>
+      <Slide direction="up" in={display} mountOnEnter unmountOnExit>
+      <Paper elevation={3} className={styles.resultsPaper}>
+      <AppBar position="static" color="default">
         <Tabs
           value={value}
           onChange={handleChange}
@@ -116,30 +87,59 @@ export function Results({handleChange, handleChangeIndex, value}) {
         onChangeIndex={handleChangeIndex}
       >
         <TabPanel value={value} index={0} dir={theme.direction} style={{height:"200px"}}>
-
-
-                                    <div style={{height:"100%"}}>
-                                    <MuiPickersUtilsProvider utils={DayJsUtils}>
-                                    <DateTimePicker
-                                        value={selectedDate}
-                                        disablePast
-                                        onChange={setSelectedDate}
-                                        label="Select a date and time"
-                                        showTodayButton
-                                    />
-                                    </MuiPickersUtilsProvider>
-                                    </div>
+          <div style={{height:"100%"}}>
+            <PlacesSearch 
+            onPlacesChanged={onOriginChanged} 
+            onPlacesLoad={onOriginLoad} 
+            place={origin} 
+            setPlace={setOrigin}
+            search={"Origin Search"}
+            />
+            <PlacesSearch 
+            onPlacesChanged={onDestinationChanged} 
+            onPlacesLoad={onDestinationLoad} 
+            place={destination} 
+            setPlace={setDestination}
+            search={"Destination Search"}
+            />
+            <MuiPickersUtilsProvider utils={DayJsUtils}>
+              <DateTimePicker
+                  value={selectedDate}
+                  disablePast
+                  onChange={setSelectedDate}
+                  label="Select a date and time"
+                  showTodayButton
+              />
+            </MuiPickersUtilsProvider>
+          </div>
 
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction} style={{height:"200px"}}>
+
+
+
+
           Create Timetable Here
+
+
+
+
         </TabPanel>
         <TabPanel value={value} index={2} dir={theme.direction} style={{height:"200px"}}>
+
+
+
+
           Create Extra Features Here
+
+
+
+
         </TabPanel>
       </SwipeableViews>
 
-                    </Paper>}
-            </div>
+      </Paper>
+      </Slide>
+      </div>
     )
 }

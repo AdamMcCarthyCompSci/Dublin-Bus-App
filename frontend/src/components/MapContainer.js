@@ -1,8 +1,10 @@
 import React from 'react';
-import { GoogleMap, LoadScript, StandaloneSearchBox, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 import styles from './Map.module.css';
-import { PlacesSearch } from "./PlacesSearch";
 import { BusStops } from "./BusStops";
+import { Results } from './Results';
+import { Settings } from './Settings';
+import { Profile } from './Profile';
 
 
 const containerStyle = {
@@ -15,7 +17,7 @@ const center = { lat: 53.345804, lng: -6.26031 }
 // Implement LatLng bounds
 
 
-function MapContainer({showSearch}) {
+function MapContainer({menu}) {
   const [originBox, setOriginBox] = React.useState(null);
   const [destinationBox, setDestinationBox] = React.useState(null);
   const [callbackResponse, setCallbackResponse] = React.useState(null);
@@ -23,6 +25,8 @@ function MapContainer({showSearch}) {
   const [destination, setDestination] = React.useState('');
 
   const lib = ['places'];
+
+  console.log("menu", menu);
 
   const onOriginChanged = () => {
     setOrigin(originBox.getPlaces()[0].formatted_address)
@@ -64,27 +68,22 @@ function MapContainer({showSearch}) {
         zoom = { 14 }
         options={{streetViewControl: false, strictBounds: false, mapTypeControl: false}}
       >
-        <PlacesSearch 
-        onPlacesChanged={onOriginChanged} 
-        onPlacesLoad={onOriginLoad} 
-        bottom={"100px"} 
-        back={true} 
-        place={origin} 
-        setPlace={setOrigin}
-        search={"Origin Search"}
-        showSearch={showSearch}
-        />
-        <PlacesSearch 
-        onPlacesChanged={onDestinationChanged} 
-        onPlacesLoad={onDestinationLoad} 
-        bottom={"50px"} 
-        back={false} 
-        place={destination} 
-        setPlace={setDestination}
-        search={"Destination Search"}
-        showSearch={showSearch}
-        />
-
+        {menu == 'Home' && <Results
+        display={menu == 'Home'}
+        onOriginChanged={onOriginChanged} 
+        onOriginLoad={onOriginLoad} 
+        setOrigin={setOrigin}
+        origin={origin} 
+        onDestinationChanged={onDestinationChanged} 
+        onDestinationLoad={onDestinationLoad} 
+        setDestination={setDestination}
+        destination={destination}
+        />}
+        {menu == 'Profile' && <Profile display={menu == 'Profile'}/>}
+        {menu == 'Settings' && <Settings display={menu == 'Settings'}/>}
+        <BusStops />
+        
+        
         {
               (
                 destination !== '' &&
@@ -114,7 +113,6 @@ function MapContainer({showSearch}) {
                 />
               )
             }
-            <BusStops />
 
 
       </GoogleMap>
