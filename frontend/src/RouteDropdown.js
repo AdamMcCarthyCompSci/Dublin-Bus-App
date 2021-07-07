@@ -1,44 +1,57 @@
-import routedata from "./RouteData.js";
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-// A function to construct and add the route data to dropdown menus
-
-const RouteDropdown = () => {
-
-{/* A funtion to return the unique values in the Route_data.json file.*/}
-function getUnique(routeData, comp) {
-
-    const unique =  routeData.map(e => e[comp])
-
-      // store the indexes of the unique objects
-      .map((e, i, final) => final.indexOf(e) === i && i)
-
-      // eliminate the false indexes & return unique objects
-     .filter((e) => routeData[e]).map(e => routeData[e]);
-    return unique;
-}
+function Routes() {
+const [routes,setRoutes]=React.useState([])
 
 
 const [directionDropdown,setDirectionDropdown]=useState(false);
 const [boardingDropdown, setBoardingDropdown]= useState(false);
 const [alightingDropdown, setAlightingDropdown]=useState(false);
-const [route,setRoute]=useState(null);
+
 const [direction, setDirection]=useState(null);
 const [boardingStop, setBoardingStop]= useState(null);
-const [filteredDirections,setFilteredDirections]=useState(routedata);
+const [route,setRoute]=useState(null);
 
-const routeUnique=getUnique(routedata,'RouteName');
-const directionUnique=getUnique(routedata, 'Direction');
+const routeUnique=getUnique(routes,'busnumber');
+const directionUnique=getUnique(routes, 'routedescription');
+const stopUnique=getUnique(routes,'platecode');
+
+function getUnique(route, comp) {
+
+    const unique =  route.map(e => e[comp])
+
+      // store the indexes of the unique objects
+      .map((e, i, final) => final.indexOf(e) === i && i)
+
+      // eliminate the false indexes & return unique objects
+     .filter((e) => route[e]).map(e => route[e]);
+    return unique;
+}
+const handleSubmit = () =>{
+alert('You selected route ' + route + ' the direction is ' + direction[direction.length -1] )
+}
+
+
+const showRoutes = () => {
+        console.log(routes)
+      }
+
+      useEffect(async () => {
+        const result = await axios(
+            'http://localhost:8000/routes/',
+        )
+        setRoutes(result.data)
+    },['']);
+    showRoutes()
 
     const activateDirectionDropdown = (e) =>{
     const { value } = e.target;
     setRoute(value);
-    if (value === value)
+    if (value == value)
     {
-    setRoute(value);
       setDirectionDropdown(true);
-
-           }
+      }
     else{
      setDirectionDropdown(false);
      }
@@ -47,8 +60,7 @@ const directionUnique=getUnique(routedata, 'Direction');
      const activateBoardingDropdown = (e) =>{
      const { value } = e.target;
      setDirection(value);
-     if (value ==value) {
-     setDirection(value);
+     if (value == value) {
      setBoardingDropdown(true);
      } else{
      setBoardingDropdown(false);
@@ -59,31 +71,30 @@ const directionUnique=getUnique(routedata, 'Direction');
      const { value } = e.target;
      setBoardingStop(value);
      if (value ==value) {
-     setBoardingStop(value);
      setAlightingDropdown(true);
      } else{
      setAlightingDropdown(false);
      }
      }
 
-    return (
-<>
 
+    return(
+    <>
+<form onSubmit={handleSubmit}>
 {/*Dropdown 1. Route numbers aka bus numbers.*/}
-<b> Bus Route: </b>
     <select id="dropdown1" onChange={activateDirectionDropdown}>
     <option>Select Your Route</option>
     {routeUnique.map((stopdetail, index)=>(
-    <option key ={index} >{stopdetail.RouteName}</option>
+    <option key ={stopdetail.id}>{stopdetail.busnumber}</option>
 ))}
 </select>
 
 {/*Dropdown 2 Route direction first stop on the route to last stop.*/}
 {directionDropdown &&
-<select id="dropdown2" onChange={activateBoardingDropdown}>
+<select id="dropdown2" onChange={activateBoardingDropdown} >
 <option>Select Direction</option>
-{directionUnique.filter(stopdetail=>stopdetail.RouteName==route).map((stopdetail, index)=>(
-      <option>{stopdetail.Direction}</option>
+{directionUnique.filter(stopdetail=>stopdetail.busnumber==route).map((stopdetail, index)=>(
+      <option key={stopdetail.id}>{stopdetail.routedescription + " " + stopdetail.direction}</option>
 
 ))}
 </select>}
@@ -93,8 +104,9 @@ const directionUnique=getUnique(routedata, 'Direction');
 {boardingDropdown &&
 <select id="dropdown3" onChange={activateAlightingDropdown}>
 <option>Select Boarding Stop</option>
-{routedata.filter(stopdetail=>stopdetail.RouteName==route).map((stopdetail, index)=>(
-     <option >{stopdetail.ShortCommonName_en + " Bus stop: " + stopdetail.PlateCode}</option>
+
+{stopUnique.filter(stopdetail=>stopdetail.busnumber==route && stopdetail.routedescription + " " + stopdetail.direction==direction).map((stopdetail, index)=>(
+     <option key={stopdetail.id}>{stopdetail.shortcommonname_en + " Bus stop: " + stopdetail.platecode}</option>
 
 
 ))}
@@ -106,16 +118,20 @@ const directionUnique=getUnique(routedata, 'Direction');
 {alightingDropdown &&
 <select id="dropdown4" >
 <option>Select Alighting Stop</option>
-{routedata.filter(stopdetail=>stopdetail.RouteName==route).map((stopdetail, index)=>(
-     <option >{stopdetail.ShortCommonName_en + " Bus stop: " + stopdetail.PlateCode}</option>
+{stopUnique.filter(stopdetail=>stopdetail.busnumber==route && stopdetail.routedescription + " " + stopdetail.direction==direction).map((stopdetail, index)=>(
+     <option key={stopdetail.id}>{stopdetail.shortcommonname_en + " Bus stop: " + stopdetail.platecode}</option>
 
 
 ))}
 </select>
+
 }
+
+
+<input type="submit" value="Submit"/>
+</form>
 </>
     )
 
 }
-
-export default RouteDropdown
+export default Routes
