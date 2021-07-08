@@ -15,6 +15,6 @@ urlpatterns = [
     # path('bus/', ResultsView.as_view(), name="something"),
     path('stops/',  StopsView.as_view(), name="something"),
     path('routes/', Routes.as_view(), name="something"),
-    path('price/',  Price.as_view(), name='home'),
+
 
 ]

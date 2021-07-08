@@ -8,12 +8,12 @@ import { useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import SwipeableViews from "react-swipeable-views";
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import { PlacesSearch } from "./PlacesSearch";
 import Slide from '@material-ui/core/Slide';
+{/*import SwipeableViews from "react-swipeable-views";*/}
 
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -81,7 +81,7 @@ export function Results({display, onOriginChanged, onOriginLoad, setOrigin, orig
           <Tab label="Extra Features" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
-      <SwipeableViews
+     {/* <SwipeableViews
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={value}
         onChangeIndex={handleChangeIndex}
@@ -136,7 +136,7 @@ export function Results({display, onOriginChanged, onOriginLoad, setOrigin, orig
 
 
         </TabPanel>
-      </SwipeableViews>
+      </SwipeableViews>*/}
 
       </Paper>
       </Slide>
