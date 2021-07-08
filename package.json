@@ -1,0 +1,19 @@
+{
+  "name": "package.json",
+  "version": "1.0.0",
+  "description": "cd into frontend folder and type 'npm start' in terminal\r cd into backend folder and type 'python manage.py runserver' in terminal",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdamMcCarthyCompSci/Dublin-Bus-App.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AdamMcCarthyCompSci/Dublin-Bus-App/issues"
+  },
+  "homepage": "https://github.com/AdamMcCarthyCompSci/Dublin-Bus-App#readme"
+}
