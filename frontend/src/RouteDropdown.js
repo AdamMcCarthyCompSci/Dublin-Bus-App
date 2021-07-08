@@ -3,8 +3,6 @@ import axios from 'axios';
 
 function Routes() {
 const [routes,setRoutes]=React.useState([])
-
-
 const [directionDropdown,setDirectionDropdown]=useState(false);
 const [boardingDropdown, setBoardingDropdown]= useState(false);
 const [alightingDropdown, setAlightingDropdown]=useState(false);
@@ -12,10 +10,12 @@ const [alightingDropdown, setAlightingDropdown]=useState(false);
 const [direction, setDirection]=useState(null);
 const [boardingStop, setBoardingStop]= useState(null);
 const [route,setRoute]=useState(null);
+const [platecode, setPlateCode]=useState(null);
 
 const routeUnique=getUnique(routes,'busnumber');
 const directionUnique=getUnique(routes, 'routedescription');
 const stopUnique=getUnique(routes,'platecode');
+
 
 function getUnique(route, comp) {
 
@@ -30,7 +30,13 @@ function getUnique(route, comp) {
 }
 const handleSubmit = () =>{
 alert('You selected route ' + route + ' the direction is ' + direction[direction.length -1] )
+
 }
+{/*const fetchData = () => {
+return fetch("https://dublinbus.ie/api/FareCalculateService/122/I/1423/1383/?format=json")
+      .then((response) => response.json())
+      .then((data) => console.log(data));
+      }*/}
 
 
 const showRoutes = () => {
@@ -76,6 +82,7 @@ const showRoutes = () => {
      setAlightingDropdown(false);
      }
      }
+
 
 
     return(

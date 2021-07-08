@@ -3,6 +3,8 @@ from rest_framework.views import APIView
 from . models import *
 from rest_framework.response import Response
 from . serializer import *
+
+import requests
 # Create your views here.
 
 
@@ -18,6 +20,12 @@ class Routes(APIView):
 		routes = [{"id": route.dublin_bus_routes_id, "busnumber": route.routename,"routedescription":route.routedescription, "direction": route.direction, "platecode": route.platecode,"shortcommonname_en":route.shortcommonname_en}
 		for route in DublinBusRoutes.objects.all()]
 		return Response(routes)
+class Price(APIView):
+	def test():
+		url = "https://dublinbus.ie/api/FareCalculateService/122/I/1423/1383?format=json"
+		response = requests.get(url)
+		data = response.json()
+		return data
 
 
 
