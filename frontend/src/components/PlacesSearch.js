@@ -38,12 +38,14 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search}) {
 
     return (
         <Paper component="form" className={classes.searchPaper}>
+          {/* Places search functionality */}
         <StandaloneSearchBox
         className={classes.standaloneSearchBox}
         onLoad={onPlacesLoad}
         onPlacesChanged={
             onPlacesChanged
         }
+        // Bounds creates autocomplete bias for places search within given area
         bounds={{
           north: 54.345804,
           south: 52.345804,
@@ -52,6 +54,7 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search}) {
         }}
         style={{top: "auto !important"}}
         >
+          {/* Input text box for searching places */}
         <InputBase
             className={classes.input}
             placeholder={place ? place : search}

@@ -16,11 +16,11 @@ export function FloatingActionButton({menu, setMenu}) {
     const [state, setState] = React.useState({
         left: false
     })
-
+    // Event handler for when clicking on home/profile/settings/etc.
     const handleListClick = (page) => {
         setMenu(page);
     }
-
+    // Popout drawer to the left
     const toggleDrawer = (anchor, open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
@@ -30,17 +30,20 @@ export function FloatingActionButton({menu, setMenu}) {
 
     return (
         <div className={styles.menuButton}>
+                {/* Menu action button and tooltip */}
                  <Tooltip title="Menu" aria-label="menu">
                   <Fab color="primary" aria-label="menu" onClick={toggleDrawer('left', true)}>
                   <MenuIcon />
                   </Fab>
                   </Tooltip>
+                  {/* Popout drawer */}
                   <Drawer anchor={'left'} open={state['left']} onClose={toggleDrawer('left', false)}>
                       <div className={styles.drawer}
                       role="presentation"
                       onClick={toggleDrawer('left', false)}
                       onKeyDown={toggleDrawer('left', false)}
                       >
+                          {/* Items in drawer */}
                           <List>
                             <ListItem 
                             button 

@@ -26,8 +26,8 @@ function MapContainer({menu}) {
 
   const lib = ['places'];
 
-  console.log("menu", menu);
 
+  // Next 4 functions are for the places search boxes
   const onOriginChanged = () => {
     setOrigin(originBox.getPlaces()[0].formatted_address)
   };
@@ -58,6 +58,7 @@ function MapContainer({menu}) {
 
   return (
     <div className = {styles.MapContainer}>
+      {/* react-google-maps library for the Google Maps API */}
     <LoadScript
       libraries={lib}
       googleMapsApiKey="AIzaSyAbXR_N5FTc0sO4lMQcsXgPQat7wUnVKl4"
@@ -79,11 +80,13 @@ function MapContainer({menu}) {
         setDestination={setDestination}
         destination={destination}
         />}
+        {/* Conditionally render profile and settings views */}
         {menu == 'Profile' && <Profile display={menu == 'Profile'}/>}
         {menu == 'Settings' && <Settings display={menu == 'Settings'}/>}
+        {/* Display bus stops */}
         <BusStops />
         
-        
+        {/* If origin and destination search boxes are filled in, then display bus directions */}
         {
               (
                 destination !== '' &&

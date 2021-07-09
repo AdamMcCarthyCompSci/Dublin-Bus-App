@@ -27,6 +27,7 @@ export function BusStops() {
     })
     
     return (
+        // Map circles to coordinates of bus stops
         busStops.map((stop => ( 
             <Circle
             center={{"lat": stop.stop_lat, "lng": stop.stop_lon}}

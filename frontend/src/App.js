@@ -6,8 +6,6 @@ import { FloatingActionButton } from './components/FloatingActionButton';
 import '@fontsource/roboto';
 
 import '@fontsource/roboto';
-import RouteDropdown from "./RouteDropdown.js";
-
 
 
 
@@ -18,7 +16,6 @@ function App() {
 
   return (
     <div className="App">
-            <RouteDropdown/>
             <MapContainer menu={menu}/>
             <FloatingActionButton menu={menu} setMenu={setMenu}/>
 

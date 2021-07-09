@@ -14,6 +14,8 @@ import PropTypes from 'prop-types';
 import { PlacesSearch } from "./PlacesSearch";
 import Slide from '@material-ui/core/Slide';
 import SwipeableViews from "react-swipeable-views";
+import Routes from "./Routes.js";
+
 
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -34,13 +36,14 @@ import SwipeableViews from "react-swipeable-views";
       </div>
     );
   }
-
+  
   TabPanel.propTypes = {
     children: PropTypes.node,
     index: PropTypes.any.isRequired,
     value: PropTypes.any.isRequired,
   };
   
+  // Tab functionality
   function a11yProps(index) {
     return {
       id: `full-width-tab-${index}`,
@@ -54,10 +57,11 @@ export function Results({display, onOriginChanged, onOriginLoad, setOrigin, orig
     const [value, setValue] = React.useState(0);
     const theme = useTheme();
 
+    // Event handler for tabs
     const handleChange = (event, newValue) => {
       setValue(newValue);
     };
-  
+    // Event handler for swipeable views
     const handleChangeIndex = (index) => {
       setValue(index);
     };
@@ -81,12 +85,13 @@ export function Results({display, onOriginChanged, onOriginLoad, setOrigin, orig
           <Tab label="Extra Features" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
-
+        {/* Swipeable views allows mobile devices to swipe between tabs */}
         <SwipeableViews
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={value}
         onChangeIndex={handleChangeIndex}
       >
+        {/* First tab, contains location search boces and date/time picker */}
         <TabPanel value={value} index={0} dir={theme.direction} style={{height:"200px"}}>
           <div style={{height:"100%"}}>
             <PlacesSearch 
@@ -115,17 +120,19 @@ export function Results({display, onOriginChanged, onOriginLoad, setOrigin, orig
           </div>
 
         </TabPanel>
+        {/* Second tab, contains route dropdowns */}
         <TabPanel value={value} index={1} dir={theme.direction} style={{height:"200px"}}>
 
 
 
 
-          Create Timetable Here
+          <Routes />
 
 
 
 
         </TabPanel>
+        {/* Third tab, contains miscellaneous features */}
         <TabPanel value={value} index={2} dir={theme.direction} style={{height:"200px"}}>
 
 
