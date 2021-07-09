@@ -1,0 +1,60 @@
+.mapContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.resultsContainer {
+    position: absolute;
+    bottom: 0;
+    margin-left: 15%;
+    height: auto;
+    text-align: center;
+    width: 70%;
+}
+.paper {
+    width: 100%;
+    height: 310px;
+    margin-bottom: 10px;
+}
+
+.resultsPaper {
+    width: 100%;
+    height: 310px;
+    margin-bottom: 10px;
+}
+.profileContainer {
+    position: absolute;
+    bottom: 0;
+    margin-left: 15%;
+    height: auto;
+    text-align: center;
+    width: 70%;
+}
+.profilePaper {
+    width: 100%;
+    height: 60vh;
+    margin-bottom: 10px;
+}
+.settingsContainer {
+    position: absolute;
+    bottom: 0;
+    margin-left: 15%;
+    height: auto;
+    text-align: center;
+    width: 70%;
+}
+.settingsPaper {
+    width: 100%;
+    height: 60vh;
+    margin-bottom: 10px;
+}
+
+.menuButton {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    z-index: 200;
+}
+.drawer {
+    width: 200px;
+}
