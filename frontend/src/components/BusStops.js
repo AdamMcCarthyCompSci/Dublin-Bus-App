@@ -21,14 +21,14 @@ export function BusStops() {
 
       useEffect(async () => {
         const result = await axios(
-            'http://localhost:8000/stops/',
+            'http://localhost:8000/bus/stops',
         )
-        setBusStops(result.data)
-    })
+        setBusStops(result.data.stops)
+    },[''])
     
     return (
         // Map circles to coordinates of bus stops
-        busStops.map((stop => ( 
+        busStops.map((stop => (
             <Circle
             center={{"lat": stop.stop_lat, "lng": stop.stop_lon}}
             options={options}

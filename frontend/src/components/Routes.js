@@ -12,6 +12,8 @@ const [boardingStop, setBoardingStop]= useState(null);
 const [route,setRoute]=useState(null);
 const [platecode, setPlateCode]=useState(null);
 
+const [price,setPrice]=useState(null);
+
 const routeUnique=getUnique(routes,'busnumber');
 const directionUnique=getUnique(routes, 'routedescription');
 const stopUnique=getUnique(routes,'platecode');
@@ -28,28 +30,38 @@ function getUnique(route, comp) {
      .filter((e) => route[e]).map(e => route[e]);
     return unique;
 }
-const handleSubmit = () =>{
-alert('You selected route ' + route + ' the direction is ' + direction[direction.length -1] )
 
-}
-{/*const fetchData = () => {
-return fetch("https://dublinbus.ie/api/FareCalculateService/122/I/1423/1383/?format=json")
-      .then((response) => response.json())
-      .then((data) => console.log(data));
-      }*/}
-
-
-const showRoutes = () => {
-        console.log(routes)
+const showPrice = () => {
+        console.log(price)
       }
 
       useEffect(async () => {
         const result = await axios(
-            'http://localhost:8000/routes/',
+            'http://localhost:8000/bus/price',
         )
-        setRoutes(result.data)
+        setPrice(result.data.price)
     },['']);
-    showRoutes()
+    showPrice()
+
+const handleSubmit = () =>{
+{/*alert('You selected route ' + price + ' the direction is ' + direction[direction.length -1] )*/}
+console.log(price)
+ja()
+}
+
+      useEffect(async () => {
+        const result = await axios(
+            'http://localhost:8000/bus/routes',
+        )
+        setRoutes(result.data.routes)
+    },['']);
+
+
+
+
+
+
+
 
     const activateDirectionDropdown = (e) =>{
     const { value } = e.target;
@@ -83,10 +95,23 @@ const showRoutes = () => {
      }
      }
 
+const ja = ()=>{
+var dict = price;
+var arr = [];
 
+for (var key in dict) {
+  arr.push(dict[key]);
+}
+return arr
+}
 
     return(
     <>
+        <div id="test" >
+
+
+</div>
+
 <form onSubmit={handleSubmit}>
 {/*Dropdown 1. Route numbers aka bus numbers.*/}
     <select id="dropdown1" onChange={activateDirectionDropdown}>
@@ -137,6 +162,7 @@ const showRoutes = () => {
 
 <input type="submit" value="Submit"/>
 </form>
+
 </>
     )
 
