@@ -48,7 +48,7 @@ const showRoutes = () => {
             'http://localhost:8000/routes/',
         )
         setRoutes(result.data)
-    },['']);
+    },[]);
     showRoutes()
 
     const activateDirectionDropdown = (e) =>{

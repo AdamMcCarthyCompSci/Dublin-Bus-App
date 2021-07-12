@@ -16,7 +16,7 @@ function App() {
 
   return (
     <div className="App">
-            <MapContainer menu={menu}/>
+            <MapContainer menu={menu} setMenu={setMenu}/>
             <FloatingActionButton menu={menu} setMenu={setMenu}/>
 
 
