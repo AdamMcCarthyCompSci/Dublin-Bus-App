@@ -95,22 +95,8 @@ ja()
      }
      }
 
-const ja = ()=>{
-var dict = price;
-var arr = [];
-
-for (var key in dict) {
-  arr.push(dict[key]);
-}
-return arr
-}
-
     return(
     <>
-        <div id="test" >
-
-
-</div>
 
 <form onSubmit={handleSubmit}>
 {/*Dropdown 1. Route numbers aka bus numbers.*/}
