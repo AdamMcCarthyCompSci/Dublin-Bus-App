@@ -46,7 +46,7 @@ const showPrice = () => {
 const handleSubmit = () =>{
 {/*alert('You selected route ' + price + ' the direction is ' + direction[direction.length -1] )*/}
 console.log(price)
-ja()
+
 }
 
       useEffect(async () => {
@@ -96,8 +96,8 @@ ja()
      }
 
     return(
-    <>
 
+<>
 <form onSubmit={handleSubmit}>
 {/*Dropdown 1. Route numbers aka bus numbers.*/}
     <select id="dropdown1" onChange={activateDirectionDropdown}>
