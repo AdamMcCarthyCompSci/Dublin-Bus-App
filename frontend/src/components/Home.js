@@ -94,8 +94,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
         onChangeIndex={handleChangeIndex}
       >
         {/* First tab, contains location search boces and date/time picker */}
-        <TabPanel value={value} index={0} dir={theme.direction} style={{height:"250px"}}>
-          <div style={{height:"100%"}}>
+        <TabPanel value={value} index={0} dir={theme.direction} style={{height:"310px"}}>
             <PlacesSearch 
             onPlacesChanged={onOriginChanged} 
             onPlacesLoad={onOriginLoad} 
@@ -122,7 +121,6 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
                   showTodayButton
               />
             </MuiPickersUtilsProvider>
-            {/* Submit Button */}
             <Button
             className={styles.submitButton}
              variant="contained" 
@@ -136,11 +134,10 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
               }}> 
               Submit 
               </Button>
-          </div>
 
         </TabPanel>
         {/* Second tab, contains route dropdowns */}
-        <TabPanel value={value} index={1} dir={theme.direction} style={{height:"250px"}}>
+        <TabPanel value={value} index={1} dir={theme.direction} style={{height:"310px"}}>
 
 
 
@@ -152,7 +149,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
         </TabPanel>
         {/* Third tab, contains miscellaneous features */}
-        <TabPanel value={value} index={2} dir={theme.direction} style={{height:"250px"}}>
+        <TabPanel value={value} index={2} dir={theme.direction} style={{height:"310px"}}>
 
 
 
