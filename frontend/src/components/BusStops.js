@@ -25,6 +25,7 @@ export function BusStops() {
     //     )
     //     setBusStops(result.data)
     // }, [])
+
     
     return (
         // Map circles to coordinates of bus stops
