@@ -19,15 +19,13 @@ export function BusStops() {
         zIndex: 1
       }
 
-      useEffect( () => {
-          async function fetchData() {
-              const result = await axios(
-                  'http://localhost:8000/stops/',
-              )
-              setBusStops(result.data)
-          }
-          fetchData();
-    }, [])
+    //   useEffect(async () => {
+    //     const result = await axios(
+    //         'http://localhost:8000/stops/',
+    //     )
+    //     setBusStops(result.data)
+    // }, [])
+
     
     return (
         // Map circles to coordinates of bus stops

@@ -50,7 +50,8 @@ return fetch("https://dublinbus.ie/api/FareCalculateService/122/I/1423/1383/?for
             'http://localhost:8000/routes/',
         )
         setRoutes(result.data)
-    }, ['']);
+    },[]);
+
     showRoutes()
 
     const activateDirectionDropdown = (e) => {

@@ -14,7 +14,7 @@ function App() {
 
     return (
         <div className="App">
-            <MapContainer menu={menu}/>
+            <MapContainer menu={menu} setMenu={setMenu}/>
             <FloatingActionButton menu={menu} setMenu={setMenu} setLogin={setLogin} setRegister={setRegister}/>
             <UserRegister show={register} setRegister={setRegister} setLogin={setLogin}/>
             <UserSignIn show={login} setLogin={setLogin}/>
