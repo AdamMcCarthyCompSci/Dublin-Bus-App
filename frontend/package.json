@@ -7,6 +7,7 @@
     "@fontsource/roboto": "^4.4.5",
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.58",
     "@material-ui/pickers": "^3.3.10",
     "@react-google-maps/api": "^2.2.0",
     "@testing-library/jest-dom": "^5.14.1",
@@ -22,6 +23,7 @@
     "react-scripts": "4.0.3",
     "react-select": "^4.3.1",
     "react-swipeable-views": "^0.14.0",
+    "react-token-auth": "^1.1.8",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
