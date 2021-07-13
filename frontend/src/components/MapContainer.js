@@ -1,10 +1,11 @@
 import React from 'react';
-import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer, DistanceMatrixService } from '@react-google-maps/api';
 import styles from './Map.module.css';
 import { BusStops } from "./BusStops";
-import { Results } from './Results';
+import { Home } from './Home';
 import { Settings } from './Settings';
 import { Profile } from './Profile';
+import { Results } from "./Results.js"
 
 
 const containerStyle = {
@@ -17,12 +18,13 @@ const center = { lat: 53.345804, lng: -6.26031 }
 // Implement LatLng bounds
 
 
-function MapContainer({menu}) {
+function MapContainer({menu, setMenu}) {
   const [originBox, setOriginBox] = React.useState(null);
   const [destinationBox, setDestinationBox] = React.useState(null);
   const [callbackResponse, setCallbackResponse] = React.useState(null);
   const [origin, setOrigin] = React.useState('');
   const [destination, setDestination] = React.useState('');
+  const [submit, setSubmit] = React.useState(false);
 
   const lib = ['places'];
 
@@ -30,10 +32,12 @@ function MapContainer({menu}) {
   // Next 4 functions are for the places search boxes
   const onOriginChanged = () => {
     setOrigin(originBox.getPlaces()[0].formatted_address)
+    setSubmit(false);
   };
 
   const onDestinationChanged = () => {
     setDestination(destinationBox.getPlaces()[0].formatted_address)
+    setSubmit(false);
   }
 
   const onOriginLoad = ref => {
@@ -49,6 +53,7 @@ function MapContainer({menu}) {
     if (response !== null) {
       if (response.status === 'OK') {
         setCallbackResponse(response)
+        setSubmit(false);
       } else {
         console.log('response: ', response)
       }
@@ -58,6 +63,7 @@ function MapContainer({menu}) {
 
   return (
     <div className = {styles.MapContainer}>
+
       {/* react-google-maps library for the Google Maps API */}
     <LoadScript
       libraries={lib}
@@ -69,8 +75,9 @@ function MapContainer({menu}) {
         zoom = { 14 }
         options={{streetViewControl: false, strictBounds: false, mapTypeControl: false}}
       >
-        {menu == 'Home' && <Results
-        display={menu == 'Home'}
+        {menu == 'Home' && <Home
+        menu={menu}
+        setMenu={setMenu}
         onOriginChanged={onOriginChanged} 
         onOriginLoad={onOriginLoad} 
         setOrigin={setOrigin}
@@ -79,10 +86,12 @@ function MapContainer({menu}) {
         onDestinationLoad={onDestinationLoad} 
         setDestination={setDestination}
         destination={destination}
+        setSubmit={setSubmit}
         />}
-        {/* Conditionally render profile and settings views */}
+        {/* Conditionally render views */}
         {menu == 'Profile' && <Profile display={menu == 'Profile'}/>}
         {menu == 'Settings' && <Settings display={menu == 'Settings'}/>}
+        {menu === 'Results' && <Results menu={menu} callbackResponse={callbackResponse}/>}
         {/* Display bus stops */}
         <BusStops />
         
@@ -90,7 +99,8 @@ function MapContainer({menu}) {
         {
               (
                 destination !== '' &&
-                origin !== ''
+                origin !== '' &&
+                submit === true
               ) && (
                 <DirectionsService
                   options={{
@@ -116,6 +126,18 @@ function MapContainer({menu}) {
                 />
               )
             }
+          {/* <DistanceMatrixService
+          options={{
+                    destinations: [{destination}],
+                    origins: [{origin}],
+                    travelMode: "TRANSIT",
+                    transitOptions: {
+                      modes: ['BUS']
+                    }
+                  }}
+          callback = {(response) => {console.log("DIRECTIONS:" + response)}}
+          /> */}
+            
 
 
       </GoogleMap>
