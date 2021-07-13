@@ -111,6 +111,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
             search={"Destination Search"}
             setSubmit={setSubmit}
             />
+            <div className={styles.datePickerContainer}>
             <MuiPickersUtilsProvider utils={DayJsUtils}>
               <DateTimePicker
               className={styles.datePicker}
@@ -121,6 +122,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
                   showTodayButton
               />
             </MuiPickersUtilsProvider>
+            </div>
             <Button
             className={styles.submitButton}
              variant="contained" 

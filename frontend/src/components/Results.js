@@ -46,13 +46,13 @@ export function Results({menu, callbackResponse}) {
             <Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984"}}>
             
             <Fab size="small" color="primary" aria-label="menu" style={{marginTop: "5px"}} onClick={() => setExpand(!expand)}>
-            {expand &&
-            <Zoom in={expand} mountOnEnter unmountOnExit>
+            {!expand &&
+            <Zoom in={!expand} mountOnEnter unmountOnExit>
                 <ExpandLessIcon />
             </Zoom>
             }
-            {!expand && 
-            <Zoom in={!expand} mountOnEnter unmountOnExit>
+            {expand && 
+            <Zoom in={expand} mountOnEnter unmountOnExit>
                 <ExpandMoreIcon />
             </Zoom>
             }
