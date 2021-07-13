@@ -68,7 +68,7 @@ export function Results({menu, callbackResponse}) {
             {callbackResponse === null && (
                 <div className={styles.directionsPaperContainer}>
                 <Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984"}}>
-                <p>Invalid Directions</p>
+                <p>Creating Route...</p>
                 </Paper>
                 </div>
             )}
