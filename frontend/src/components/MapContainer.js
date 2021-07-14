@@ -24,7 +24,6 @@ function MapContainer({menu, setMenu}) {
   const [callbackResponse, setCallbackResponse] = React.useState(null);
   const [origin, setOrigin] = React.useState('');
   const [destination, setDestination] = React.useState('');
-  const [submit, setSubmit] = React.useState(false);
 
   const lib = ['places'];
 
@@ -32,12 +31,10 @@ function MapContainer({menu, setMenu}) {
   // Next 4 functions are for the places search boxes
   const onOriginChanged = () => {
     setOrigin(originBox.getPlaces()[0].formatted_address)
-    setSubmit(false);
   };
 
   const onDestinationChanged = () => {
     setDestination(destinationBox.getPlaces()[0].formatted_address)
-    setSubmit(false);
   }
 
   const onOriginLoad = ref => {
@@ -53,7 +50,6 @@ function MapContainer({menu, setMenu}) {
     if (response !== null) {
       if (response.status === 'OK') {
         setCallbackResponse(response)
-        setSubmit(false);
       } else {
         console.log('response: ', response)
       }
@@ -86,7 +82,6 @@ function MapContainer({menu, setMenu}) {
         onDestinationLoad={onDestinationLoad} 
         setDestination={setDestination}
         destination={destination}
-        setSubmit={setSubmit}
         />}
         {/* Conditionally render views */}
         {menu == 'Profile' && <Profile display={menu == 'Profile'}/>}
@@ -99,8 +94,7 @@ function MapContainer({menu, setMenu}) {
         {
               (
                 destination !== '' &&
-                origin !== '' &&
-                submit === true
+                origin !== ''
               ) && (
                 <DirectionsService
                   options={{

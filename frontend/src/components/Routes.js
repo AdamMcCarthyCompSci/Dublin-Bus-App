@@ -139,93 +139,92 @@ const activateFinalDropdown = (e) =>{
     <Grid item xs={6}>
 
     {/*Dropdown 1. Route numbers aka bus numbers.*/}
-        <Paper className={styles.routeDropdownContainer}>
-            <FormControl>
-            <InputLabel id="dropdown1">Route</InputLabel>
-            <Select
-            labelId="dropdown1"
-            id="dropdown1"
-            value={route !== "Select a Route" ? route : "Select a Route"}
-            onChange={activateDirectionDropdown}
-            >
-                <MenuItem key={"Select a Route"} value={"Select a Route"}>Select a Route</MenuItem>
-                {routeUnique.map((stopdetail, index)=>(
-                <MenuItem key={stopdetail.id} value={stopdetail.busnumber}>{stopdetail.busnumber}</MenuItem>
-                ))}
-            </Select>
-            <FormHelperText>Select a Route</FormHelperText>
-            </FormControl>
-        </Paper>
+    <Paper className={styles.routeDropdownContainer}>
+        <FormControl>
+        <InputLabel id="dropdown1">Route</InputLabel>
+        <Select
+        labelId="dropdown1"
+        id="dropdown1"
+        value={route !== "Select a Route" ? route : "Select a Route"}
+        onChange={activateDirectionDropdown}
+        >
+            <MenuItem key={"Select a Route"} value={"Select a Route"}>Select a Route</MenuItem>
+            {routeUnique.map((stopdetail, index)=>(
+            <MenuItem key={stopdetail.id} value={stopdetail.busnumber}>{stopdetail.busnumber}</MenuItem>
+            ))}
+        </Select>
+        <FormHelperText>Select a Route</FormHelperText>
+        </FormControl>
+    </Paper>
     
     </Grid>
     <Grid item xs={6}>
     
     {/*Dropdown 2 Route direction first stop on the route to last stop.*/}
+    <Paper className={styles.routeDropdownContainer}>
     {directionDropdown &&
-        <Paper className={styles.routeDropdownContainer}>
-            <FormControl>
-            <InputLabel id="dropdown2">Direction</InputLabel>
-            <Select
-            labelId="dropdown2"
-            id="dropdown2"
-            value={direction !== "Select a Direction" ? direction : "Select a Direction"}
-            onChange={activateBoardingDropdown}
-            >
-                <MenuItem key={"Select a Direction"} value={"Select a Direction"}>Select a Direction</MenuItem>
-                {directionUnique.filter(stopdetail=>stopdetail.busnumber==route).map((stopdetail, index)=>(
-                    <MenuItem key={stopdetail.id} value={stopdetail.routedescription + " " + stopdetail.direction}>{stopdetail.routedescription + " " + stopdetail.direction}</MenuItem>
-                ))}
-            </Select>
-            <FormHelperText>Select a Direction</FormHelperText>
-            </FormControl>
-        </Paper>
+        <FormControl>
+        <InputLabel id="dropdown2">Direction</InputLabel>
+        <Select
+        labelId="dropdown2"
+        id="dropdown2"
+        value={direction !== "Select a Direction" ? direction : "Select a Direction"}
+        onChange={activateBoardingDropdown}
+        >
+            <MenuItem key={"Select a Direction"} value={"Select a Direction"}>Select a Direction</MenuItem>
+            {directionUnique.filter(stopdetail=>stopdetail.busnumber==route).map((stopdetail, index)=>(
+                <MenuItem key={stopdetail.id} value={stopdetail.routedescription + " " + stopdetail.direction}>{stopdetail.routedescription + " " + stopdetail.direction}</MenuItem>
+            ))}
+        </Select>
+        <FormHelperText>Select a Direction</FormHelperText>
+        </FormControl>
     }
-
+    </Paper>
     </Grid>
     <Grid item xs={6}>
 
     {/*Dropdown 3 Boarding bus stop*/}
+    <Paper className={styles.routeDropdownContainer}>
     {boardingDropdown &&
-        <Paper className={styles.routeDropdownContainer}>
-            <FormControl>
-            <InputLabel id="dropdown3">Boarding Stop</InputLabel>
-            <Select
-            labelId="dropdown3"
-            id="dropdown3"
-            value={boardingStop !== "Select a Boarding Stop" ? boardingStop : "Select a Boarding Stop"}
-            onChange={activateAlightingDropdown}>
-                <MenuItem key={"Select a Boarding Stop"} value={"Select a Boarding Stop"}>Select a Boarding Stop</MenuItem>
-                {stopUnique.filter(stopdetail=>stopdetail.busnumber==route && (stopdetail.routedescription + " " + stopdetail.direction)==direction).map((stopdetail, index)=>(
-                    <MenuItem key={stopdetail.id} value={stopdetail.shortcommonname_en + " Bus stop: " + stopdetail.platecode}>{stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}</MenuItem>
-                ))}
-            </Select>
-            <FormHelperText>Select a Boarding Stop</FormHelperText>
-            </FormControl>
-        </Paper>
+        <FormControl>
+        <InputLabel id="dropdown3">Boarding Stop</InputLabel>
+        <Select
+        labelId="dropdown3"
+        id="dropdown3"
+        value={boardingStop !== "Select a Boarding Stop" ? boardingStop : "Select a Boarding Stop"}
+        onChange={activateAlightingDropdown}>
+            <MenuItem key={"Select a Boarding Stop"} value={"Select a Boarding Stop"}>Select a Boarding Stop</MenuItem>
+            {stopUnique.filter(stopdetail=>stopdetail.busnumber==route && (stopdetail.routedescription + " " + stopdetail.direction)==direction).map((stopdetail, index)=>(
+                <MenuItem key={stopdetail.id} value={stopdetail.shortcommonname_en + " Bus stop: " + stopdetail.platecode}>{stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}</MenuItem>
+            ))}
+        </Select>
+        <FormHelperText>Select a Boarding Stop</FormHelperText>
+        </FormControl>
     }
+    </Paper>
 
     </Grid>
     <Grid item xs={6}>
 
     {/*Dropdown 4 alighting bus stop.*/}
+    <Paper className={styles.routeDropdownContainer}>
     {alightingDropdown &&
-        <Paper className={styles.routeDropdownContainer}>
-            <FormControl>
-            <InputLabel id="dropdown4">Alighting Stop</InputLabel>
-            <Select
-            labelId="dropdown4"
-            id="dropdown4"
-            value={plateCode !== "Select an Alighting Stop" ? plateCode : "Select an Alighting Stop"}
-            onChange={activateFinalDropdown}>
-                <MenuItem key={"Select an Alighting Stop"} value={"Select an Alighting Stop"}>Select an Alighting Stop</MenuItem>
-                {stopUnique.filter(stopdetail=>stopdetail.busnumber==route && stopdetail.routedescription + " " + stopdetail.direction==direction).map((stopdetail, index)=>(
-                    <MenuItem key={stopdetail.id} value={stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}>{stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}</MenuItem>
-                ))}
-            </Select>
-            <FormHelperText>Select an Alighting Stop</FormHelperText>
-            </FormControl>
-        </Paper>
+        <FormControl>
+        <InputLabel id="dropdown4">Alighting Stop</InputLabel>
+        <Select
+        labelId="dropdown4"
+        id="dropdown4"
+        value={plateCode !== "Select an Alighting Stop" ? plateCode : "Select an Alighting Stop"}
+        onChange={activateFinalDropdown}>
+            <MenuItem key={"Select an Alighting Stop"} value={"Select an Alighting Stop"}>Select an Alighting Stop</MenuItem>
+            {stopUnique.filter(stopdetail=>stopdetail.busnumber==route && stopdetail.routedescription + " " + stopdetail.direction==direction).map((stopdetail, index)=>(
+                <MenuItem key={stopdetail.id} value={stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}>{stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}</MenuItem>
+            ))}
+        </Select>
+        <FormHelperText>Select an Alighting Stop</FormHelperText>
+        </FormControl>
     }
+    </Paper>
 
     </Grid>
     </Grid>
@@ -235,6 +234,18 @@ const activateFinalDropdown = (e) =>{
         className={styles.submitButton}
         variant="contained" 
         color="primary"
+        onClick={() => {
+        handleSubmit() 
+        }}> 
+            Submit 
+        </Button>
+    }
+    {!finalDropdown &&
+        <Button
+        className={styles.submitButton}
+        variant="contained" 
+        color="primary"
+        disabled
         onClick={() => {
         handleSubmit() 
         }}> 
