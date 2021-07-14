@@ -1,153 +1,88 @@
 import React from 'react';
 import styles from './Map.module.css';
 import Paper from '@material-ui/core/Paper';
-import DayJsUtils from '@date-io/dayjs';
-import { DateTimePicker } from "@material-ui/pickers";
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { useTheme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import PropTypes from 'prop-types';
-import { PlacesSearch } from "./PlacesSearch";
 import Slide from '@material-ui/core/Slide';
-import SwipeableViews from "react-swipeable-views";
-import Routes from "./Routes.js";
+import Zoom from '@material-ui/core/Zoom';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import Fab from '@material-ui/core/Fab';
+import zIndex from '@material-ui/core/styles/zIndex';
 
+export function Results({menu, callbackResponse}) {
+    const [expand, setExpand] = React.useState(false);
 
-  function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-  
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`full-width-tabpanel-${index}`}
-        aria-labelledby={`full-width-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box p={3}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
-  
-  TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.any.isRequired,
-    value: PropTypes.any.isRequired,
-  };
-  
-  // Tab functionality
-  function a11yProps(index) {
-    return {
-      id: `full-width-tab-${index}`,
-      'aria-controls': `full-width-tabpanel-${index}`,
-    };
-  }
+    let response = null;
+    if (callbackResponse !== null) {
+        response = callbackResponse.routes[0].legs[0];
+    }
 
-
-export function Results({display, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination}) {
-    const [selectedDate, setSelectedDate] = React.useState(new Date());
-    const [value, setValue] = React.useState(0);
-    const theme = useTheme();
-
-    // Event handler for tabs
-    const handleChange = (event, newValue) => {
-      setValue(newValue);
-    };
-    // Event handler for swipeable views
-    const handleChangeIndex = (index) => {
-      setValue(index);
-    };
-
+    const getBusNumber = (step) => {
+        if ("transit" in step) {
+            const busNumber = step.transit.line.short_name;
+            return (
+                "(" + busNumber + ")"
+            )
+        }
+        else {
+            return null
+        }
+    }
 
     return (
-      <div className={styles.resultsContainer}>
-      <Slide direction="up" in={display} mountOnEnter unmountOnExit>
-      <Paper elevation={3} className={styles.resultsPaper}>
-      <AppBar position="static" color="default">
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="fullWidth"
-          aria-label="full width tabs example"
-        >
-          <Tab label="Directions" {...a11yProps(0)} />
-          <Tab label="Timetable" {...a11yProps(1)} />
-          <Tab label="Extra Features" {...a11yProps(2)} />
-        </Tabs>
-      </AppBar>
-        {/* Swipeable views allows mobile devices to swipe between tabs */}
-        <SwipeableViews
-        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-        index={value}
-        onChangeIndex={handleChangeIndex}
-      >
-        {/* First tab, contains location search boces and date/time picker */}
-        <TabPanel value={value} index={0} dir={theme.direction} style={{height:"200px"}}>
-          <div style={{height:"100%"}}>
-            <PlacesSearch 
-            onPlacesChanged={onOriginChanged} 
-            onPlacesLoad={onOriginLoad} 
-            place={origin} 
-            setPlace={setOrigin}
-            search={"Origin Search"}
-            />
-            <PlacesSearch 
-            onPlacesChanged={onDestinationChanged} 
-            onPlacesLoad={onDestinationLoad} 
-            place={destination} 
-            setPlace={setDestination}
-            search={"Destination Search"}
-            />
-            <MuiPickersUtilsProvider utils={DayJsUtils}>
-              <DateTimePicker
-                  value={selectedDate}
-                  disablePast
-                  onChange={setSelectedDate}
-                  label="Select a date and time"
-                  showTodayButton
-              />
-            </MuiPickersUtilsProvider>
-          </div>
+        <div className={styles.directionsPaperContainer}>
+        <React.Fragment>
+            {callbackResponse !== null && (
+            <React.Fragment>
+            {expand &&
+            response.steps.map((step) => (
+                        <Zoom in={menu==='Results'} mountOnEnter unmountOnExit>
+            <Paper elevation={3} className={styles.stepPaper} style={{backgroundColor: "#757de8"}}>
+                <p key={step.instructions} className={styles.directionsText}> {step.instructions} {getBusNumber(step)}</p>
+            </Paper>
+            </Zoom>
+            ))}
 
-        </TabPanel>
-        {/* Second tab, contains route dropdowns */}
-        <TabPanel value={value} index={1} dir={theme.direction} style={{height:"200px"}}>
+            <Slide direction="up" in={menu==='Results'} mountOnEnter unmountOnExit>
+            <Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984"}}>
+            
+            <Fab size="small" color="primary" aria-label="menu" style={{marginTop: "5px"}} onClick={() => setExpand(!expand)}>
+            {!expand &&
+            <Zoom in={!expand} mountOnEnter unmountOnExit>
+                <ExpandLessIcon />
+            </Zoom>
+            }
+            {expand && 
+            <Zoom in={expand} mountOnEnter unmountOnExit>
+                <ExpandMoreIcon />
+            </Zoom>
+            }
+            </Fab>
 
+            <p className={styles.directionsText}><b>To {response.end_address} ({response.distance.text})</b></p>
+            <p className={styles.directionsText}><i>Predicted arrival time: {response.arrival_time.text} (in {response.duration.text})</i></p>
+            </Paper>
+            </Slide>
 
+            </React.Fragment>
+            )}
+            {callbackResponse === null && (
+                <div className={styles.directionsPaperContainer}>
+                <Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984"}}>
+                <p>Creating Route...</p>
+                </Paper>
+                </div>
+            )}
 
-
-          <Routes />
-
-
-
-
-        </TabPanel>
-        {/* Third tab, contains miscellaneous features */}
-        <TabPanel value={value} index={2} dir={theme.direction} style={{height:"200px"}}>
-
-
-
-
-          Create Extra Features Here
-
-
-
-
-        </TabPanel>
-      </SwipeableViews>
-
-      </Paper>
-      </Slide>
-      </div>
+        </React.Fragment>
+        </div>
     )
 }
+
+
+
+
+{/* <div className={styles.directionsPaperContainer}>
+<Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984"}}>
+<p>Invalid Directions</p>
+</Paper>
+</div> */}
