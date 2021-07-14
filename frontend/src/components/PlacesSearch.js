@@ -33,7 +33,7 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search}) {
           height: "auto",
         },
         inputTextColor:{
-          color:'#002984'
+          // color:'#002984'
       }
       }));
 

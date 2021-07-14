@@ -166,7 +166,6 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
       </Paper>
       </Slide>
-
       </div>
     )
 }
