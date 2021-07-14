@@ -100,4 +100,7 @@
 
 .datePickerContainer {
     margin-bottom: 20px;
+    padding: 2px 4px;
+    width: 80%;
+    margin-left: 10%;
 }

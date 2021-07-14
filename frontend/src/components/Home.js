@@ -70,15 +70,15 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
     return (
       <div className={styles.homeContainer}>
-
+      
       <Slide direction="up" in={menu==='Home'} mountOnEnter unmountOnExit>
       <Paper elevation={3} className={styles.homePaper}>
-      <AppBar position="static" color="default">
+      <AppBar position="static" color="primary">
         <Tabs
           value={value}
           onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
+          indicatorColor="secondary"
+          textColor="default"
           variant="fullWidth"
           aria-label="full width tabs example"
         >
@@ -111,7 +111,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
             search={"Destination Search"}
             setSubmit={setSubmit}
             />
-            <div className={styles.datePickerContainer}>
+            <Paper component="form" className={styles.datePickerContainer}>
             <MuiPickersUtilsProvider utils={DayJsUtils}>
               <DateTimePicker
               className={styles.datePicker}
@@ -122,7 +122,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
                   showTodayButton
               />
             </MuiPickersUtilsProvider>
-            </div>
+            </Paper>
             <Button
             className={styles.submitButton}
              variant="contained" 
