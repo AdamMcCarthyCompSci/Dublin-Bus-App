@@ -8,6 +8,7 @@ import Select from '@material-ui/core/Select';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import styles from './Map.module.css';
+import Button from '@material-ui/core/Button';
 
 function Routes() {
 const [routes,setRoutes]=React.useState([])
@@ -20,7 +21,6 @@ const [direction, setDirection]=useState("");
 const [boardingStop, setBoardingStop]= useState("");
 const [route, setRoute]=useState("");
 const [plateCode, setPlateCode]=useState("");
-
 const [price,setPrice]=useState(null);
 
 const routeUnique=getUnique(routes,'busnumber');
@@ -53,9 +53,8 @@ const showPrice = () => {
     showPrice()
 
 const handleSubmit = () =>{
-{/*alert('You selected route ' + price + ' the direction is ' + direction[direction.length -1] )*/}
-// console.log(price)
-
+    alert('You selected route ' + price + ' the direction is ' + direction[direction.length -1] )
+    // console.log(price)
 }
 
 useEffect(async () => {
@@ -136,7 +135,7 @@ const activateFinalDropdown = (e) =>{
 
 <React.Fragment>
 
-    <Grid container spacing={1}>
+    <Grid container spacing={1} style={{marginBottom: "20px"}}>
     <Grid item xs={6}>
 
     {/*Dropdown 1. Route numbers aka bus numbers.*/}
@@ -230,7 +229,18 @@ const activateFinalDropdown = (e) =>{
 
     </Grid>
     </Grid>
-
+    
+    {finalDropdown &&
+        <Button
+        className={styles.submitButton}
+        variant="contained" 
+        color="primary"
+        onClick={() => {
+        handleSubmit() 
+        }}> 
+            Submit 
+        </Button>
+    }
 </React.Fragment>
     )
 
