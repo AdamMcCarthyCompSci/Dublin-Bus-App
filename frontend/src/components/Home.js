@@ -101,7 +101,6 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
             place={origin} 
             setPlace={setOrigin}
             search={"Origin Search"}
-            setSubmit={setSubmit}
             />
             <PlacesSearch 
             onPlacesChanged={onDestinationChanged} 
@@ -109,7 +108,6 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
             place={destination} 
             setPlace={setDestination}
             search={"Destination Search"}
-            setSubmit={setSubmit}
             />
             <Paper component="form" className={styles.datePickerContainer}>
             <MuiPickersUtilsProvider utils={DayJsUtils}>
@@ -123,19 +121,31 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
               />
             </MuiPickersUtilsProvider>
             </Paper>
-            <Button
-            className={styles.submitButton}
-             variant="contained" 
-             color="primary"
-             onClick={() => {
-              if (origin !== "" && destination !== "") {
-                setSubmit(true);
+            {origin !== "" && destination !== "" && 
+              <Button
+              className={styles.submitButton}
+              variant="contained" 
+              color="primary"
+              onClick={() => {
                 setMenu('Results');
-              }
-              // Call prediction
+                // Call prediction
               }}> 
-              Submit 
+                Submit 
               </Button>
+            }
+            {!(origin !== "" && destination !== "") && 
+              <Button
+              className={styles.submitButton}
+              variant="contained" 
+              color="primary"
+              disabled
+              onClick={() => {
+                setMenu('Results');
+                // Call prediction
+              }}> 
+                Submit 
+              </Button>
+            }
 
         </TabPanel>
         {/* Second tab, contains route dropdowns */}
@@ -166,7 +176,6 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
       </Paper>
       </Slide>
-
       </div>
     )
 }
