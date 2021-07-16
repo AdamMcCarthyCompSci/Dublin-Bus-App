@@ -135,7 +135,7 @@ const activateFinalDropdown = (e) =>{
 
 <React.Fragment>
 
-    <Grid container spacing={1} style={{marginBottom: "10px"}}>
+    <Grid container spacing={1} style={{marginBottom: "20px"}}>
     <Grid item xs={6}>
 
     {/*Dropdown 1. Route numbers aka bus numbers.*/}

@@ -181,7 +181,7 @@ function MapContainer({menu, setMenu}) {
         {/* Conditionally render views */}
         {menu == 'Profile' && <Profile display={menu == 'Profile'} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
         {menu == 'Settings' && <Settings display={menu == 'Settings'} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
-        {menu === 'Results' && <Results menu={menu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
+        {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
         {/* Display bus stops */}
         {settings.showStops && <BusStops />}
         
