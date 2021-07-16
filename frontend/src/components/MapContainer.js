@@ -24,6 +24,10 @@ function MapContainer({menu, setMenu}) {
   const [callbackResponse, setCallbackResponse] = React.useState(null);
   const [origin, setOrigin] = React.useState('');
   const [destination, setDestination] = React.useState('');
+  const [submit, setSubmit] = React.useState(false);
+  const [settings, setSettings] = React.useState({
+    showStops: true,
+  });
 
   const lib = ['places'];
 
@@ -82,13 +86,15 @@ function MapContainer({menu, setMenu}) {
         onDestinationLoad={onDestinationLoad} 
         setDestination={setDestination}
         destination={destination}
+        setSubmit={setSubmit}
+        settings={settings}
         />}
         {/* Conditionally render views */}
         {menu == 'Profile' && <Profile display={menu == 'Profile'}/>}
-        {menu == 'Settings' && <Settings display={menu == 'Settings'}/>}
+        {menu == 'Settings' && <Settings display={menu == 'Settings'} settings={settings} setSettings={setSettings}/>}
         {menu === 'Results' && <Results menu={menu} callbackResponse={callbackResponse}/>}
         {/* Display bus stops */}
-        <BusStops />
+        {settings.showStops && <BusStops />}
         
         {/* If origin and destination search boxes are filled in, then display bus directions */}
         {
