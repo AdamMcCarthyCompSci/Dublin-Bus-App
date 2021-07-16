@@ -70,15 +70,15 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
     return (
       <div className={styles.homeContainer}>
-
+      
       <Slide direction="up" in={menu==='Home'} mountOnEnter unmountOnExit>
       <Paper elevation={3} className={styles.homePaper}>
-      <AppBar position="static" color="default">
+      <AppBar position="static" color="primary">
         <Tabs
           value={value}
           onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
+          indicatorColor="secondary"
+          textColor="default"
           variant="fullWidth"
           aria-label="full width tabs example"
         >
@@ -94,15 +94,13 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
         onChangeIndex={handleChangeIndex}
       >
         {/* First tab, contains location search boces and date/time picker */}
-        <TabPanel value={value} index={0} dir={theme.direction} style={{height:"250px"}}>
-          <div style={{height:"100%"}}>
+        <TabPanel value={value} index={0} dir={theme.direction} style={{height:"310px"}}>
             <PlacesSearch 
             onPlacesChanged={onOriginChanged} 
             onPlacesLoad={onOriginLoad} 
             place={origin} 
             setPlace={setOrigin}
             search={"Origin Search"}
-            setSubmit={setSubmit}
             />
             <PlacesSearch 
             onPlacesChanged={onDestinationChanged} 
@@ -110,8 +108,8 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
             place={destination} 
             setPlace={setDestination}
             search={"Destination Search"}
-            setSubmit={setSubmit}
             />
+            <Paper component="form" className={styles.datePickerContainer}>
             <MuiPickersUtilsProvider utils={DayJsUtils}>
               <DateTimePicker
               className={styles.datePicker}
@@ -122,25 +120,36 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
                   showTodayButton
               />
             </MuiPickersUtilsProvider>
-            {/* Submit Button */}
-            <Button
-            className={styles.submitButton}
-             variant="contained" 
-             color="primary"
-             onClick={() => {
-              if (origin !== "" && destination !== "") {
-                setSubmit(true);
+            </Paper>
+            {origin !== "" && destination !== "" && 
+              <Button
+              className={styles.submitButton}
+              variant="contained" 
+              color="primary"
+              onClick={() => {
                 setMenu('Results');
-              }
-              // Call prediction
+                // Call prediction
               }}> 
-              Submit 
+                Submit 
               </Button>
-          </div>
+            }
+            {!(origin !== "" && destination !== "") && 
+              <Button
+              className={styles.submitButton}
+              variant="contained" 
+              color="primary"
+              disabled
+              onClick={() => {
+                setMenu('Results');
+                // Call prediction
+              }}> 
+                Submit 
+              </Button>
+            }
 
         </TabPanel>
         {/* Second tab, contains route dropdowns */}
-        <TabPanel value={value} index={1} dir={theme.direction} style={{height:"250px"}}>
+        <TabPanel value={value} index={1} dir={theme.direction} style={{height:"310px"}}>
 
 
 
@@ -152,7 +161,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
         </TabPanel>
         {/* Third tab, contains miscellaneous features */}
-        <TabPanel value={value} index={2} dir={theme.direction} style={{height:"250px"}}>
+        <TabPanel value={value} index={2} dir={theme.direction} style={{height:"310px"}}>
 
 
 
@@ -167,7 +176,6 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
       </Paper>
       </Slide>
-
       </div>
     )
 }

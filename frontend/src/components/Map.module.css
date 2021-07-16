@@ -65,9 +65,11 @@
 }
 .datePicker {
     width: 80%;
+    margin-top: 20px;
+    margin-top: 20px;
 }
 .submitButton {
-    margin-top: 10px;
+    margin-top: 20px;
     width: 50%;
 }
 .stepTitlePaper {
@@ -89,4 +91,16 @@
     text-align: center;
     width: 70%;
     margin-bottom: 10px;
+}
+
+/* Directions tab - extends to full height */
+.MuiBox-root {
+    height: 310px;
+}
+
+.datePickerContainer {
+    margin-bottom: 20px;
+    padding: 2px 4px;
+    width: 80%;
+    margin-left: 10%;
 }

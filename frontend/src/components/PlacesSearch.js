@@ -32,6 +32,9 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search}) {
           margin: "auto",
           height: "auto",
         },
+        inputTextColor:{
+          // color:'#002984'
+      }
       }));
 
     const classes = useStyles();
@@ -58,7 +61,7 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search}) {
         <InputBase
             className={classes.input}
             placeholder={place ? place : search}
-            inputProps={{ 'aria-label': 'search google maps' }}
+            inputProps={{ 'aria-label': 'search google maps', className: classes.inputTextColor }}
         />
             </StandaloneSearchBox>
         </Paper>

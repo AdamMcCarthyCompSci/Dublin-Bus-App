@@ -53,7 +53,7 @@ class UserRegister extends React.Component {
         e.preventDefault();
         axios({
             method: 'POST',
-            url: "http://localhost:8000/api/user/create/",
+            url: "http://localhost:8000/bus/user/create/",
             data: {
                 username: this.state.username,
                 email: this.state.email,
