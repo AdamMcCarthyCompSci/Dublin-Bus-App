@@ -8,7 +8,6 @@ from rest_framework.response import Response
 from .serializers import CustomUserSerializer
 from rest_framework.permissions import AllowAny
 
-# Create your views here.
 
 def stops(request):
     stops = [{"id": stop.stop_id, "name": stop.stop_name, "stop_lat": stop.stop_lat, "stop_lon": stop.stop_lon}
@@ -23,6 +22,7 @@ def routes(request):
                "direction": route.direction, "platecode": route.platecode, "shortcommonname_en": route.shortcommonname_en}
               for route in DublinBusRoutes.objects.all()]
     return JsonResponse({'routes':routes})
+
 
 def price(request):
     # get the list of todos
@@ -43,10 +43,6 @@ def post(request):
             json = serializer.data
             return Response(json, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
 
 
 
