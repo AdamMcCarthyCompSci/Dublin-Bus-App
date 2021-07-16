@@ -171,8 +171,6 @@ class DjangoSession(models.Model):
 
 class DublinBusRoutes(models.Model):
     dublin_bus_routes_id = models.AutoField(primary_key=True)
-    shapeid = models.CharField(db_column='ShapeId', max_length=25, blank=True, null=True)  # Field name made lowercase.
-    operator = models.CharField(db_column='Operator', max_length=5, blank=True, null=True)  # Field name made lowercase.
     stopsequence = models.IntegerField(db_column='StopSequence')  # Field name made lowercase.
     routename = models.CharField(db_column='RouteName', max_length=12, blank=True,
                                  null=True)  # Field name made lowercase.
