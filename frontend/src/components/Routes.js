@@ -27,7 +27,6 @@ export function Routes({darkbackground, darkForeground, darkText}) {
     const [price,setPrice]=useState(null);
 
     {/*Filtering the unique values called from the bus routes table in MySql*/}
-
     const routeUnique=getUnique(routes,'busnumber');
     const directionUnique=getUnique(routes, 'routedescription');
 
@@ -44,7 +43,25 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         return unique;
     }
 
-    {/* calling the route view from Django backend*/}
+    const showPrice = async (route, direction, start, end) => {
+        const result = await axios.get("http://localhost:8000/bus/price", {
+            params: {
+                route,
+                direction,
+                start,
+                end
+            }
+        });
+        setPrice(result.data.price);
+    }
+
+    const handleSubmit = async () => {
+        await showPrice(
+            route,
+            direction[direction.length - 1],
+            boardingStop.split(' ').pop(),
+            plateCode.split(' ').pop());
+    }
 
     useEffect(async () => {
         const result = await axios(
@@ -62,15 +79,6 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         {/* Set the price state */}
         setPrice(result.data.price)
     },[]);
-
-
-
-    const handleSubmit = () =>{
-        alert('You selected route ' + JSON.stringify(price,null,2) + ' the direction is ' + direction[direction.length -1] )
-        // console.log(price)
-    }
-
-
 
     {/* Dropdown activation */}
     const activateDirectionDropdown = (e) =>{
@@ -99,7 +107,7 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         setDirection(value);
         if (value == value) {
             setBoardingDropdown(true);
-        } 
+        }
             else {
         setBoardingDropdown(false);
         }
@@ -115,7 +123,7 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         setBoardingStop(value);
         if (value == value) {
             setAlightingDropdown(true);
-        } 
+        }
         else {
             setAlightingDropdown(false);
         }
@@ -131,7 +139,7 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         setPlateCode(value);
         if (value == value) {
             setFinalDropdown(true);
-        } 
+        }
         else {
             setFinalDropdown(false);
         }
@@ -139,6 +147,7 @@ export function Routes({darkbackground, darkForeground, darkText}) {
 
     return (
 <React.Fragment>
+{price && <div>{JSON.stringify(price.FirstFare)}</div>}
 
 <Grid container spacing={1} style={{marginBottom: "20px"}}>
 <Grid item xs={6}>
@@ -234,31 +243,18 @@ export function Routes({darkbackground, darkForeground, darkText}) {
     </FormControl>
 }
 </Paper>
-
 </Grid>
 </Grid>
 
 {finalDropdown &&
     <Button
     className={styles.submitButton}
-    variant="contained" 
+    variant="contained"
     color="primary"
     onClick={() => {
-    handleSubmit() 
-    }}> 
-        Submit 
-    </Button>
-}
-{!finalDropdown &&
-    <Button
-    className={styles.submitButton}
-    variant="contained" 
-    color="primary"
-    disabled
-    onClick={() => {
-    handleSubmit() 
-    }}> 
-        Submit 
+    handleSubmit()
+    }}>
+        Submit
     </Button>
 }
 </React.Fragment>
