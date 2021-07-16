@@ -5,18 +5,17 @@ import Slide from '@material-ui/core/Slide';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
-export function Settings({display, settings, setSettings}) {
+export function Settings({display, settings, setSettings, darkBackground, darkForeground, darkText}) {
 
     const handleChange = (event) => {
         setSettings({ ...settings, [event.target.name]: event.target.checked });
-        console.log(settings.showStops)
     };
 
     return (
         <div className={styles.settingsContainer}>
             <Slide direction="up" in={display} mountOnEnter unmountOnExit>
-                <Paper elevation={3} className={styles.settingsPaper}>
-                    <h1>Settings</h1>
+                <Paper elevation={3} className={styles.settingsPaper} style={{backgroundColor: darkBackground}}>
+                    <h1 style={{color: darkText}}>Settings</h1>
 
                     <FormControlLabel
                         control={
@@ -27,7 +26,20 @@ export function Settings({display, settings, setSettings}) {
                             color="primary"
                         />
                         }
-                        label="Primary"
+                        label="Display Stops"
+                        style={{color: darkText}}
+                    />
+                    <FormControlLabel
+                        control={
+                        <Switch
+                            checked={settings.darkMode}
+                            onChange={handleChange}
+                            name="darkMode"
+                            color="primary"
+                        />
+                        }
+                        label="Toggle Dark Mode"
+                        style={{color: darkText}}
                     />
 
                 </Paper>

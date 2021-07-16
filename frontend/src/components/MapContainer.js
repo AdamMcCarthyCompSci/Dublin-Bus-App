@@ -15,6 +15,87 @@ const containerStyle = {
 
 const center = { lat: 53.345804, lng: -6.26031 }
 
+const darkModeStyle = [
+  { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+  {
+    featureType: "administrative.locality",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#d59563" }],
+  },
+  {
+    featureType: "poi",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#d59563" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "geometry",
+    stylers: [{ color: "#263c3f" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#6b9a76" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [{ color: "#38414e" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#212a37" }],
+  },
+  {
+    featureType: "road",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#9ca5b3" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry",
+    stylers: [{ color: "#746855" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#1f2835" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#f3d19c" }],
+  },
+  {
+    featureType: "transit",
+    elementType: "geometry",
+    stylers: [{ color: "#2f3948" }],
+  },
+  {
+    featureType: "transit.station",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#d59563" }],
+  },
+  {
+    featureType: "water",
+    elementType: "geometry",
+    stylers: [{ color: "#17263c" }],
+  },
+  {
+    featureType: "water",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#515c6d" }],
+  },
+  {
+    featureType: "water",
+    elementType: "labels.text.stroke",
+    stylers: [{ color: "#17263c" }],
+  },
+]
+
 // Implement LatLng bounds
 
 
@@ -24,10 +105,15 @@ function MapContainer({menu, setMenu}) {
   const [callbackResponse, setCallbackResponse] = React.useState(null);
   const [origin, setOrigin] = React.useState('');
   const [destination, setDestination] = React.useState('');
-  const [submit, setSubmit] = React.useState(false);
+  // const [submit, setSubmit] = React.useState(false);
   const [settings, setSettings] = React.useState({
     showStops: true,
+    darkMode: true,
   });
+
+  const darkBackground = settings.darkMode ? "#424242" : "";
+  const darkForeground = settings.darkMode ? "#616161" : "";
+  const darkText = settings.darkMode ? "#ffffff" : "";
 
   const lib = ['places'];
 
@@ -73,7 +159,7 @@ function MapContainer({menu, setMenu}) {
         mapContainerStyle={containerStyle}
         center={center}
         zoom = { 14 }
-        options={{streetViewControl: false, strictBounds: false, mapTypeControl: false}}
+        options={{streetViewControl: false, strictBounds: false, mapTypeControl: false, styles: (settings.darkMode ? darkModeStyle : [])}}
       >
         {menu == 'Home' && <Home
         menu={menu}
@@ -86,13 +172,16 @@ function MapContainer({menu, setMenu}) {
         onDestinationLoad={onDestinationLoad} 
         setDestination={setDestination}
         destination={destination}
-        setSubmit={setSubmit}
+        // setSubmit={setSubmit}
         settings={settings}
+        darkBackground={darkBackground}
+        darkForeground={darkForeground}
+        darkText={darkText}
         />}
         {/* Conditionally render views */}
-        {menu == 'Profile' && <Profile display={menu == 'Profile'}/>}
-        {menu == 'Settings' && <Settings display={menu == 'Settings'} settings={settings} setSettings={setSettings}/>}
-        {menu === 'Results' && <Results menu={menu} callbackResponse={callbackResponse}/>}
+        {menu == 'Profile' && <Profile display={menu == 'Profile'} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
+        {menu == 'Settings' && <Settings display={menu == 'Settings'} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
+        {menu === 'Results' && <Results menu={menu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
         {/* Display bus stops */}
         {settings.showStops && <BusStops />}
         

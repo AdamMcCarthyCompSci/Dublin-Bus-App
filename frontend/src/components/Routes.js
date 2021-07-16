@@ -10,7 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import styles from './Map.module.css';
 import Button from '@material-ui/core/Button';
 
-function Routes() {
+function Routes({darkbackground, darkForeground, darkText}) {
 const [routes,setRoutes]=React.useState([])
 const [directionDropdown,setDirectionDropdown]=useState(false);
 const [boardingDropdown, setBoardingDropdown]= useState(false);
@@ -135,14 +135,15 @@ const activateFinalDropdown = (e) =>{
 
 <React.Fragment>
 
-    <Grid container spacing={1} style={{marginBottom: "20px"}}>
+    <Grid container spacing={1} style={{marginBottom: "10px"}}>
     <Grid item xs={6}>
 
     {/*Dropdown 1. Route numbers aka bus numbers.*/}
-    <Paper className={styles.routeDropdownContainer}>
+    <Paper className={styles.routeDropdownContainer} style={{backgroundColor: darkForeground}}>
         <FormControl>
-        <InputLabel id="dropdown1">Route</InputLabel>
+        <InputLabel id="dropdown1" style={{color: darkText}}>Route</InputLabel>
         <Select
+        style={{color: darkText}}
         labelId="dropdown1"
         id="dropdown1"
         value={route !== "Select a Route" ? route : "Select a Route"}
@@ -153,7 +154,7 @@ const activateFinalDropdown = (e) =>{
             <MenuItem key={stopdetail.id} value={stopdetail.busnumber}>{stopdetail.busnumber}</MenuItem>
             ))}
         </Select>
-        <FormHelperText>Select a Route</FormHelperText>
+        <FormHelperText style={{color: darkText}}>Select a Route</FormHelperText>
         </FormControl>
     </Paper>
     
@@ -161,11 +162,12 @@ const activateFinalDropdown = (e) =>{
     <Grid item xs={6}>
     
     {/*Dropdown 2 Route direction first stop on the route to last stop.*/}
-    <Paper className={styles.routeDropdownContainer}>
+    <Paper className={styles.routeDropdownContainer} style={{backgroundColor: darkForeground}}>
     {directionDropdown &&
         <FormControl>
-        <InputLabel id="dropdown2">Direction</InputLabel>
+        <InputLabel id="dropdown2" style={{color: darkText}}>Direction</InputLabel>
         <Select
+        style={{color: darkText}}
         labelId="dropdown2"
         id="dropdown2"
         value={direction !== "Select a Direction" ? direction : "Select a Direction"}
@@ -176,7 +178,7 @@ const activateFinalDropdown = (e) =>{
                 <MenuItem key={stopdetail.id} value={stopdetail.routedescription + " " + stopdetail.direction}>{stopdetail.routedescription + " " + stopdetail.direction}</MenuItem>
             ))}
         </Select>
-        <FormHelperText>Select a Direction</FormHelperText>
+        <FormHelperText style={{color: darkText}}>Select a Direction</FormHelperText>
         </FormControl>
     }
     </Paper>
@@ -184,11 +186,12 @@ const activateFinalDropdown = (e) =>{
     <Grid item xs={6}>
 
     {/*Dropdown 3 Boarding bus stop*/}
-    <Paper className={styles.routeDropdownContainer}>
+    <Paper className={styles.routeDropdownContainer} style={{backgroundColor: darkForeground}}>
     {boardingDropdown &&
         <FormControl>
-        <InputLabel id="dropdown3">Boarding Stop</InputLabel>
+        <InputLabel id="dropdown3" style={{color: darkText}}>Boarding Stop</InputLabel>
         <Select
+        style={{color: darkText}}
         labelId="dropdown3"
         id="dropdown3"
         value={boardingStop !== "Select a Boarding Stop" ? boardingStop : "Select a Boarding Stop"}
@@ -198,7 +201,7 @@ const activateFinalDropdown = (e) =>{
                 <MenuItem key={stopdetail.id} value={stopdetail.shortcommonname_en + " Bus stop: " + stopdetail.platecode}>{stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}</MenuItem>
             ))}
         </Select>
-        <FormHelperText>Select a Boarding Stop</FormHelperText>
+        <FormHelperText style={{color: darkText}}>Select a Boarding Stop</FormHelperText>
         </FormControl>
     }
     </Paper>
@@ -207,11 +210,12 @@ const activateFinalDropdown = (e) =>{
     <Grid item xs={6}>
 
     {/*Dropdown 4 alighting bus stop.*/}
-    <Paper className={styles.routeDropdownContainer}>
+    <Paper className={styles.routeDropdownContainer} style={{backgroundColor: darkForeground}}>
     {alightingDropdown &&
         <FormControl>
-        <InputLabel id="dropdown4">Alighting Stop</InputLabel>
+        <InputLabel id="dropdown4" style={{color: darkText}}>Alighting Stop</InputLabel>
         <Select
+        style={{color: darkText}}
         labelId="dropdown4"
         id="dropdown4"
         value={plateCode !== "Select an Alighting Stop" ? plateCode : "Select an Alighting Stop"}
@@ -221,7 +225,7 @@ const activateFinalDropdown = (e) =>{
                 <MenuItem key={stopdetail.id} value={stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}>{stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}</MenuItem>
             ))}
         </Select>
-        <FormHelperText>Select an Alighting Stop</FormHelperText>
+        <FormHelperText style={{color: darkText}}>Select an Alighting Stop</FormHelperText>
         </FormControl>
     }
     </Paper>
