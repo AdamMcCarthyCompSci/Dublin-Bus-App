@@ -16,6 +16,7 @@ import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 import SwipeableViews from "react-swipeable-views";
 import Routes from "./Routes.js";
+import { dayjs } from 'dayjs';
 
 
   function TabPanel(props) {
@@ -121,6 +122,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
               className={styles.datePicker}
                   value={selectedDate}
                   disablePast
+                  maxDate={new Date().setDate(new Date().getDate()+1)}
                   onChange={setSelectedDate}
                   label="Select a Date and Time"
                   showTodayButton
@@ -138,6 +140,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
               color="primary"
               onClick={() => {
                 setMenu('Results');
+                console.log(selectedDate);
                 // Call prediction
               }}> 
                 Submit 

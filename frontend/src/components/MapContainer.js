@@ -110,6 +110,7 @@ function MapContainer({menu, setMenu}) {
     showStops: true,
     darkMode: true,
   });
+  const [newDirections, setNewDirections] = React.useState(true);
 
   const darkBackground = settings.darkMode ? "#424242" : "";
   const darkForeground = settings.darkMode ? "#616161" : "";
@@ -121,10 +122,12 @@ function MapContainer({menu, setMenu}) {
   // Next 4 functions are for the places search boxes
   const onOriginChanged = () => {
     setOrigin(originBox.getPlaces()[0].formatted_address)
+    setNewDirections(true);
   };
 
   const onDestinationChanged = () => {
     setDestination(destinationBox.getPlaces()[0].formatted_address)
+    setNewDirections(true);
   }
 
   const onOriginLoad = ref => {
@@ -140,6 +143,7 @@ function MapContainer({menu, setMenu}) {
     if (response !== null) {
       if (response.status === 'OK') {
         setCallbackResponse(response)
+        setNewDirections(false);
       } else {
         console.log('response: ', response)
       }
@@ -189,7 +193,8 @@ function MapContainer({menu, setMenu}) {
         {
               (
                 destination !== '' &&
-                origin !== ''
+                origin !== '' &&
+                newDirections === true
               ) && (
                 <DirectionsService
                   options={{
