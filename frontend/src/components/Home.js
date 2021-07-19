@@ -16,7 +16,7 @@ import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 import SwipeableViews from "react-swipeable-views";
 import Routes from "./Routes.js";
-import { dayjs } from 'dayjs';
+import axios from 'axios';
 
 
   function TabPanel(props) {
@@ -57,7 +57,17 @@ import { dayjs } from 'dayjs';
 export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText}) {
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     const [value, setValue] = React.useState(0);
+    const [weather, setWeather] = React.useState({});
     const theme = useTheme();
+
+    const showWeather = async (time) => {
+      const result = await axios.get("http://localhost:8000/bus/weather", {
+          params: {
+              time,
+          }
+      });
+      setWeather(result.data);
+  }
 
     // Event handler for tabs
     const handleChange = (event, newValue) => {
@@ -141,6 +151,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
               onClick={() => {
                 setMenu('Results');
                 console.log(selectedDate);
+                showWeather(selectedDate);
                 // Call prediction
               }}> 
                 Submit 
