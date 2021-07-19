@@ -12,6 +12,6 @@ urlpatterns = [
     path('stops', views.stops, name='stops'),
     path('routes', views.routes, name='routes'),
     path('price', views.price, name='price'),
-    path('weather', views.weather, name='weather'),
+    path('weather/', views.weather, name='weather'),
 ]
 

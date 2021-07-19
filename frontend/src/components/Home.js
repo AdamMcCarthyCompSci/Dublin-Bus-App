@@ -67,6 +67,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
           }
       });
       setWeather(result.data);
+      console.log(weather);
   }
 
     // Event handler for tabs
