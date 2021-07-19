@@ -379,7 +379,7 @@ class TrafficIncidents(models.Model):
 
 
 class Weather4DayHourlyForecast(models.Model):
-    date = models.DateTimeField(unique=True, blank=True, null=True)
+    date = models.DateTimeField(primary_key=True, unique=True, blank=True, null=False)
     temp = models.FloatField(blank=True, null=True)
     feels_like = models.FloatField(blank=True, null=True)
     wind_speed = models.FloatField(blank=True, null=True)

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './Map.module.css';
 import Paper from '@material-ui/core/Paper';
 import DayJsUtils from '@date-io/dayjs';
@@ -17,6 +17,7 @@ import Button from '@material-ui/core/Button';
 import SwipeableViews from "react-swipeable-views";
 import Routes from "./Routes.js";
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 
   function TabPanel(props) {
@@ -54,32 +55,30 @@ import axios from 'axios';
   }
 
 
-export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText}) {
+export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather}) {
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     const [value, setValue] = React.useState(0);
-    const [weather, setWeather] = React.useState({});
     const theme = useTheme();
 
-  //   const showWeather = async (time) => {
-  //     const result = await axios.get("http://localhost:8000/bus/weather", {
-  //         params: {
-  //             time,
-  //         }
-  //     })
-  //     .then(data => console.log(data))
-  //     .catch(error => {
-  //       console.log("error:", error)
-  //     });
-  //     setWeather(result.data);
+  //   const showWeather = async () => {
+  //     const result = await axios.get("http://localhost:8000/bus/weather")
+  //     setWeather(result.data.weather);
   //     console.log(weather);
   // }
 
-
-//   const showWeather = async (time) => {
-//     const result = await axios.get("http://localhost:8000/bus/weather")
-//     setWeather(result.data);
-//     console.log(weather);
-// }
+    const showWeather = async (time) => {
+      const formatTime = dayjs(time).format("YYYY-MM-DD HH:mm:ss");
+      const result = await axios.get("http://localhost:8000/bus/weather", {
+          params: {
+              time: formatTime,
+          }
+      })
+      .catch(error => {
+        console.log("error:", error)
+      });
+      setWeather(result.data.weather);
+      console.log(weather)
+  }
 
     // Event handler for tabs
     const handleChange = (event, newValue) => {
@@ -164,6 +163,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
                 setMenu('Results');
                 console.log(selectedDate);
                 showWeather(selectedDate);
+                console.log(weather);
                 // Call prediction
               }}> 
                 Submit 
@@ -202,7 +202,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
 
 
-          <p style={{color: darkText}}>Create Extra Features Here</p>
+        <p style={{color: darkText}}>Create Extra Features Here</p>
 
 
 
