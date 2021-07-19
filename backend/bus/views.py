@@ -31,6 +31,13 @@ def price(request):
     price = response.json()
     return JsonResponse({"price": price})
 
+def weather(request):
+    permission_classes = (permissions.AllowAny,)
+    response = [{"date": weather.date, "temp": weather.temp, "feels_like": weather.feels_like, "wind_speed": weather.wind_speed, "clouds_all": weather.clouds_all, "weather_id": weather.weather_id, "description": weather.description, 
+                "main_description": weather.main_description, "icon": weather.icon, "sunrise": weather.sunrise, "sunset": weather.sunset}
+              for weather in Weather4DayHourlyForecast.objects.all()]
+    return JsonResponse({"weather": response})
+
 
 
 @api_view(["POST"])
