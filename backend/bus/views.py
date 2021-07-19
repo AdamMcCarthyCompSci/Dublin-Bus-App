@@ -31,8 +31,24 @@ def price(request):
     price = response.json()
     return JsonResponse({"price": price})
 
+
+def price(request):
+    route = request.GET.get('route')
+    direction = request.GET.get('direction')
+    start = request.GET.get('start')
+    end = request.GET.get('end')
+    url = 'https://dublinbus.ie/api/FareCalculateService/{route}/{direction}/{start}/{end}?format=json'.format(route=route,
+                                                                                                               direction=direction,
+                                                                                                               start=start,
+                                                                                                               end=end)
+    print(url)
+    response = requests.get(url)
+    # transfer the response to json objects
+    price = response.json()
+    return JsonResponse({"price": price})
+
 def weather(request):
-    permission_classes = (permissions.AllowAny,)
+    time = request.GET.get('time')
     response = [{"date": weather.date, "temp": weather.temp, "feels_like": weather.feels_like, "wind_speed": weather.wind_speed, "clouds_all": weather.clouds_all, "weather_id": weather.weather_id, "description": weather.description, 
                 "main_description": weather.main_description, "icon": weather.icon, "sunrise": weather.sunrise, "sunset": weather.sunset}
               for weather in Weather4DayHourlyForecast.objects.all()]
