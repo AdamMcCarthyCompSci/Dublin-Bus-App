@@ -60,15 +60,26 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
     const [weather, setWeather] = React.useState({});
     const theme = useTheme();
 
-    const showWeather = async (time) => {
-      const result = await axios.get("http://localhost:8000/bus/weather", {
-          params: {
-              time,
-          }
-      });
-      setWeather(result.data);
-      console.log(weather);
-  }
+  //   const showWeather = async (time) => {
+  //     const result = await axios.get("http://localhost:8000/bus/weather", {
+  //         params: {
+  //             time,
+  //         }
+  //     })
+  //     .then(data => console.log(data))
+  //     .catch(error => {
+  //       console.log("error:", error)
+  //     });
+  //     setWeather(result.data);
+  //     console.log(weather);
+  // }
+
+
+//   const showWeather = async (time) => {
+//     const result = await axios.get("http://localhost:8000/bus/weather")
+//     setWeather(result.data);
+//     console.log(weather);
+// }
 
     // Event handler for tabs
     const handleChange = (event, newValue) => {
