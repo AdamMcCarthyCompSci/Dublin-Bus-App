@@ -65,9 +65,12 @@ useEffect(async () => {
     },['']);
 
 
+
 const handleSubmit = () =>{
 
-    alert('You selected route ' + price + ' the direction is ' + direction[direction.length -1] )
+
+    alert('You selected route ' + JSON.stringify(price,null,2) + ' the direction is ' + direction[direction.length -1] )
+
     // console.log(price)
 }
 
@@ -85,7 +88,7 @@ const activateDirectionDropdown = (e) =>{
     if (value == value) {
         setDirectionDropdown(true);
     }
-    else {
+    else
         setDirectionDropdown(false);
     }
 }
