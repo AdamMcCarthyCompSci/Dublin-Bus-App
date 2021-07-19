@@ -65,9 +65,14 @@ useEffect(async () => {
     },['']);
 
 
+
 const handleSubmit = () =>{
 
+<<<<<<< HEAD
     alert('You selected route ' + price + ' the direction is ' + direction[direction.length -1] )
+=======
+    alert('You selected route ' + JSON.stringify(price,null,2) + ' the direction is ' + direction[direction.length -1] )
+>>>>>>> development
     // console.log(price)
 }
 
