@@ -1,4 +1,3 @@
-
 # This is an auto-generated Django model module.
 # You'll have to do the following manually to clean this up:
 #   * Rearrange models' order
@@ -7,7 +6,6 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-
 
 
 class AuthGroup(models.Model):
@@ -51,6 +49,7 @@ class AuthUser(models.Model):
     is_staff = models.IntegerField()
     is_active = models.IntegerField()
     date_joined = models.DateTimeField()
+    fare_type = models.CharField(max_length=30, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -88,6 +87,13 @@ class BusResults(models.Model):
     class Meta:
         managed = False
         db_table = 'bus_results'
+
+
+class CurrentEvents(models.Model):
+
+    class Meta:
+        managed = False
+        db_table = 'current_events'
 
 
 class CurrentTraffic(models.Model):
@@ -172,32 +178,17 @@ class DjangoSession(models.Model):
 class DublinBusRoutes(models.Model):
     dublin_bus_routes_id = models.AutoField(primary_key=True)
     stopsequence = models.IntegerField(db_column='StopSequence')  # Field name made lowercase.
-    routename = models.CharField(db_column='RouteName', max_length=5, blank=True,
-                                 null=True)  # Field name made lowercase.
-    routedescription = models.CharField(db_column='RouteDescription', max_length=45, blank=True,
-                                        null=True)  # Field name made lowercase.
-    direction = models.CharField(db_column='Direction', max_length=5, blank=True,
-                                 null=True)  # Field name made lowercase.
-    atcocode = models.CharField(db_column='AtcoCode', max_length=12, blank=True,
-                                null=True)  # Field name made lowercase.
+    routename = models.CharField(db_column='RouteName', max_length=5, blank=True, null=True)  # Field name made lowercase.
+    routedescription = models.CharField(db_column='RouteDescription', max_length=45, blank=True, null=True)  # Field name made lowercase.
+    direction = models.CharField(db_column='Direction', max_length=5, blank=True, null=True)  # Field name made lowercase.
+    atcocode = models.CharField(db_column='AtcoCode', max_length=12, blank=True, null=True)  # Field name made lowercase.
     platecode = models.IntegerField(db_column='PlateCode')  # Field name made lowercase.
-    shortcommonname_en = models.CharField(db_column='ShortCommonName_en', max_length=25, blank=True,
-                                          null=True)  # Field name made lowercase.
+    shortcommonname_en = models.CharField(db_column='ShortCommonName_en', max_length=25, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'dublin_bus_routes'
 
-class LeapCardLocations(models.Model):
-    leap_card_locations_id = models.AutoField(primary_key=True)
-    shop_name = models.CharField(max_length=45, blank=True, null=True)
-    town = models.CharField(max_length=25, blank=True, null=True)
-    latitude = models.DecimalField(max_digits=65, decimal_places=13, blank=True, null=True)
-    longitude = models.DecimalField(max_digits=65, decimal_places=15, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'leap_card_locations'
 
 class LeapCardLocations(models.Model):
     leap_card_locations_id = models.AutoField(primary_key=True)
@@ -209,7 +200,6 @@ class LeapCardLocations(models.Model):
     class Meta:
         managed = False
         db_table = 'leap_card_locations'
-
 
 
 class TfiAgency(models.Model):
@@ -252,7 +242,7 @@ class TfiCalendarDates(models.Model):
 
 
 class TfiRealtime(models.Model):
-    id = models.BigIntegerField(blank=True, null=False, primary_key=True)
+    id = models.BigIntegerField(blank=True, null=True)
     timestamp = models.TextField(blank=True, null=True)
     start_time = models.TextField(blank=True, null=True)
     start_date = models.TextField(blank=True, null=True)
@@ -314,8 +304,7 @@ class TfiStationDistance(models.Model):
     progrnumber = models.BigIntegerField(db_column='PROGRNUMBER', blank=True, null=True)  # Field name made lowercase.
     stopid = models.TextField(db_column='STOPID', blank=True, null=True)  # Field name made lowercase.
     prev_stopid = models.TextField(db_column='PREV_STOPID', blank=True, null=True)  # Field name made lowercase.
-    distance_travelled = models.FloatField(db_column='DISTANCE_TRAVELLED', blank=True,
-                                           null=True)  # Field name made lowercase.
+    distance_travelled = models.FloatField(db_column='DISTANCE_TRAVELLED', blank=True, null=True)  # Field name made lowercase.
     dist_between = models.FloatField(db_column='DIST_BETWEEN', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -324,7 +313,7 @@ class TfiStationDistance(models.Model):
 
 
 class TfiStopTimes(models.Model):
-    id = models.BigIntegerField(blank=True, null=False, primary_key=True)
+    id = models.BigIntegerField(blank=True, null=True)
     trip_id = models.TextField(blank=True, null=True)
     arrival_time = models.TextField(blank=True, null=True)
     departure_time = models.TextField(blank=True, null=True)
@@ -394,13 +383,14 @@ class TfiTrips(models.Model):
 
 
 class TrafficIncidents(models.Model):
+
     class Meta:
         managed = False
         db_table = 'traffic_incidents'
 
 
 class Weather4DayHourlyForecast(models.Model):
-    date = models.DateTimeField(primary_key=True, unique=True, blank=True, null=False)
+    date = models.DateTimeField(unique=True, blank=True, null=True)
     temp = models.FloatField(blank=True, null=True)
     feels_like = models.FloatField(blank=True, null=True)
     wind_speed = models.FloatField(blank=True, null=True)
@@ -415,4 +405,3 @@ class Weather4DayHourlyForecast(models.Model):
     class Meta:
         managed = False
         db_table = 'weather_4_day_hourly_forecast'
-

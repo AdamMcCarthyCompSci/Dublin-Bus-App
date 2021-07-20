@@ -10,7 +10,10 @@ import Grid from '@material-ui/core/Grid';
 import styles from './Map.module.css';
 import Button from '@material-ui/core/Button';
 
+{/* Main function for the route dropdown components and pricing api call*/}
+
 function Routes({darkbackground, darkForeground, darkText}) {
+{/* initalising variables*/}
 const [routes,setRoutes]=React.useState([])
 const [directionDropdown,setDirectionDropdown]=useState(false);
 const [boardingDropdown, setBoardingDropdown]= useState(false);
@@ -23,11 +26,13 @@ const [route, setRoute]=useState("");
 const [plateCode, setPlateCode]=useState("");
 const [price,setPrice]=useState(null);
 
+{/*Filtering the unique values called from the bus routes table in MySql*/}
+
 const routeUnique=getUnique(routes,'busnumber');
 const directionUnique=getUnique(routes, 'routedescription');
 const stopUnique=getUnique(routes,'platecode');
 
-
+{/* Function that filters the unique values from dublin bus routes table*/}
 function getUnique(route, comp) {
 
     const unique =  route.map(e => e[comp])
@@ -40,33 +45,38 @@ function getUnique(route, comp) {
     return unique;
 }
 
-const showPrice = () => {
-        // console.log(price)
-      }
-
-      useEffect(async () => {
-        const result = await axios(
-            'http://localhost:8000/bus/price',
-        )
-        setPrice(result.data.price)
-    },['']);
-    showPrice()
-
-const handleSubmit = () =>{
-    alert('You selected route ' + price + ' the direction is ' + direction[direction.length -1] )
-    // console.log(price)
-}
+{/* calling the route view from Django backend*/}
 
 useEffect(async () => {
         const result = await axios(
             'http://localhost:8000/bus/routes',
         )
+        {/* Set the routes state */}
         setRoutes(result.data.routes)
-    },
-        []
-);
+    },[''] );
+
+{/* calling the price view from Django backend*/}
+  useEffect(async () => {
+        const result = await axios(
+            'http://localhost:8000/bus/price',
+            )
+        {/* Set the price state */}
+        setPrice(result.data.price)
+    },['']);
 
 
+
+const handleSubmit = () =>{
+
+
+    alert('You selected route ' + JSON.stringify(price,null,2) + ' the direction is ' + direction[direction.length -1] )
+
+    // console.log(price)
+}
+
+
+
+{/* Dropdown activation */}
 const activateDirectionDropdown = (e) =>{
     const { value } = e.target;
     if (value === "Select a Route") {
@@ -78,7 +88,7 @@ const activateDirectionDropdown = (e) =>{
     if (value == value) {
         setDirectionDropdown(true);
     }
-    else {
+    else
         setDirectionDropdown(false);
     }
 }
@@ -132,8 +142,13 @@ const activateFinalDropdown = (e) =>{
 }
 
     return(
+    <>
 
-<React.Fragment>
+
+
+
+
+<form method="post" class="post-form" action="http://localhost:8000/bus/price">
 
     <Grid container spacing={1} style={{marginBottom: "20px"}}>
     <Grid item xs={6}>
@@ -239,7 +254,7 @@ const activateFinalDropdown = (e) =>{
         variant="contained" 
         color="primary"
         onClick={() => {
-        handleSubmit() 
+        handleSubmit()
         }}> 
             Submit 
         </Button>
@@ -257,6 +272,7 @@ const activateFinalDropdown = (e) =>{
         </Button>
     }
 </React.Fragment>
+
     )
 
 }
