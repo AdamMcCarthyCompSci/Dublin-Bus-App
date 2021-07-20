@@ -41,7 +41,30 @@ export function Settings({display, settings, setSettings, darkBackground, darkFo
                         label="Toggle Dark Mode"
                         style={{color: darkText}}
                     />
-
+                    <FormControlLabel
+                        control={
+                        <Switch
+                            checked={settings.showLeap}
+                            onChange={handleChange}
+                            name="showLeap"
+                            color="primary"
+                        />
+                        }
+                        label="Display Leap"
+                        style={{color: darkText}}
+                    />
+                    <FormControlLabel
+                        control={
+                        <Switch
+                            checked={settings.showWeather}
+                            onChange={handleChange}
+                            name="showWeather"
+                            color="primary"
+                        />
+                        }
+                        label="Display Weather"
+                        style={{color: darkText}}
+                    />
                 </Paper>
             </Slide>
         </div>

@@ -16,8 +16,13 @@ def stops(request):
     stops = [{"id": stop.stop_id, "name": stop.stop_name, "stop_lat": stop.stop_lat, "stop_lon": stop.stop_lon}
              for stop in TfiStops.objects.all()]
 
-    return JsonResponse({'stops':stops})
+    return JsonResponse({'stops': stops})
 
+def leap(request):
+    leap = [{"leap_card_locations_id": leap.leap_card_locations_id, "shop_name": leap.shop_name, "town": leap.town, "latitude": leap.latitude, "longitude": leap.longitude}
+             for leap in LeapCardLocations.objects.all()]
+
+    return JsonResponse({'leap': leap})
 
 def routes(request):
     permission_classes = (permissions.AllowAny,)
@@ -32,22 +37,6 @@ def price(request):
     # transfer the response to json objects
     price = response.json()
     return JsonResponse({"price": price})
-
-
-# def price(request):
-#     route = request.GET.get('route')
-#     direction = request.GET.get('direction')
-#     start = request.GET.get('start')
-#     end = request.GET.get('end')
-#     url = 'https://dublinbus.ie/api/FareCalculateService/{route}/{direction}/{start}/{end}?format=json'.format(route=route,
-#                                                                                                                direction=direction,
-#                                                                                                                start=start,
-#                                                                                                                end=end)
-#     print(url)
-#     response = requests.get(url)
-#     # transfer the response to json objects
-#     price = response.json()
-#     return JsonResponse({"price": price})
 
 def weather(request):
     time = request.GET.get('time')

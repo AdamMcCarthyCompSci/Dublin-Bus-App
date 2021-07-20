@@ -60,12 +60,6 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
     const [value, setValue] = React.useState(0);
     const theme = useTheme();
 
-  //   const showWeather = async () => {
-  //     const result = await axios.get("http://localhost:8000/bus/weather")
-  //     setWeather(result.data.weather);
-  //     console.log(weather);
-  // }
-
     const showWeather = async (time) => {
       const formatTime = dayjs(time).format("YYYY-MM-DD HH:mm:ss");
       const result = await axios.get("http://localhost:8000/bus/weather", {
@@ -77,7 +71,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
         console.log("error:", error)
       });
       setWeather(result.data.weather);
-      console.log(weather)
+      console.log(result.data.weather);
   }
 
     // Event handler for tabs

@@ -2,6 +2,7 @@ import React from 'react';
 import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer, DistanceMatrixService } from '@react-google-maps/api';
 import styles from './Map.module.css';
 import { BusStops } from "./BusStops";
+import { Leap } from "./Leap.js"
 import { Home } from './Home';
 import { Settings } from './Settings';
 import { Profile } from './Profile';
@@ -109,6 +110,8 @@ function MapContainer({menu, setMenu}) {
   const [settings, setSettings] = React.useState({
     showStops: true,
     darkMode: true,
+    showLeap: true,
+    showWeather: true,
   });
   const [newDirections, setNewDirections] = React.useState(true);
   const [weather, setWeather] = React.useState({});
@@ -188,9 +191,10 @@ function MapContainer({menu, setMenu}) {
         {/* Conditionally render views */}
         {menu == 'Profile' && <Profile display={menu == 'Profile'} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
         {menu == 'Settings' && <Settings display={menu == 'Settings'} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
-        {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} setWeather={setWeather}/>}
+        {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings}/>}
         {/* Display bus stops */}
         {settings.showStops && <BusStops />}
+        {settings.showLeap && <Leap />}
         
         {/* If origin and destination search boxes are filled in, then display bus directions */}
         {

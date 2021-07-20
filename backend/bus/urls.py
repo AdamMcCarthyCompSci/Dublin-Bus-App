@@ -13,5 +13,6 @@ urlpatterns = [
     path('routes', views.routes, name='routes'),
     path('price', views.price, name='price'),
     path('weather', views.weather, name='weather'),
+    path('leap', views.leap, name='leap'),
 ]
 

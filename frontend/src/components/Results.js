@@ -10,7 +10,7 @@ import zIndex from '@material-ui/core/styles/zIndex';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Grid from '@material-ui/core/Grid';
 
-export function Results({menu, setMenu, callbackResponse}) {
+export function Results({menu, setMenu, callbackResponse, weather, settings}) {
     const [expand, setExpand] = React.useState(false);
 
     let response = null;
@@ -67,6 +67,9 @@ export function Results({menu, setMenu, callbackResponse}) {
                     </Fab>
                     <p className={styles.directionsText}><b>To {response.end_address} ({response.distance.text})</b></p>
                     <p className={styles.directionsText}><i>Predicted arrival time: {response.arrival_time.text} (in {response.duration.text})</i></p>
+                    {weather && settings.showWeather &&
+                        <img src={'http://openweathermap.org/img/wn/' + weather.icon + '.png'} />
+                    }
                 </Grid>
                 <Grid item xs={2}>
                 </Grid>
