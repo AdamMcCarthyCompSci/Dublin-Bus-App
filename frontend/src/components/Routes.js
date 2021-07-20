@@ -12,143 +12,135 @@ import Button from '@material-ui/core/Button';
 
 {/* Main function for the route dropdown components and pricing api call*/}
 
-function Routes({darkbackground, darkForeground, darkText}) {
-{/* initalising variables*/}
-const [routes,setRoutes]=React.useState([])
-const [directionDropdown,setDirectionDropdown]=useState(false);
-const [boardingDropdown, setBoardingDropdown]= useState(false);
-const [alightingDropdown, setAlightingDropdown]=useState(false);
-const [finalDropdown, setFinalDropdown]=useState(false);
+export function Routes({darkbackground, darkForeground, darkText}) {
+    {/* initalising variables*/}
+    const [routes,setRoutes]=React.useState([])
+    const [directionDropdown,setDirectionDropdown]=useState(false);
+    const [boardingDropdown, setBoardingDropdown]= useState(false);
+    const [alightingDropdown, setAlightingDropdown]=useState(false);
+    const [finalDropdown, setFinalDropdown]=useState(false);
 
-const [direction, setDirection]=useState("");
-const [boardingStop, setBoardingStop]= useState("");
-const [route, setRoute]=useState("");
-const [plateCode, setPlateCode]=useState("");
-const [price,setPrice]=useState(null);
+    const [direction, setDirection]=useState("");
+    const [boardingStop, setBoardingStop]= useState("");
+    const [route, setRoute]=useState("");
+    const [plateCode, setPlateCode]=useState("");
+    const [price,setPrice]=useState(null);
 
-{/*Filtering the unique values called from the bus routes table in MySql*/}
+    {/*Filtering the unique values called from the bus routes table in MySql*/}
 
-const routeUnique=getUnique(routes,'busnumber');
-const directionUnique=getUnique(routes, 'routedescription');
-const stopUnique=getUnique(routes,'platecode');
+    const routeUnique=getUnique(routes,'busnumber');
+    const directionUnique=getUnique(routes, 'routedescription');
+    const stopUnique=getUnique(routes,'platecode');
 
-{/* Function that filters the unique values from dublin bus routes table*/}
-function getUnique(route, comp) {
+    {/* Function that filters the unique values from dublin bus routes table*/}
+    function getUnique(route, comp) {
 
-    const unique =  route.map(e => e[comp])
+        const unique =  route.map(e => e[comp])
 
-      // store the indexes of the unique objects
-      .map((e, i, final) => final.indexOf(e) === i && i)
+        // store the indexes of the unique objects
+        .map((e, i, final) => final.indexOf(e) === i && i)
 
-      // eliminate the false indexes & return unique objects
-     .filter((e) => route[e]).map(e => route[e]);
-    return unique;
-}
+        // eliminate the false indexes & return unique objects
+        .filter((e) => route[e]).map(e => route[e]);
+        return unique;
+    }
 
-{/* calling the route view from Django backend*/}
+    {/* calling the route view from Django backend*/}
 
-useEffect(async () => {
+    useEffect(async () => {
         const result = await axios(
             'http://localhost:8000/bus/routes',
         )
         {/* Set the routes state */}
         setRoutes(result.data.routes)
-    },[''] );
+    },[] );
 
-{/* calling the price view from Django backend*/}
-  useEffect(async () => {
+    {/* calling the price view from Django backend*/}
+    useEffect(async () => {
         const result = await axios(
             'http://localhost:8000/bus/price',
             )
         {/* Set the price state */}
         setPrice(result.data.price)
-    },['']);
+    },[]);
 
 
 
-const handleSubmit = () =>{
-
-
-    alert('You selected route ' + JSON.stringify(price,null,2) + ' the direction is ' + direction[direction.length -1] )
-
-    // console.log(price)
-}
+    const handleSubmit = () =>{
+        alert('You selected route ' + JSON.stringify(price,null,2) + ' the direction is ' + direction[direction.length -1] )
+        // console.log(price)
+    }
 
 
 
-{/* Dropdown activation */}
-const activateDirectionDropdown = (e) =>{
-    const { value } = e.target;
-    if (value === "Select a Route") {
-        setDirectionDropdown(false);
+    {/* Dropdown activation */}
+    const activateDirectionDropdown = (e) =>{
+        const { value } = e.target;
+        if (value === "Select a Route") {
+            setDirectionDropdown(false);
+            setRoute(value);
+            return;
+        }
         setRoute(value);
-        return;
-    }
-    setRoute(value);
-    if (value == value) {
-        setDirectionDropdown(true);
-    }
-    else
-        setDirectionDropdown(false);
-    }
-}
-
-const activateBoardingDropdown = (e) =>{
-    const { value } = e.target;
-    if (value === "Select a Direction") {
-        setBoardingDropdown(false);
-        setDirection(value);
-        return;
-    }
-    setDirection(value);
-    if (value == value) {
-        setBoardingDropdown(true);
-    } 
+        if (value == value) {
+            setDirectionDropdown(true);
+        }
         else {
-     setBoardingDropdown(false);
+            setDirectionDropdown(false);
+        }
     }
-}
 
-const activateAlightingDropdown = (e) =>{
-    const { value } = e.target;
-    if (value === "Select a Boarding Stop") {
-        setAlightingDropdown(false);
+    const activateBoardingDropdown = (e) =>{
+        const { value } = e.target;
+        if (value === "Select a Direction") {
+            setBoardingDropdown(false);
+            setDirection(value);
+            return;
+        }
+        setDirection(value);
+        if (value == value) {
+            setBoardingDropdown(true);
+        } 
+            else {
+        setBoardingDropdown(false);
+        }
+    }
+
+    const activateAlightingDropdown = (e) =>{
+        const { value } = e.target;
+        if (value === "Select a Boarding Stop") {
+            setAlightingDropdown(false);
+            setBoardingStop(value);
+            return;
+        }
         setBoardingStop(value);
-        return;
+        if (value == value) {
+            setAlightingDropdown(true);
+        } 
+        else {
+            setAlightingDropdown(false);
+        }
     }
-    setBoardingStop(value);
-    if (value == value) {
-        setAlightingDropdown(true);
-    } 
-     else {
-        setAlightingDropdown(false);
-    }
-}
 
-const activateFinalDropdown = (e) =>{
-    const { value } = e.target;
-    if (value === "Select an Alighting Stop") {
-        setFinalDropdown(false);
+    const activateFinalDropdown = (e) =>{
+        const { value } = e.target;
+        if (value === "Select an Alighting Stop") {
+            setFinalDropdown(false);
+            setPlateCode(value);
+            return;
+        }
         setPlateCode(value);
-        return;
+        if (value == value) {
+            setFinalDropdown(true);
+        } 
+        else {
+            setFinalDropdown(false);
+        }
     }
-    setPlateCode(value);
-    if (value == value) {
-        setFinalDropdown(true);
-    } 
-     else {
-        setFinalDropdown(false);
-    }
-}
 
-    return(
-    <>
-
-
-
-
-
-<form method="post" class="post-form" action="http://localhost:8000/bus/price">
+    return
+    (
+    <React.Fragment>
 
     <Grid container spacing={1} style={{marginBottom: "20px"}}>
     <Grid item xs={6}>
@@ -271,10 +263,9 @@ const activateFinalDropdown = (e) =>{
             Submit 
         </Button>
     }
-</React.Fragment>
+    </React.Fragment>
 
     )
 
 }
-export default Routes
 

@@ -15,7 +15,7 @@ import { PlacesSearch } from "./PlacesSearch";
 import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 import SwipeableViews from "react-swipeable-views";
-import Routes from "./Routes.js";
+import { Routes } from "./Routes.js";
 import axios from 'axios';
 import dayjs from 'dayjs';
 
