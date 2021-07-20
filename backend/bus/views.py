@@ -1,3 +1,4 @@
+from django.db.models.query_utils import select_related_descend
 from django.http import JsonResponse
 import requests
 from rest_framework import status, permissions
@@ -7,14 +8,20 @@ from .models import *
 from rest_framework.response import Response
 from .serializers import CustomUserSerializer
 from rest_framework.permissions import AllowAny
+from datetime import date, datetime, timedelta
 
 
 def stops(request):
     stops = [{"id": stop.stop_id, "name": stop.stop_name, "stop_lat": stop.stop_lat, "stop_lon": stop.stop_lon}
              for stop in TfiStops.objects.all()]
 
-    return JsonResponse({'stops':stops})
+    return JsonResponse({'stops': stops})
 
+def leap(request):
+    leap = [{"leap_card_locations_id": leap.leap_card_locations_id, "shop_name": leap.shop_name, "town": leap.town, "latitude": leap.latitude, "longitude": leap.longitude}
+             for leap in LeapCardLocations.objects.all()]
+
+    return JsonResponse({'leap': leap})
 
 def routes(request):
     permission_classes = (permissions.AllowAny,)
@@ -30,6 +37,18 @@ def price(request):
     # transfer the response to json objects
     price = response.json()
     return JsonResponse({"price": price})
+
+def weather(request):
+    time = request.GET.get('time')
+    f = '%Y-%m-%d %H:%M:%S'
+    selected_date = datetime.strptime(time, f)
+
+    
+    response = [{"date": weather.date, "temp": weather.temp, "feels_like": weather.feels_like, "wind_speed": weather.wind_speed, "clouds_all": weather.clouds_all, "weather_id": weather.weather_id, "description": weather.description, 
+                "main_description": weather.main_description, "icon": weather.icon, "sunrise": weather.sunrise, "sunset": weather.sunset}
+              for weather in Weather4DayHourlyForecast.objects.filter(date__gte=selected_date)]
+
+    return JsonResponse({"weather": response[0]})
 
 
 

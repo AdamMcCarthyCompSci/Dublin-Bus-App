@@ -188,6 +188,16 @@ class DublinBusRoutes(models.Model):
         managed = False
         db_table = 'dublin_bus_routes'
 
+class LeapCardLocations(models.Model):
+    leap_card_locations_id = models.AutoField(primary_key=True)
+    shop_name = models.CharField(max_length=45, blank=True, null=True)
+    town = models.CharField(max_length=25, blank=True, null=True)
+    latitude = models.DecimalField(max_digits=65, decimal_places=13, blank=True, null=True)
+    longitude = models.DecimalField(max_digits=65, decimal_places=15, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'leap_card_locations'
 
 class LeapCardLocations(models.Model):
     leap_card_locations_id = models.AutoField(primary_key=True)
@@ -390,7 +400,7 @@ class TrafficIncidents(models.Model):
 
 
 class Weather4DayHourlyForecast(models.Model):
-    date = models.DateTimeField(unique=True, blank=True, null=True)
+    date = models.DateTimeField(primary_key=True, unique=True, blank=True, null=False)
     temp = models.FloatField(blank=True, null=True)
     feels_like = models.FloatField(blank=True, null=True)
     wind_speed = models.FloatField(blank=True, null=True)

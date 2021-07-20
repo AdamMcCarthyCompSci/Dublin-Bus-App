@@ -11,6 +11,8 @@ urlpatterns = [
     path('hello/', HelloWorldView.as_view(), name='hello_world'),
     path('stops', views.stops, name='stops'),
     path('routes', views.routes, name='routes'),
-    path('price',views.price,name='price')
+    path('price', views.price, name='price'),
+    path('weather', views.weather, name='weather'),
+    path('leap', views.leap, name='leap'),
 ]
 
