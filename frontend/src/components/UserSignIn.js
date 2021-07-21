@@ -51,7 +51,7 @@ class LoginForm extends React.Component {
         e.preventDefault();
         axios({
             method: 'POST',
-            url: "http://localhost:8000/bus/token/obtain/",
+            url: "http://localhost:8000/user/token/obtain",
             data: {
                 username: this.state.username,
                 password: this.state.password,
