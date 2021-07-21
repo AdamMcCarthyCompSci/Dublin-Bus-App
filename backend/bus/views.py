@@ -28,7 +28,7 @@ def routes(request):
     routes = [{"id": route.dublin_bus_routes_id, "busnumber": route.routename, "routedescription": route.routedescription,
                "direction": route.direction, "platecode": route.platecode, "shortcommonname_en": route.shortcommonname_en}
               for route in DublinBusRoutes.objects.all()]
-    return JsonResponse({'routes':routes})
+    return JsonResponse({'routes': routes})
 
 
 def price(request):
