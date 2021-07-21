@@ -10,9 +10,12 @@ import Grid from '@material-ui/core/Grid';
 import styles from './Map.module.css';
 import Button from '@material-ui/core/Button';
 
+function MyComponent() {
+
+
+
 {/* Main function for the route dropdown components and pricing api call*/}
 
-function Routes() {
 {/* initalising variables*/}
 const [routes,setRoutes]=React.useState([])
 const [directionDropdown,setDirectionDropdown]=useState(false);
@@ -93,6 +96,7 @@ const activateDirectionDropdown = (e) =>{
     }
 
 
+
 const activateBoardingDropdown = (e) =>{
     const { value } = e.target;
     if (value === "Select a Direction") {
@@ -140,14 +144,15 @@ const activateFinalDropdown = (e) =>{
         setFinalDropdown(false);
     }
 }
-
+const uniqueRoutes = routes.map(item => item.busnumber)
+  .filter((value, index, self) => self.indexOf(value) === index)
+const uniqueDirection= routes.map(item => item.direction+item.route)
+  .filter((value, index, self) => self.indexOf(value) === index)
+const uniqueStop=routes.map(item => item.platecode)
+  .filter((value, index, self) => self.indexOf(value) === index)
 
     return(
     <>
-
-
-
-
 
 <form method="post" class="post-form" action="http://localhost:8000/bus/price">
 
@@ -165,8 +170,8 @@ const activateFinalDropdown = (e) =>{
             onChange={activateDirectionDropdown}
             >
                 <MenuItem key={"Select a Route"} value={"Select a Route"}>Select a Route</MenuItem>
-                {routeUnique.map((stopdetail, index)=>(
-                <MenuItem key={stopdetail.id} value={stopdetail.busnumber}>{stopdetail.busnumber}</MenuItem>
+                {uniqueRoutes.map((stopdetail, index)=>(
+                <MenuItem key={stopdetail.id} value={stopdetail}>{stopdetail}</MenuItem>
                 ))}
             </Select>
             <FormHelperText>Select a Route</FormHelperText>
@@ -190,7 +195,8 @@ const activateFinalDropdown = (e) =>{
                 <MenuItem key={"Select a Direction"} value={"Select a Direction"}>Select a Direction</MenuItem>
                 {directionUnique.filter(stopdetail=>stopdetail.busnumber==route).map((stopdetail, index)=>(
                     <MenuItem key={stopdetail.id} value={stopdetail.routedescription + " " + stopdetail.direction}>{stopdetail.routedescription + " " + stopdetail.direction}</MenuItem>
-                ))}
+                                   ))}
+
             </Select>
             <FormHelperText>Select a Direction</FormHelperText>
             </FormControl>
@@ -199,8 +205,9 @@ const activateFinalDropdown = (e) =>{
 
     </Grid>
     <Grid item xs={6}>
+     </Grid>
 
-    {/*Dropdown 3 Boarding bus stop*/}
+       {/*Dropdown 3 Boarding bus stop*/}
     {boardingDropdown &&
         <Paper className={styles.routeDropdownContainer}>
             <FormControl>
@@ -211,8 +218,8 @@ const activateFinalDropdown = (e) =>{
             value={boardingStop !== "Select a Boarding Stop" ? boardingStop : "Select a Boarding Stop"}
             onChange={activateAlightingDropdown}>
                 <MenuItem key={"Select a Boarding Stop"} value={"Select a Boarding Stop"}>Select a Boarding Stop</MenuItem>
-                {routes.filter(stopdetail=>stopdetail.busnumber==route && (stopdetail.routedescription + " " + stopdetail.direction)==direction).map((stopdetail, index)=>(
-                    <MenuItem key={stopdetail.id} value={stopdetail.shortcommonname_en + " Bus stop: " + stopdetail.platecode}>{stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}</MenuItem>
+                {routes.filter(stopdetail=>stopdetail.busnumber==route &&  (stopdetail.routedescription + " " + stopdetail.direction ==direction)).map((stopdetail, index)=>(
+                    <MenuItem key={stopdetail.id} value={stopdetail.platecode}>{stopdetail.platecode + " " + stopdetail.routedescription}</MenuItem>
                 ))}
             </Select>
             <FormHelperText>Select a Boarding Stop</FormHelperText>
@@ -234,17 +241,18 @@ const activateFinalDropdown = (e) =>{
             value={plateCode !== "Select an Alighting Stop" ? plateCode : "Select an Alighting Stop"}
             onChange={activateFinalDropdown}>
                 <MenuItem key={"Select an Alighting Stop"} value={"Select an Alighting Stop"}>Select an Alighting Stop</MenuItem>
-                {routes.filter(stopdetail=>stopdetail.busnumber==route && stopdetail.routedescription + " " + stopdetail.direction==direction).map((stopdetail)=>(
-                    <MenuItem key={stopdetail.id} value={stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}>{stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}</MenuItem>
+              {routes.filter(stopdetail=>stopdetail.busnumber==route &&  (stopdetail.routedescription + " " + stopdetail.direction ==direction)).map((stopdetail, index)=>(
+                    <MenuItem key={stopdetail.id} value={stopdetail.platecode}>{stopdetail.platecode + " " + stopdetail.routedescription}</MenuItem>
                 ))}
+
             </Select>
             <FormHelperText>Select an Alighting Stop</FormHelperText>
             </FormControl>
         </Paper>
     }
 
-    </Grid>
-    </Grid>
+
+     </Grid>
 
     {finalDropdown &&
         <Button
@@ -258,9 +266,11 @@ const activateFinalDropdown = (e) =>{
         </Button>
     }
 </form>
+{route}
+{direction}
+{boardingStop}
+{plateCode}
 </>
     )
-
-}
-
-export default Routes
+    }
+export default MyComponent
