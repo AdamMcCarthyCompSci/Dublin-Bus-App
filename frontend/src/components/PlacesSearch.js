@@ -5,7 +5,7 @@ import Paper from '@material-ui/core/Paper';
 import { StandaloneSearchBox } from '@react-google-maps/api';
 import styles from './Map.module.css';
 
-export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search}) {
+export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search, darkBackground, darkForeground, darkText}) {
 // Implement bias for Dublin. Right now it has no bias for autocomplete, so it gives locations all around the world.
     const useStyles = makeStyles((theme) => ({
         searchPaper: {
@@ -40,7 +40,7 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search}) {
     const classes = useStyles();
 
     return (
-        <Paper component="form" className={classes.searchPaper}>
+        <Paper component="form" className={classes.searchPaper} style={{backgroundColor: darkForeground}}>
           {/* Places search functionality */}
         <StandaloneSearchBox
         className={classes.standaloneSearchBox}
@@ -61,7 +61,7 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search}) {
         <InputBase
             className={classes.input}
             placeholder={place ? place : search}
-            inputProps={{ 'aria-label': 'search google maps', className: classes.inputTextColor }}
+            inputProps={{ 'aria-label': 'search google maps', style: {color: darkText} }}
         />
             </StandaloneSearchBox>
         </Paper>

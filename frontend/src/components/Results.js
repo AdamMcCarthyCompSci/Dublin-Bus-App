@@ -7,8 +7,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import Fab from '@material-ui/core/Fab';
 import zIndex from '@material-ui/core/styles/zIndex';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Grid from '@material-ui/core/Grid';
 
-export function Results({menu, callbackResponse}) {
+export function Results({menu, setMenu, callbackResponse, weather, settings}) {
     const [expand, setExpand] = React.useState(false);
 
     let response = null;
@@ -44,22 +46,34 @@ export function Results({menu, callbackResponse}) {
 
             <Slide direction="up" in={menu==='Results'} mountOnEnter unmountOnExit>
             <Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984"}}>
-            
-            <Fab size="small" color="primary" aria-label="menu" style={{marginTop: "5px"}} onClick={() => setExpand(!expand)}>
-            {!expand &&
-            <Zoom in={!expand} mountOnEnter unmountOnExit>
-                <ExpandLessIcon />
-            </Zoom>
-            }
-            {expand && 
-            <Zoom in={expand} mountOnEnter unmountOnExit>
-                <ExpandMoreIcon />
-            </Zoom>
-            }
-            </Fab>
-
-            <p className={styles.directionsText}><b>To {response.end_address} ({response.distance.text})</b></p>
-            <p className={styles.directionsText}><i>Predicted arrival time: {response.arrival_time.text} (in {response.duration.text})</i></p>
+            <Grid container spacing={0}>
+                <Grid item xs={2}>
+                    <Fab color="primary" aria-label="back" className={styles.resultsBackButton} onClick={() => setMenu("Home")}>
+                        <ArrowBackIcon />
+                    </Fab>
+                </Grid>
+                <Grid item xs={8}>
+                    <Fab size="small" color="primary" aria-label="menu" style={{marginTop: "5px"}} onClick={() => setExpand(!expand)}>
+                    {!expand &&
+                    <Zoom in={!expand} mountOnEnter unmountOnExit>
+                        <ExpandLessIcon />
+                    </Zoom>
+                    }
+                    {expand && 
+                    <Zoom in={expand} mountOnEnter unmountOnExit>
+                        <ExpandMoreIcon />
+                    </Zoom>
+                    }
+                    </Fab>
+                    <p className={styles.directionsText}><b>To {response.end_address} ({response.distance.text})</b></p>
+                    <p className={styles.directionsText}><i>Predicted arrival time: {response.arrival_time.text} (in {response.duration.text})</i></p>
+                    {weather && settings.showWeather &&
+                        <img src={'http://openweathermap.org/img/wn/' + weather.icon + '.png'} />
+                    }
+                </Grid>
+                <Grid item xs={2}>
+                </Grid>
+                </Grid>
             </Paper>
             </Slide>
 

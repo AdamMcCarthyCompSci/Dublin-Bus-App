@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './Map.module.css';
 import Paper from '@material-ui/core/Paper';
 import DayJsUtils from '@date-io/dayjs';
@@ -15,7 +15,9 @@ import { PlacesSearch } from "./PlacesSearch";
 import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 import SwipeableViews from "react-swipeable-views";
-import Routes from "./Routes.js";
+import { Routes } from "./Routes.js";
+import axios from 'axios';
+import dayjs from 'dayjs';
 
 
   function TabPanel(props) {
@@ -53,10 +55,24 @@ import Routes from "./Routes.js";
   }
 
 
-export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, setSubmit}) {
+export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather}) {
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     const [value, setValue] = React.useState(0);
     const theme = useTheme();
+
+    const showWeather = async (time) => {
+      const formatTime = dayjs(time).format("YYYY-MM-DD HH:mm:ss");
+      const result = await axios.get("http://localhost:8000/bus/weather", {
+          params: {
+              time: formatTime,
+          }
+      })
+      .catch(error => {
+        console.log("error:", error)
+      });
+      setWeather(result.data.weather);
+      console.log(result.data.weather);
+  }
 
     // Event handler for tabs
     const handleChange = (event, newValue) => {
@@ -72,7 +88,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
       <div className={styles.homeContainer}>
       
       <Slide direction="up" in={menu==='Home'} mountOnEnter unmountOnExit>
-      <Paper elevation={3} className={styles.homePaper}>
+      <Paper elevation={3} className={styles.homePaper} style={{backgroundColor: darkBackground}}>
       <AppBar position="static" color="primary">
         <Tabs
           value={value}
@@ -101,6 +117,9 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
             place={origin} 
             setPlace={setOrigin}
             search={"Origin Search"}
+            darkBackground={darkBackground}
+            darkForeground={darkForeground}
+            darkText={darkText}
             />
             <PlacesSearch 
             onPlacesChanged={onDestinationChanged} 
@@ -108,16 +127,24 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
             place={destination} 
             setPlace={setDestination}
             search={"Destination Search"}
+            darkBackground={darkBackground}
+            darkForeground={darkForeground}
+            darkText={darkText}
             />
-            <Paper component="form" className={styles.datePickerContainer}>
+            <Paper component="form" className={styles.datePickerContainer} style={{backgroundColor: darkForeground}}>
             <MuiPickersUtilsProvider utils={DayJsUtils}>
               <DateTimePicker
               className={styles.datePicker}
                   value={selectedDate}
                   disablePast
+                  maxDate={new Date().setDate(new Date().getDate()+1)}
                   onChange={setSelectedDate}
-                  label="Select a date and time"
+                  label="Select a Date and Time"
                   showTodayButton
+                  inputProps={{ style: {color: darkText} }}
+                  InputLabelProps={{
+                    style: { color: darkText },
+                  }}
               />
             </MuiPickersUtilsProvider>
             </Paper>
@@ -128,6 +155,9 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
               color="primary"
               onClick={() => {
                 setMenu('Results');
+                console.log(selectedDate);
+                showWeather(selectedDate);
+                console.log(weather);
                 // Call prediction
               }}> 
                 Submit 
@@ -154,7 +184,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
 
 
-          <Routes />
+          <Routes darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>
 
 
 
@@ -166,7 +196,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
 
 
-          Create Extra Features Here
+        <p style={{color: darkText}}>Create Extra Features Here</p>
 
 
 

@@ -2,14 +2,14 @@ import React, { useEffect } from 'react';
 import axios from 'axios';
 import { Circle } from '@react-google-maps/api';
 
-export function BusStops() {
-    const [busStops, setBusStops] = React.useState([])
+export function Leap() {
+    const [leap, setLeap] = React.useState([])
 
     const options = {
-        strokeColor: '#3f50b5',
+        strokeColor: '#f44336',
         strokeOpacity: 0.8,
         strokeWeight: 2,
-        fillColor: '#3f50b5',
+        fillColor: '#f44336',
         fillOpacity: 0.35,
         clickable: false,
         draggable: false,
@@ -21,16 +21,17 @@ export function BusStops() {
 
       useEffect(async () => {
         const result = await axios(
-            'http://localhost:8000/bus/stops',
+            'http://localhost:8000/bus/leap',
         )
-        setBusStops(result.data.stops)
+        setLeap(result.data.leap)
     },[])
     
     return (
-        // Map circles to coordinates of bus stops
-        busStops.map((stop => (
+        // Map circles to coordinates of leap card top-up locations
+        leap.map((leap => (
             <Circle
-            center={{"lat": stop.stop_lat, "lng": stop.stop_lon}}
+            key={leap.leap_card_locations_id}
+            center={{"lat": parseFloat(leap.latitude), "lng": parseFloat(leap.longitude)}}
             options={options}
           />
         )))

@@ -69,7 +69,7 @@
     margin-top: 20px;
 }
 .submitButton {
-    margin-top: 20px;
+    margin-top: 30px;
     width: 50%;
 }
 .stepTitlePaper {
@@ -94,13 +94,24 @@
 }
 
 /* Directions tab - extends to full height */
-.MuiBox-root {
+/* .MuiBox-root {
     height: 310px;
-}
+} */
 
 .datePickerContainer {
     margin-bottom: 20px;
     padding: 2px 4px;
     width: 80%;
     margin-left: 10%;
+}
+.routeDropdownContainer {
+    height: 70px;
+}
+.resultsBackButton {
+    top: 50%;
+    transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
 }
