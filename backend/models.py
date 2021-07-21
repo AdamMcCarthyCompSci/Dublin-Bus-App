@@ -181,7 +181,6 @@ class DublinBusRoutes(models.Model):
     routename = models.CharField(db_column='RouteName', max_length=5, blank=True, null=True)  # Field name made lowercase.
     routedescription = models.CharField(db_column='RouteDescription', max_length=45, blank=True, null=True)  # Field name made lowercase.
     direction = models.CharField(db_column='Direction', max_length=5, blank=True, null=True)  # Field name made lowercase.
-    atcocode = models.CharField(db_column='AtcoCode', max_length=12, blank=True, null=True)  # Field name made lowercase.
     platecode = models.IntegerField(db_column='PlateCode')  # Field name made lowercase.
     shortcommonname_en = models.CharField(db_column='ShortCommonName_en', max_length=25, blank=True, null=True)  # Field name made lowercase.
 
