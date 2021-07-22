@@ -144,7 +144,19 @@ return(
 <p>We may update Our Privacy Policy from time to time. We will notify You of any changes by posting the new Privacy Policy on this page.</p>
 <p>We will let You know via email and/or a prominent notice on Our Service, prior to the change becoming effective and update the &quot;Last updated&quot; date at the top of this Privacy Policy.</p>
 <p>You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
-<h1>Contact Us</h1>
+<h1>What are your data protection rights?</h1>
+<p>Our Company would like to make sure you are fully aware of all of your data protection rights. Every user is entitled to the following:</p>
+<li>
+The right to access – You have the right to request Our Company for copies of your personal data. We may charge you a small fee for this service.
+</li>
+<li>
+The right to rectification – You have the right to request that Our Company correct any information you believe is inaccurate. You also have the right to request Our Company to complete the information you believe is incomplete.
+</li>
+<li>The right to erasure – You have the right to request that Our Company erase your personal data, under certain conditions.</li>
+<li>The right to restrict processing – You have the right to request that Our Company restrict the processing of your personal data, under certain conditions.</li>
+<li>The right to object to processing – You have the right to object to Our Company’s processing of your personal data, under certain conditions.</li>
+<li>The right to data portability – You have the right to request that Our Company transfer the data that we have collected to another organization, or directly to you, under certain conditions.</li>
+<p>If you make a request, we have one month to respond to you. If you would like to exercise any of these rights, please contact us at our email:</p>
 <p>If you have any questions about this Privacy Policy, You can contact us:</p>
 <ul>
 <li>By email: maria.leech@ucdconnect.ie</li>
