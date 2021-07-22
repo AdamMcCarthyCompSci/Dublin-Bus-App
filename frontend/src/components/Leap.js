@@ -21,7 +21,7 @@ export function Leap() {
 
       useEffect(async () => {
         const result = await axios(
-            'http://localhost:8000/bus/leap',
+            process.env.REACT_APP_API_URL + '/bus/leap',
         )
         setLeap(result.data.leap)
     },[])

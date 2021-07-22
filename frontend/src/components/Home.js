@@ -62,7 +62,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
     const showWeather = async (time) => {
       const formatTime = dayjs(time).format("YYYY-MM-DD HH:mm:ss");
-      const result = await axios.get("http://localhost:8000/bus/weather", {
+      const result = await axios.get(process.env.REACT_APP_API_URL + "/bus/weather", {
           params: {
               time: formatTime,
           }

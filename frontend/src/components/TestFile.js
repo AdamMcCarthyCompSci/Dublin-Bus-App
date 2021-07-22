@@ -52,7 +52,7 @@ function getUnique(route, comp) {
 
 useEffect(async () => {
         const result = await axios(
-            'http://localhost:8000/bus/routes',
+            process.env.REACT_APP_API_URL + '/bus/routes',
         )
         {/* Set the routes state */}
         setRoutes(result.data.routes)
@@ -61,7 +61,7 @@ useEffect(async () => {
 {/* calling the price view from Django backend*/}
   useEffect(async () => {
         const result = await axios(
-            'http://localhost:8000/bus/price',
+            process.env.REACT_APP_API_URL + '/bus/price',
             )
         {/* Set the price state */}
         setPrice(result.data.price)
@@ -154,7 +154,7 @@ const uniqueStop=routes.map(item => item.platecode)
     return(
     <>
 
-<form method="post" class="post-form" action="http://localhost:8000/bus/price">
+<form method="post" class="post-form" action=process.env.REACT_APP_API_URL + "/bus/price">
 
     <Grid container spacing={1} style={{marginBottom: "20px"}}>
     <Grid item xs={6}>
