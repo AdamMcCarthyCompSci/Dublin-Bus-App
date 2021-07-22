@@ -31,6 +31,12 @@ class UserRegister extends React.Component {
 
     validateForm() {
         let formErrors = [];
+        if (!this.state.first_name) {
+            formErrors.push("first_name");
+        }
+        if (!this.state.last_name) {
+            formErrors.push("last_name");
+        }
         if (!this.state.username) {
             formErrors.push("username");
         }
@@ -53,11 +59,13 @@ class UserRegister extends React.Component {
         e.preventDefault();
         axios({
             method: 'POST',
-            url: "http://localhost:8000/bus/user/create/",
+            url: process.env.REACT_APP_API_URL + "/user/",
             data: {
+                first_name: this.state.first_name,
+                last_name: this.state.last_name,
                 username: this.state.username,
                 email: this.state.email,
-                password: this.state.password,
+                password: this.state.password
             }
         }, this.state).then((res) => {
             this.handleClose();
@@ -80,7 +88,29 @@ class UserRegister extends React.Component {
                     <DialogContent>
                         {this.state.errors.includes("request") &&
                         <Alert severity="error" style={{marginBottom: '16px'}}>Error registering - please check your
-                            username, email and password!</Alert>}
+                            name, username, email and password!</Alert>}
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            name="first_name"
+                            label="First Name"
+                            type="text"
+                            fullWidth
+                            required
+                            error={this.state.errors.includes("first_name")}
+                            onChange={this.onInputChange}
+                        />
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            name="last_name"
+                            label="Surname"
+                            type="text"
+                            fullWidth
+                            required
+                            error={this.state.errors.includes("last_name")}
+                            onChange={this.onInputChange}
+                        />
                         <TextField
                             autoFocus
                             margin="dense"
