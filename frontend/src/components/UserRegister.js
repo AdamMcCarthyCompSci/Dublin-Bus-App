@@ -26,12 +26,12 @@ class UserRegister extends React.Component {
         this.validateForm = this.validateForm.bind(this);
 
     }
-
+// Handlechange detects if the checkbox is ticked and turns the register button and off
       handleChange = (event) => {
     this.setState({ checkbox: !this.state.checkbox });
 
   };
-
+// Hides the Privacy until the user clicks the privacy policy button
     hideComponent(name) {
     this.setState({ showHidePolicy: !this.state.showHidePolicy });
     }
@@ -175,12 +175,13 @@ class UserRegister extends React.Component {
                         </Button>
                     </DialogActions>
                 </form>
+                {/*Privacy Policy*/}
                 {showHidePolicy && <PrivacyPolicy/>}
                  <button onClick={() => this.hideComponent("showHidePolicy")} color="primary">
                     Click to view our Privacy Statement
                 </button>
                 <input onChange={this.handleChange} type="checkbox" id="privacypolicy" name="privacypolicy" value="privacypolicy"></input>
-                <label for="privacypolicy"> Please tick to confirm you have read and accept our privacy agreement.</label>
+                <label htmlFor="privacypolicy"> Please tick to confirm you have read and accept our privacy agreement.</label>
 
 
 
