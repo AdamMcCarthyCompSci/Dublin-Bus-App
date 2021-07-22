@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import axios from "axios";
 import Button from "@material-ui/core/Button";
 import TextField from '@material-ui/core/TextField';
@@ -8,6 +8,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from "@material-ui/lab/Alert";
 import { PrivacyPolicy } from "./PrivacyPolicy.js";
+import Container from '@material-ui/core/Container';
+import styles from './Map.module.css';
 
 
 class UserRegister extends React.Component {
@@ -17,6 +19,10 @@ class UserRegister extends React.Component {
         this.state = {
         showHidePolicy: false,
         checkbox: false,
+        buttonText: "Click to view privacy statement",
+        buttonClose:"Close",
+
+
             errors: []
         };
         this.hideComponent = this.hideComponent.bind(this);
@@ -34,6 +40,10 @@ class UserRegister extends React.Component {
 // Hides the Privacy until the user clicks the privacy policy button
     hideComponent(name) {
     this.setState({ showHidePolicy: !this.state.showHidePolicy });
+    this.setState({ buttonText: this.state.buttonText});
+    this.setState({ buttonText: this.state.buttonClose});
+
+
     }
 
 
@@ -98,7 +108,7 @@ class UserRegister extends React.Component {
 
 
     render() {
-    const {showHidePolicy}=this.state;
+    const {showHidePolicy,buttonText}=this.state;
         return (
             <Dialog
                 open={this.props.show}
@@ -176,13 +186,20 @@ class UserRegister extends React.Component {
                     </DialogActions>
                 </form>
                 {/*Privacy Policy*/}
+                <Container>
                 {showHidePolicy && <PrivacyPolicy/>}
-                 <button onClick={() => this.hideComponent("showHidePolicy")} color="primary">
-                    Click to view our Privacy Statement
-                </button>
+                 <Button className={styles.submitButton}
+                        variant="contained"
+                        color="primary"
+                        id="privacyButton" onClick={() => this.hideComponent("showHidePolicy","buttonText")}  value="Click to view our Privacy Statement" >
+                    {buttonText}
+                    </Button>
+                <br></br>
+                <br></br>
                 <input onChange={this.handleChange} type="checkbox" id="privacypolicy" name="privacypolicy" value="privacypolicy"></input>
                 <label htmlFor="privacypolicy"> Please tick to confirm you have read and accept our privacy agreement.</label>
-
+                <p></p>
+                </Container>
 
 
             </Dialog>
