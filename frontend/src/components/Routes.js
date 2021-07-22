@@ -43,6 +43,14 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         return unique;
     }
 
+     useEffect(async () => {
+        const result = await axios(
+            'http://localhost:8000/bus/routes',
+        )
+        {/* Set the routes state */}
+        setRoutes(result.data.routes)
+    },[] );
+
     const showPrice = async (route, direction, start, end) => {
         const result = await axios.get("http://localhost:8000/bus/price", {
             params: {
@@ -63,22 +71,7 @@ export function Routes({darkbackground, darkForeground, darkText}) {
             plateCode.split(' ').pop());
     }
 
-    useEffect(async () => {
-        const result = await axios(
-            'http://localhost:8000/bus/routes',
-        )
-        {/* Set the routes state */}
-        setRoutes(result.data.routes)
-    },[] );
 
-    {/* calling the price view from Django backend*/}
-    useEffect(async () => {
-        const result = await axios(
-            'http://localhost:8000/bus/price',
-            )
-        {/* Set the price state */}
-        setPrice(result.data.price)
-    },[]);
 
     {/* Dropdown activation */}
     const activateDirectionDropdown = (e) =>{
