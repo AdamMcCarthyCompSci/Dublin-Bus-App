@@ -35,7 +35,7 @@ class Profile extends React.Component {
 
     componentDidMount() {
         authFetch(
-            'http://localhost:8000/user/'
+            process.env.REACT_APP_API_URL + '/user/'
         ).then(data => {
             data.json().then(result => {
                 this.setState({
@@ -64,7 +64,7 @@ class Profile extends React.Component {
     updateProfile(e) {
         e.preventDefault();
         authFetch(
-            "http://localhost:8000/user/",
+            process.env.REACT_APP_API_URL + "/user/",
             {
                 method: "PUT",
                 headers: {
@@ -91,7 +91,7 @@ class Profile extends React.Component {
     changePassword(e) {
         e.preventDefault();
         authFetch(
-            "http://localhost:8000/user/password",
+            process.env.REACT_APP_API_URL + "/user/password",
             {
                 method: "PUT",
                 headers: {
@@ -129,7 +129,7 @@ class Profile extends React.Component {
     deleteUser(e) {
         e.preventDefault();
         authFetch(
-            "http://localhost:8000/user/",
+            process.env.REACT_APP_API_URL + "/user/",
             {
                 method: "DELETE"
             }

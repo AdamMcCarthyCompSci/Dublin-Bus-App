@@ -4,7 +4,7 @@ export const [useAuth, authFetch, login, logout] = createAuthProvider({
     accessTokenKey: "access",
     onUpdateToken: (token) => {
         console.log(token)
-                fetch("http://localhost:8000/user/token/refresh", {
+                fetch(process.env.REACT_APP_API_URL + "/user/token/refresh", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
