@@ -5,7 +5,7 @@ import { BusStops } from "./BusStops";
 import { Leap } from "./Leap.js"
 import { Home } from './Home';
 import { Settings } from './Settings';
-import { Profile } from './Profile';
+import Profile from './Profile';
 import { Results } from "./Results.js"
 
 
@@ -189,7 +189,7 @@ function MapContainer({menu, setMenu}) {
         setWeather={setWeather}
         />}
         {/* Conditionally render views */}
-        {menu == 'Profile' && <Profile display={menu == 'Profile'} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
+        {menu == 'Profile' && <Profile display={menu == 'Profile'} setMenu={setMenu} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
         {menu == 'Settings' && <Settings display={menu == 'Settings'} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
         {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings}/>}
         {/* Display bus stops */}

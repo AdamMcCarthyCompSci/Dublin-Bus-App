@@ -27,10 +27,8 @@ export function Routes({darkbackground, darkForeground, darkText}) {
     const [price,setPrice]=useState(null);
 
     {/*Filtering the unique values called from the bus routes table in MySql*/}
-
     const routeUnique=getUnique(routes,'busnumber');
     const directionUnique=getUnique(routes, 'routedescription');
-    const stopUnique=getUnique(routes,'platecode');
 
     {/* Function that filters the unique values from dublin bus routes table*/}
     function getUnique(route, comp) {
@@ -45,9 +43,7 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         return unique;
     }
 
-    {/* calling the route view from Django backend*/}
-
-    useEffect(async () => {
+     useEffect(async () => {
         const result = await axios(
             'http://localhost:8000/bus/routes',
         )
@@ -55,20 +51,24 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         setRoutes(result.data.routes)
     },[] );
 
-    {/* calling the price view from Django backend*/}
-    useEffect(async () => {
-        const result = await axios(
-            'http://localhost:8000/bus/price',
-            )
-        {/* Set the price state */}
-        setPrice(result.data.price)
-    },[]);
+    const showPrice = async (route, direction, start, end) => {
+        const result = await axios.get("http://localhost:8000/bus/price", {
+            params: {
+                route,
+                direction,
+                start,
+                end
+            }
+        });
+        setPrice(result.data.price);
+    }
 
-
-
-    const handleSubmit = () =>{
-        alert('You selected route ' + JSON.stringify(price,null,2) + ' the direction is ' + direction[direction.length -1] )
-        // console.log(price)
+    const handleSubmit = async () => {
+        await showPrice(
+            route,
+            direction[direction.length - 1],
+            boardingStop.split(' ').pop(),
+            plateCode.split(' ').pop());
     }
 
 
@@ -100,7 +100,7 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         setDirection(value);
         if (value == value) {
             setBoardingDropdown(true);
-        } 
+        }
             else {
         setBoardingDropdown(false);
         }
@@ -116,7 +116,7 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         setBoardingStop(value);
         if (value == value) {
             setAlightingDropdown(true);
-        } 
+        }
         else {
             setAlightingDropdown(false);
         }
@@ -132,7 +132,7 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         setPlateCode(value);
         if (value == value) {
             setFinalDropdown(true);
-        } 
+        }
         else {
             setFinalDropdown(false);
         }
@@ -140,6 +140,7 @@ export function Routes({darkbackground, darkForeground, darkText}) {
 
     return (
 <React.Fragment>
+{price && <div>{JSON.stringify(price.FirstFare)}</div>}
 
 <Grid container spacing={1} style={{marginBottom: "20px"}}>
 <Grid item xs={6}>
@@ -203,7 +204,7 @@ export function Routes({darkbackground, darkForeground, darkText}) {
     value={boardingStop !== "Select a Boarding Stop" ? boardingStop : "Select a Boarding Stop"}
     onChange={activateAlightingDropdown}>
         <MenuItem key={"Select a Boarding Stop"} value={"Select a Boarding Stop"}>Select a Boarding Stop</MenuItem>
-        {stopUnique.filter(stopdetail=>stopdetail.busnumber==route && (stopdetail.routedescription + " " + stopdetail.direction)==direction).map((stopdetail, index)=>(
+        {routes.filter(stopdetail=>stopdetail.busnumber==route && (stopdetail.routedescription + " " + stopdetail.direction)==direction).map((stopdetail, index)=>(
             <MenuItem key={stopdetail.id} value={stopdetail.shortcommonname_en + " Bus stop: " + stopdetail.platecode}>{stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}</MenuItem>
         ))}
     </Select>
@@ -227,7 +228,7 @@ export function Routes({darkbackground, darkForeground, darkText}) {
     value={plateCode !== "Select an Alighting Stop" ? plateCode : "Select an Alighting Stop"}
     onChange={activateFinalDropdown}>
         <MenuItem key={"Select an Alighting Stop"} value={"Select an Alighting Stop"}>Select an Alighting Stop</MenuItem>
-        {stopUnique.filter(stopdetail=>stopdetail.busnumber==route && stopdetail.routedescription + " " + stopdetail.direction==direction).map((stopdetail, index)=>(
+        {routes.filter(stopdetail=>stopdetail.busnumber==route && stopdetail.routedescription + " " + stopdetail.direction==direction).map((stopdetail, index)=>(
             <MenuItem key={stopdetail.id} value={stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}>{stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}</MenuItem>
         ))}
     </Select>
@@ -235,31 +236,18 @@ export function Routes({darkbackground, darkForeground, darkText}) {
     </FormControl>
 }
 </Paper>
-
 </Grid>
 </Grid>
 
 {finalDropdown &&
     <Button
     className={styles.submitButton}
-    variant="contained" 
+    variant="contained"
     color="primary"
     onClick={() => {
-    handleSubmit() 
-    }}> 
-        Submit 
-    </Button>
-}
-{!finalDropdown &&
-    <Button
-    className={styles.submitButton}
-    variant="contained" 
-    color="primary"
-    disabled
-    onClick={() => {
-    handleSubmit() 
-    }}> 
-        Submit 
+    handleSubmit()
+    }}>
+        Submit
     </Button>
 }
 </React.Fragment>

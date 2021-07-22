@@ -88,7 +88,10 @@ export function FloatingActionButton({menu, setMenu, setLogin, setRegister}) {
                                 <ListItem
                                     button
                                     key={'Logout'}
-                                    onClick={() => logout()}
+                                    onClick={() => {
+                                        logout();
+                                        setMenu("Home")
+                                    }}
                                     selected={menu === 'Logout'}
                                 >
                                     <ListItemIcon>
