@@ -81,7 +81,7 @@ class UserRegister extends React.Component {
         e.preventDefault();
         axios({
             method: 'POST',
-            url: "http://localhost:8000/user/",
+            url: process.env.REACT_APP_API_URL + "/user/",
             data: {
                 first_name: this.state.first_name,
                 last_name: this.state.last_name,

@@ -22,7 +22,7 @@ export function BusStops() {
       useEffect( () => {
       async function fetchData(){
         const result = await axios(
-            'http://localhost:8000/bus/stops',
+            process.env.REACT_APP_API_URL + '/bus/stops',
         )
         setBusStops(result.data.stops)
         }
