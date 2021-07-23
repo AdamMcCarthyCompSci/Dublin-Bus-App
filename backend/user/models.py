@@ -45,6 +45,12 @@ class AuthUser(models.Model):
     username = models.CharField(unique=True, max_length=150)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
+    fare_type = models.CharField(max_length=10, choices=(
+        ('Adult Cash', 'Adult Cash'),
+        ('Adult Leap', 'Adult Leap'),
+        ('Child Leap (Under 19)', 'Child Leap (Under 19)'),
+        ('Child Cash (Under 16)', 'Child Cash (Under 16)'),
+    ))
     email = models.CharField(max_length=254)
     is_staff = models.IntegerField()
     is_active = models.IntegerField()

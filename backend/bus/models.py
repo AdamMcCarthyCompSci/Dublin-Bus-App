@@ -292,3 +292,25 @@ class Weather4DayHourlyForecast(models.Model):
     class Meta:
         managed = False
         db_table = 'weather_4_day_hourly_forecast'
+
+
+class AuthUser(models.Model):
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.IntegerField()
+    username = models.CharField(unique=True, max_length=150)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    fare_type = models.CharField(max_length=10, choices=(
+        ('Adult', 'Adult'),
+        ('Student', 'Student'),
+        ('Child', 'Child'),
+    ))
+    email = models.CharField(max_length=254)
+    is_staff = models.IntegerField()
+    is_active = models.IntegerField()
+    date_joined = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user'
