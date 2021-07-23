@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styles from './Map.module.css';
 import Paper from '@material-ui/core/Paper';
 import DayJsUtils from '@date-io/dayjs';
@@ -94,7 +94,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
           value={value}
           onChange={handleChange}
           indicatorColor="secondary"
-          textColor="default"
+          textColor="inherit"
           variant="fullWidth"
           aria-label="full width tabs example"
         >

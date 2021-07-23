@@ -68,7 +68,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings}) {
                     <p className={styles.directionsText}><b>To {response.end_address} ({response.distance.text})</b></p>
                     <p className={styles.directionsText}><i>Predicted arrival time: {response.arrival_time.text} (in {response.duration.text})</i></p>
                     {weather && settings.showWeather &&
-                        <img src={'http://openweathermap.org/img/wn/' + weather.icon + '.png'} />
+                        <img src={'http://openweathermap.org/img/wn/' + weather.icon + '.png'} alt="Weather Icon"/>
                     }
                 </Grid>
                 <Grid item xs={2}>

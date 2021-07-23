@@ -43,12 +43,15 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         return unique;
     }
 
-     useEffect(async () => {
+     useEffect(() => {
+     const fetchData = async () => {
         const result = await axios(
             'http://localhost:8000/bus/routes',
         )
         {/* Set the routes state */}
         setRoutes(result.data.routes)
+        };
+        fetchData();
     },[] );
 
     const showPrice = async (route, direction, start, end) => {
