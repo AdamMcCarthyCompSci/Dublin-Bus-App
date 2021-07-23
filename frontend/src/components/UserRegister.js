@@ -9,7 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from "@material-ui/lab/Alert";
 import { PrivacyPolicy } from "./PrivacyPolicy.js";
 import Container from '@material-ui/core/Container';
-import styles from './Map.module.css';
+
 
 
 class UserRegister extends React.Component {
@@ -19,12 +19,10 @@ class UserRegister extends React.Component {
         this.state = {
         showHidePolicy: false,
         checkbox: false,
-        buttonText: "Click to view privacy statement",
-        buttonClose:"Close",
-
-
-            errors: []
+        isOpen: false,
+        errors: []
         };
+
         this.hideComponent = this.hideComponent.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
         this.submitRegister = this.submitRegister.bind(this);
@@ -40,13 +38,9 @@ class UserRegister extends React.Component {
 // Hides the Privacy until the user clicks the privacy policy button
     hideComponent(name) {
     this.setState({ showHidePolicy: !this.state.showHidePolicy });
-    this.setState({ buttonText: this.state.buttonText});
-    this.setState({ buttonText: this.state.buttonClose});
+    this.setState({ isOpen: !this.state.isOpen});
 
-
-    }
-
-
+}
 
     onInputChange(event) {
         this.setState({
@@ -108,7 +102,8 @@ class UserRegister extends React.Component {
 
 
     render() {
-    const {showHidePolicy,buttonText}=this.state;
+    const {showHidePolicy}=this.state;
+    let buttonText=this.state.isOpen ? "Close": "Privacy Statement";
         return (
             <Dialog
                 open={this.props.show}
@@ -188,10 +183,10 @@ class UserRegister extends React.Component {
                 {/*Privacy Policy*/}
                 <Container>
                 {showHidePolicy && <PrivacyPolicy/>}
-                 <Button className={styles.submitButton}
-                        variant="contained"
+                 <Button
+                        variant="text"
                         color="primary"
-                        id="privacyButton" onClick={() => this.hideComponent("showHidePolicy","buttonText")}  value="Click to view our Privacy Statement" >
+                        id="privacyButton" onClick={() => this.hideComponent()}  value="Click to view our Privacy Statement" >
                     {buttonText}
                     </Button>
                 <br></br>
