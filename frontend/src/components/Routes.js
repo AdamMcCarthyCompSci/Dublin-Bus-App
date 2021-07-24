@@ -78,7 +78,13 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         const { value } = e.target;
         if (value === "Select a Route") {
             setDirectionDropdown(false);
+            setBoardingDropdown(false);
+            setAlightingDropdown(false);
+            setFinalDropdown(false);
             setRoute(value);
+            setDirection("Select a Direction");
+            setBoardingStop("Select a Boarding Stop");
+            setPlateCode("Select an Alighting Stop");
             return;
         }
         setRoute(value);
@@ -87,6 +93,13 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         }
         else {
             setDirectionDropdown(false);
+            setBoardingDropdown(false);
+            setAlightingDropdown(false);
+            setFinalDropdown(false);
+            setRoute("Select a Route");
+            setDirection("Select a Direction");
+            setBoardingStop("Select a Boarding Stop");
+            setPlateCode("Select an Alighting Stop");
         }
     }
 
@@ -94,7 +107,11 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         const { value } = e.target;
         if (value === "Select a Direction") {
             setBoardingDropdown(false);
+            setAlightingDropdown(false);
+            setFinalDropdown(false);
             setDirection(value);
+            setBoardingStop("Select a Boarding Stop");
+            setPlateCode("Select an Alighting Stop");
             return;
         }
         setDirection(value);
@@ -102,7 +119,12 @@ export function Routes({darkbackground, darkForeground, darkText}) {
             setBoardingDropdown(true);
         }
             else {
-        setBoardingDropdown(false);
+            setBoardingDropdown(false);
+            setAlightingDropdown(false);
+            setFinalDropdown(false);
+            setDirection("Select a Direction");
+            setBoardingStop("Select a Boarding Stop");
+            setPlateCode("Select an Alighting Stop");
         }
     }
 
@@ -110,7 +132,9 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         const { value } = e.target;
         if (value === "Select a Boarding Stop") {
             setAlightingDropdown(false);
+            setFinalDropdown(false);
             setBoardingStop(value);
+            setPlateCode("Select an Alighting Stop");
             return;
         }
         setBoardingStop(value);
@@ -119,6 +143,9 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         }
         else {
             setAlightingDropdown(false);
+            setFinalDropdown(false);
+            setBoardingStop("Select a Boarding Stop");
+            setPlateCode("Select an Alighting Stop");
         }
     }
 
@@ -135,7 +162,14 @@ export function Routes({darkbackground, darkForeground, darkText}) {
         }
         else {
             setFinalDropdown(false);
+            setPlateCode("Select an Alighting Stop");
         }
+    }
+
+    const alightingFilter = (routes) => {
+        const filtered = routes.filter(stopdetail=>stopdetail.busnumber==route && stopdetail.routedescription + " " + stopdetail.direction==direction);
+        const boardingNumberIndex = (element) => element.id === boardingStop.id;
+        return filtered.slice(filtered.findIndex(boardingNumberIndex) + 1);
     }
 
     return (
@@ -205,7 +239,7 @@ export function Routes({darkbackground, darkForeground, darkText}) {
     onChange={activateAlightingDropdown}>
         <MenuItem key={"Select a Boarding Stop"} value={"Select a Boarding Stop"}>Select a Boarding Stop</MenuItem>
         {routes.filter(stopdetail=>stopdetail.busnumber==route && (stopdetail.routedescription + " " + stopdetail.direction)==direction).map((stopdetail, index)=>(
-            <MenuItem key={stopdetail.id} value={stopdetail.shortcommonname_en + " Bus stop: " + stopdetail.platecode}>{stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}</MenuItem>
+            <MenuItem key={stopdetail.id} value={stopdetail}>{stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}</MenuItem>
         ))}
     </Select>
     <FormHelperText style={{color: darkText}}>Select a Boarding Stop</FormHelperText>
@@ -228,7 +262,7 @@ export function Routes({darkbackground, darkForeground, darkText}) {
     value={plateCode !== "Select an Alighting Stop" ? plateCode : "Select an Alighting Stop"}
     onChange={activateFinalDropdown}>
         <MenuItem key={"Select an Alighting Stop"} value={"Select an Alighting Stop"}>Select an Alighting Stop</MenuItem>
-        {routes.filter(stopdetail=>stopdetail.busnumber==route && stopdetail.routedescription + " " + stopdetail.direction==direction).map((stopdetail, index)=>(
+        {alightingFilter(routes).map((stopdetail, index)=>(
             <MenuItem key={stopdetail.id} value={stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}>{stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}</MenuItem>
         ))}
     </Select>

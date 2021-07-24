@@ -12,12 +12,14 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import { PlacesSearch } from "./PlacesSearch";
+import { LeaveArriveButton } from './LeaveArriveButton';
 import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 import SwipeableViews from "react-swipeable-views";
 import { Routes } from "./Routes.js";
 import axios from 'axios';
 import dayjs from 'dayjs';
+import Grid from '@material-ui/core/Grid';
 
 
   function TabPanel(props) {
@@ -55,8 +57,7 @@ import dayjs from 'dayjs';
   }
 
 
-export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather}) {
-    const [selectedDate, setSelectedDate] = React.useState(new Date());
+export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive}) {
     const [value, setValue] = React.useState(0);
     const theme = useTheme();
 
@@ -131,23 +132,32 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
             darkForeground={darkForeground}
             darkText={darkText}
             />
+
+            <Grid container spacing={1} alignItems="center" className={styles.dateAndButtonContainer} style={{marginBottom: "20px", width: "80%", marginLeft: "10%"}}>
+            <Grid item xs={2}>
+              <LeaveArriveButton leaveArrive={leaveArrive} setLeaveArrive={setLeaveArrive} setNewDirections={setNewDirections}/>
+            </Grid>
+            <Grid item xs={10}>
             <Paper component="form" className={styles.datePickerContainer} style={{backgroundColor: darkForeground}}>
-            <MuiPickersUtilsProvider utils={DayJsUtils}>
-              <DateTimePicker
-              className={styles.datePicker}
-                  value={selectedDate}
-                  disablePast
-                  maxDate={new Date().setDate(new Date().getDate()+1)}
-                  onChange={setSelectedDate}
-                  label="Select a Date and Time"
-                  showTodayButton
-                  inputProps={{ style: {color: darkText} }}
-                  InputLabelProps={{
-                    style: { color: darkText },
-                  }}
-              />
-            </MuiPickersUtilsProvider>
-            </Paper>
+              <MuiPickersUtilsProvider utils={DayJsUtils}>
+                <DateTimePicker
+                className={styles.datePicker}
+                    value={selectedDate}
+                    disablePast
+                    maxDate={new Date().setDate(new Date().getDate()+1)}
+                    onChange={setSelectedDate}
+                    label="Select a Date and Time"
+                    showTodayButton
+                    inputProps={{ style: {color: darkText} }}
+                    InputLabelProps={{
+                      style: { color: darkText },
+                    }}
+                />
+              </MuiPickersUtilsProvider>
+              </Paper>
+            </Grid>
+            </Grid>
+
             {origin !== "" && destination !== "" && 
               <Button
               className={styles.submitButton}
@@ -155,9 +165,8 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
               color="primary"
               onClick={() => {
                 setMenu('Results');
-                console.log(selectedDate);
                 showWeather(selectedDate);
-                console.log(weather);
+                setNewDirections(false);
                 // Call prediction
               }}> 
                 Submit 
@@ -171,6 +180,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
               disabled
               onClick={() => {
                 setMenu('Results');
+                setNewDirections(false);
                 // Call prediction
               }}> 
                 Submit 
