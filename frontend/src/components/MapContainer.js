@@ -105,6 +105,7 @@ function MapContainer({menu, setMenu}) {
   const [originBox, setOriginBox] = React.useState(null);
   const [destinationBox, setDestinationBox] = React.useState(null);
   const [callbackResponse, setCallbackResponse] = React.useState(null);
+  const [walkingCallbackResponse, setWalkingCallbackResponse] = React.useState(null);
   const [origin, setOrigin] = React.useState('');
   const [destination, setDestination] = React.useState('');
   // const [submit, setSubmit] = React.useState(false);
@@ -118,6 +119,7 @@ function MapContainer({menu, setMenu}) {
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [weather, setWeather] = React.useState({});
   const [leaveArrive, setLeaveArrive] = React.useState('Leave At:');
+  const [walking, setWalking] = React.useState(null);
 
   const darkBackground = settings.darkMode ? "#424242" : "";
   const darkForeground = settings.darkMode ? "#616161" : "";
@@ -153,6 +155,19 @@ function MapContainer({menu, setMenu}) {
         setNewDirections(true);
       } else {
         console.log('response: ', response)
+      }
+    }
+  }
+
+  const walkingDirectionsCallback = (response) => {
+    console.log("Walking:", response)
+
+    if (response !== null) {
+      if (response.status === 'OK') {
+        setWalkingCallbackResponse(response)
+        setNewDirections(true);
+      } else {
+        console.log('walking response: ', response)
       }
     }
   }
@@ -195,11 +210,13 @@ function MapContainer({menu, setMenu}) {
         setNewDirections={setNewDirections}
         leaveArrive={leaveArrive}
         setLeaveArrive={setLeaveArrive}
+        callbackResponse={callbackResponse}
+        walkingCallbackResponse={walkingCallbackResponse}
         />}
         {/* Conditionally render views */}
         {menu == 'Profile' && <Profile display={menu == 'Profile'} setMenu={setMenu} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
         {menu == 'Settings' && <Settings display={menu == 'Settings'} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
-        {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings} leaveArrive={leaveArrive}/>}
+        {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings} leaveArrive={leaveArrive} walkingCallbackResponse={walkingCallbackResponse} walking={walking} setWalking={setWalking}/>}
         {/* Display bus stops */}
         {settings.showStops && <BusStops />}
         {settings.showLeap && <Leap />}
@@ -212,6 +229,7 @@ function MapContainer({menu, setMenu}) {
                 newDirections === false &&
                 leaveArrive === "Leave At:"
               ) && (
+                <React.Fragment>
                 <DirectionsService
                   options={{
                     destination: destination,
@@ -224,6 +242,18 @@ function MapContainer({menu, setMenu}) {
                   }}
                   callback={directionsCallback}
                 />
+                <DirectionsService
+                options={{
+                  destination: destination,
+                  origin: origin,
+                  travelMode: 'WALKING',
+                  drivingOptions: {
+                    departureTime: dayjs(selectedDate).toDate(),
+                  }
+                }}
+                callback={walkingDirectionsCallback}
+              />
+              </React.Fragment>
               )
             }
                     {
@@ -233,6 +263,7 @@ function MapContainer({menu, setMenu}) {
                 newDirections === false &&
                 leaveArrive === "Arrive At:"
               ) && (
+                <React.Fragment>
                 <DirectionsService
                   options={{
                     destination: destination,
@@ -245,15 +276,37 @@ function MapContainer({menu, setMenu}) {
                   }}
                   callback={directionsCallback}
                 />
+                <DirectionsService
+                options={{
+                  destination: destination,
+                  origin: origin,
+                  travelMode: 'WALKING',
+                  drivingOptions: {
+                    arrivalTime: dayjs(selectedDate).toDate(),
+                  }
+                }}
+                callback={walkingDirectionsCallback}
+              />
+              </React.Fragment>
               )
             }
 
 
             {
-              callbackResponse !== null && (
+              callbackResponse !== null && (walking === false || walking === null) && (
                 <DirectionsRenderer
                   options={{
                     directions: callbackResponse
+                  }}
+                />
+              )
+            }
+
+{
+              walkingCallbackResponse !== null && walking === true && (
+                <DirectionsRenderer
+                  options={{
+                    directions: walkingCallbackResponse
                   }}
                 />
               )
