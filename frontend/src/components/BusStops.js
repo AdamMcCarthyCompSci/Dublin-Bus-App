@@ -19,7 +19,7 @@ export function BusStops() {
         zIndex: 1
       }
 
-      useEffect( () => {
+      useEffect( async() => {
       async function fetchData(){
         const result = await axios(
             process.env.REACT_APP_API_URL + '/bus/stops',
