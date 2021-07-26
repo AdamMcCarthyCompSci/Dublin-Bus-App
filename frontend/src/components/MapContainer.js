@@ -7,6 +7,7 @@ import { Home } from './Home';
 import { Settings } from './Settings';
 import Profile from './Profile';
 import { Results } from "./Results.js"
+import dayjs from 'dayjs';
 
 
 const containerStyle = {
@@ -114,7 +115,9 @@ function MapContainer({menu, setMenu}) {
     showWeather: true,
   });
   const [newDirections, setNewDirections] = React.useState(true);
+  const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [weather, setWeather] = React.useState({});
+  const [leaveArrive, setLeaveArrive] = React.useState('Leave At:');
 
   const darkBackground = settings.darkMode ? "#424242" : "";
   const darkForeground = settings.darkMode ? "#616161" : "";
@@ -147,13 +150,12 @@ function MapContainer({menu, setMenu}) {
     if (response !== null) {
       if (response.status === 'OK') {
         setCallbackResponse(response)
-        setNewDirections(false);
+        setNewDirections(true);
       } else {
         console.log('response: ', response)
       }
     }
   }
-
 
   return (
     <div className = {styles.MapContainer}>
@@ -187,11 +189,17 @@ function MapContainer({menu, setMenu}) {
         darkText={darkText}
         weather={weather}
         setWeather={setWeather}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+        newDirections={newDirections}
+        setNewDirections={setNewDirections}
+        leaveArrive={leaveArrive}
+        setLeaveArrive={setLeaveArrive}
         />}
         {/* Conditionally render views */}
         {menu == 'Profile' && <Profile display={menu == 'Profile'} setMenu={setMenu} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
         {menu == 'Settings' && <Settings display={menu == 'Settings'} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
-        {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings}/>}
+        {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings} leaveArrive={leaveArrive}/>}
         {/* Display bus stops */}
         {settings.showStops && <BusStops />}
         {settings.showLeap && <Leap />}
@@ -201,7 +209,8 @@ function MapContainer({menu, setMenu}) {
               (
                 destination !== '' &&
                 origin !== '' &&
-                newDirections === true
+                newDirections === false &&
+                leaveArrive === "Leave At:"
               ) && (
                 <DirectionsService
                   options={{
@@ -209,7 +218,7 @@ function MapContainer({menu, setMenu}) {
                     origin: origin,
                     travelMode: 'TRANSIT',
                     transitOptions: {
-                      // departureTime
+                      departureTime: dayjs(selectedDate).toDate(),
                       modes: ['BUS']
                     }
                   }}
@@ -217,6 +226,28 @@ function MapContainer({menu, setMenu}) {
                 />
               )
             }
+                    {
+              (
+                destination !== '' &&
+                origin !== '' &&
+                newDirections === false &&
+                leaveArrive === "Arrive At:"
+              ) && (
+                <DirectionsService
+                  options={{
+                    destination: destination,
+                    origin: origin,
+                    travelMode: 'TRANSIT',
+                    transitOptions: {
+                      arrivalTime: dayjs(selectedDate).toDate(),
+                      modes: ['BUS']
+                    }
+                  }}
+                  callback={directionsCallback}
+                />
+              )
+            }
+
 
             {
               callbackResponse !== null && (
@@ -227,20 +258,7 @@ function MapContainer({menu, setMenu}) {
                 />
               )
             }
-          {/* <DistanceMatrixService
-          options={{
-                    destinations: [{destination}],
-                    origins: [{origin}],
-                    travelMode: "TRANSIT",
-                    transitOptions: {
-                      modes: ['BUS']
-                    }
-                  }}
-          callback = {(response) => {console.log("DIRECTIONS:" + response)}}
-          /> */}
             
-
-
       </GoogleMap>
     </LoadScript>
     </div>
