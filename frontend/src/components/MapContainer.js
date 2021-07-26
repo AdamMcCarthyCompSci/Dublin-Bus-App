@@ -15,7 +15,13 @@ const containerStyle = {
   height: '100vh'
 };
 
-const center = { lat: 53.345804, lng: -6.26031 }
+const center = { lat: 53.345804, lng: -6.26031 };
+const mapBounds = {
+  north: 54.345804,
+  south: 52.345804,
+  east: -5.26031,
+  west: -7.26031,
+};
 
 const darkModeStyle = [
   { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
@@ -98,17 +104,13 @@ const darkModeStyle = [
   },
 ]
 
-// Implement LatLng bounds
-
-
 function MapContainer({menu, setMenu}) {
-  const [originBox, setOriginBox] = React.useState(null);
-  const [destinationBox, setDestinationBox] = React.useState(null);
+  const [originBox, setOriginBox] = React.useState('');
+  const [destinationBox, setDestinationBox] = React.useState('');
   const [callbackResponse, setCallbackResponse] = React.useState(null);
   const [walkingCallbackResponse, setWalkingCallbackResponse] = React.useState(null);
   const [origin, setOrigin] = React.useState('');
   const [destination, setDestination] = React.useState('');
-  // const [submit, setSubmit] = React.useState(false);
   const [settings, setSettings] = React.useState({
     showStops: true,
     darkMode: true,
@@ -120,6 +122,9 @@ function MapContainer({menu, setMenu}) {
   const [weather, setWeather] = React.useState({});
   const [leaveArrive, setLeaveArrive] = React.useState('Leave At:');
   const [walking, setWalking] = React.useState(null);
+  const [originError, setOriginError] = React.useState("");
+  const [destinationError, setDestinationError] = React.useState("");
+
 
   const darkBackground = settings.darkMode ? "#424242" : "";
   const darkForeground = settings.darkMode ? "#616161" : "";
@@ -127,15 +132,54 @@ function MapContainer({menu, setMenu}) {
 
   const lib = ['places'];
 
-
   // Next 4 functions are for the places search boxes
   const onOriginChanged = () => {
-    setOrigin(originBox.getPlaces()[0].formatted_address)
+    try {
+      const lat = originBox.getPlaces()[0].geometry.location.lat();
+      const lng = originBox.getPlaces()[0].geometry.location.lng();
+      if (originBox === destinationBox) {
+        setOriginError("Origin cannot be the same as destination");
+      }
+      else if ((mapBounds.south <= lat && lat <= mapBounds.north) && (mapBounds.west <= lng && lng <= mapBounds.east)) {
+        setOrigin(originBox.getPlaces()[0].formatted_address);
+        setOriginError("");
+      }
+      else {
+        setOrigin("");
+        setOriginBox("");
+        setOriginError("Origin must be close to Dublin");
+      }
+    }
+    catch {
+      setOrigin("");
+      setOriginBox("");
+      setOriginError("Enter a valid Origin");
+    }
     setNewDirections(true);
   };
 
   const onDestinationChanged = () => {
-    setDestination(destinationBox.getPlaces()[0].formatted_address)
+    try {
+      const lat = destinationBox.getPlaces()[0].geometry.location.lat();
+      const lng = destinationBox.getPlaces()[0].geometry.location.lng();
+      if (destinationBox.getPlaces()[0].formatted_address == origin) {
+        setDestinationError("Destination cannot be the same as origin");
+      }
+      else if ((mapBounds.south <= lat && lat <= mapBounds.north) && (mapBounds.west <= lng && lng <= mapBounds.east)) {
+        setDestination(destinationBox.getPlaces()[0].formatted_address);
+        setDestinationError("");
+      }
+      else {
+        setDestination("");
+        setDestinationBox("");
+        setDestinationError("Destination must be close to Dublin");
+      }
+    }
+    catch {
+      setDestination("");
+      setDestinationBox("");
+      setDestinationError("Enter a valid destination");
+    }
     setNewDirections(true);
   }
 
@@ -197,7 +241,6 @@ function MapContainer({menu, setMenu}) {
         onDestinationLoad={onDestinationLoad} 
         setDestination={setDestination}
         destination={destination}
-        // setSubmit={setSubmit}
         settings={settings}
         darkBackground={darkBackground}
         darkForeground={darkForeground}
@@ -212,6 +255,8 @@ function MapContainer({menu, setMenu}) {
         setLeaveArrive={setLeaveArrive}
         callbackResponse={callbackResponse}
         walkingCallbackResponse={walkingCallbackResponse}
+        originError={originError}
+        destinationError={destinationError}
         />}
         {/* Conditionally render views */}
         {menu == 'Profile' && <Profile display={menu == 'Profile'} setMenu={setMenu} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}

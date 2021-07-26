@@ -57,7 +57,7 @@ import Grid from '@material-ui/core/Grid';
   }
 
 
-export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive, callbackResponse, walkingCallbackResponse}) {
+export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive, callbackResponse, walkingCallbackResponse, originError, destinationError}) {
     const [value, setValue] = React.useState(0);
     const theme = useTheme();
 
@@ -121,6 +121,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
             darkBackground={darkBackground}
             darkForeground={darkForeground}
             darkText={darkText}
+            error={originError}
             />
             <PlacesSearch 
             onPlacesChanged={onDestinationChanged} 
@@ -131,6 +132,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
             darkBackground={darkBackground}
             darkForeground={darkForeground}
             darkText={darkText}
+            error={destinationError}
             />
 
             <Grid container spacing={1} alignItems="center" className={styles.dateAndButtonContainer} style={{marginBottom: "20px", width: "80%", marginLeft: "10%"}}>
