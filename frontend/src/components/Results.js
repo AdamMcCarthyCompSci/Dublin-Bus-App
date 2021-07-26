@@ -11,6 +11,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Grid from '@material-ui/core/Grid';
 import DirectionsWalkIcon from '@material-ui/icons/DirectionsWalk';
 import DirectionsBusIcon from '@material-ui/icons/DirectionsBus';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 export function Results({menu, setMenu, callbackResponse, weather, settings, leaveArrive, walkingCallbackResponse, walking, setWalking}) {
     const [expand, setExpand] = React.useState(false);
@@ -61,7 +62,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
             </Grid>
             <Grid container spacing={0}>
                 <Grid item xs={2}>
-                    <Fab color="primary" aria-label="back" className={styles.resultsBackButton} onClick={() => {
+                    <Fab color="primary" aria-label="back" className={styles.walkOrBusBackButton} onClick={() => {
                         setMenu("Home");
                         setWalking(null);
                         }}>
@@ -99,7 +100,11 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
 
             {((walkingConditions.includes(false) && response !== null && walkingResponse !== null) || (walking !== null && response !== null && walkingResponse !== null)) && (
             <React.Fragment>
-
+            <Zoom in={expand} mountOnEnter unmountOnExit>
+            <div className={styles.stepsFade}></div>
+            </Zoom>
+            <div className={styles.stepsContainer}>
+            <Scrollbars style={{ height: 300 }}>
             {expand && walking !== true &&
             response.steps.map((step) => (
                         <Zoom in={menu==='Results'} mountOnEnter unmountOnExit>
@@ -113,10 +118,12 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
             walkingResponse.steps.map((step) => (
                         <Zoom in={menu==='Results'} mountOnEnter unmountOnExit>
             <Paper elevation={3} className={styles.stepPaper} style={{backgroundColor: "#757de8"}}>
-                <p key={step.instructions} className={styles.directionsText}> {step.instructions} {getBusNumber(step)}</p>
+                <p><div key={step.instructions} className={styles.walkingDirectionsText} dangerouslySetInnerHTML={{__html: step.instructions}} /></p>
             </Paper>
             </Zoom>
             ))}
+            </Scrollbars>
+            </div>
 
             <Slide direction="up" in={menu==='Results'} mountOnEnter unmountOnExit>
             <Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984"}}>
