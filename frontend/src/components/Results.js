@@ -157,7 +157,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
                         <p className={styles.directionsText}><i>Walking Distance: {walkingResponse.distance.text} ({walkingResponse.duration.text})</i></p>
                     }
                     {weather && settings.showWeather &&
-                        <img src={'http://openweathermap.org/img/wn/' + weather.icon + '.png'} />
+                        <img src={'http://openweathermap.org/img/wn/' + weather.icon + '.png'} alt="Weather Icon"/>
                     }
                 </Grid>
                 <Grid item xs={2}>

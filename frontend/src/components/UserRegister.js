@@ -7,18 +7,40 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from "@material-ui/lab/Alert";
+import { PrivacyPolicy } from "./PrivacyPolicy.js";
+import Container from '@material-ui/core/Container';
+
+
 
 class UserRegister extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
-            errors: []
+        showHidePolicy: false,
+        checkbox: false,
+        isOpen: false,
+        errors: []
         };
+
+        this.hideComponent = this.hideComponent.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
         this.submitRegister = this.submitRegister.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.validateForm = this.validateForm.bind(this);
+
     }
+// Handlechange detects if the checkbox is ticked and turns the register button and off
+      handleChange = (event) => {
+    this.setState({ checkbox: !this.state.checkbox });
+
+  };
+// Hides the Privacy until the user clicks the privacy policy button
+    hideComponent(name) {
+    this.setState({ showHidePolicy: !this.state.showHidePolicy });
+    this.setState({ isOpen: !this.state.isOpen});
+
+}
 
     onInputChange(event) {
         this.setState({
@@ -77,7 +99,11 @@ class UserRegister extends React.Component {
         })
     }
 
+
+
     render() {
+    const {showHidePolicy}=this.state;
+    let buttonText=this.state.isOpen ? "Close": "Privacy Statement";
         return (
             <Dialog
                 open={this.props.show}
@@ -149,14 +175,33 @@ class UserRegister extends React.Component {
                         <Button onClick={this.handleClose} color="primary">
                             Close
                         </Button>
-                        <Button type="submit" onClick={this.validateForm} variant="contained" color="primary">
+                        <Button id='register' type="submit" onClick={this.validateForm} variant="contained" color="primary" disabled={!this.state.checkbox} enabled={this.state.checkbox}>
                             Register
                         </Button>
                     </DialogActions>
                 </form>
+                {/*Privacy Policy*/}
+                <Container>
+                {showHidePolicy && <PrivacyPolicy/>}
+                 <Button
+                        variant="text"
+                        color="primary"
+                        id="privacyButton" onClick={() => this.hideComponent()}  value="Click to view our Privacy Statement" >
+                    {buttonText}
+                    </Button>
+                <br></br>
+                <br></br>
+                <input onChange={this.handleChange} type="checkbox" id="privacypolicy" name="privacypolicy" value="privacypolicy"></input>
+                <label htmlFor="privacypolicy"> Please tick to confirm you have read and accept our privacy agreement.</label>
+                <p></p>
+                </Container>
+
+
             </Dialog>
+
         );
     }
+
 }
 
 export default UserRegister;
