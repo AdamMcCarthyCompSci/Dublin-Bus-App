@@ -78,7 +78,6 @@ class DublinBusRoutes(models.Model):
         managed = False
         db_table = 'dublin_bus_routes'
 
-
 class LeapCardLocations(models.Model):
     leap_card_locations_id = models.AutoField(primary_key=True)
     shop_name = models.CharField(max_length=45, blank=True, null=True)
@@ -89,8 +88,6 @@ class LeapCardLocations(models.Model):
     class Meta:
         managed = False
         db_table = 'leap_card_locations'
-
-
 
 class TfiAgency(models.Model):
     agency_id = models.IntegerField(blank=True, null=True)

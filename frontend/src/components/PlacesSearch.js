@@ -4,8 +4,9 @@ import InputBase from '@material-ui/core/InputBase';
 import Paper from '@material-ui/core/Paper';
 import { StandaloneSearchBox } from '@react-google-maps/api';
 import styles from './Map.module.css';
+import TextField from '@material-ui/core/TextField';
 
-export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search, darkBackground, darkForeground, darkText}) {
+export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search, darkBackground, darkForeground, darkText, error}) {
 // Implement bias for Dublin. Right now it has no bias for autocomplete, so it gives locations all around the world.
     const useStyles = makeStyles((theme) => ({
         searchPaper: {
@@ -18,7 +19,7 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search, dark
           zIndex: 2,
         },
         standaloneSearchBox: {
-          marginLeft: theme.spacing(1),
+          // marginLeft: theme.spacing(1),
           flex: 1,
           position: "absolute",
           width: "100%",
@@ -26,7 +27,7 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search, dark
           height: "auto",
         },
         input: {
-          marginLeft: theme.spacing(1),
+          // marginLeft: theme.spacing(1),
           flex: 1,
           width: "100%",
           margin: "auto",
@@ -58,11 +59,24 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search, dark
         style={{top: "auto !important"}}
         >
           {/* Input text box for searching places */}
-        <InputBase
+        <React.Fragment>
+        {error &&
+          <TextField
             className={classes.input}
             placeholder={place ? place : search}
             inputProps={{ 'aria-label': 'search google maps', style: {color: darkText} }}
-        />
+            error
+            label={error}
+          />
+        }
+        {!error &&
+          <TextField
+            className={classes.input}
+            placeholder={place ? place : search}
+            inputProps={{ 'aria-label': 'search google maps', style: {color: darkText} }}
+          />
+        }
+        </React.Fragment>
             </StandaloneSearchBox>
         </Paper>
     )

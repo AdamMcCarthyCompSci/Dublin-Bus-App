@@ -57,7 +57,7 @@ import Grid from '@material-ui/core/Grid';
   }
 
 
-export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive}) {
+export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive, callbackResponse, walkingCallbackResponse, originError, destinationError}) {
     const [value, setValue] = React.useState(0);
     const theme = useTheme();
 
@@ -100,8 +100,8 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
           aria-label="full width tabs example"
         >
           <Tab label="Directions" {...a11yProps(0)} />
-          <Tab label="Timetable" {...a11yProps(1)} />
-          <Tab label="Extra Features" {...a11yProps(2)} />
+          <Tab label="Pricing" {...a11yProps(1)} />
+          <Tab label="Favourites" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
         {/* Swipeable views allows mobile devices to swipe between tabs */}
@@ -121,6 +121,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
             darkBackground={darkBackground}
             darkForeground={darkForeground}
             darkText={darkText}
+            error={originError}
             />
             <PlacesSearch 
             onPlacesChanged={onDestinationChanged} 
@@ -131,6 +132,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
             darkBackground={darkBackground}
             darkForeground={darkForeground}
             darkText={darkText}
+            error={destinationError}
             />
 
             <Grid container spacing={1} alignItems="center" className={styles.dateAndButtonContainer} style={{marginBottom: "20px", width: "80%", marginLeft: "10%"}}>
