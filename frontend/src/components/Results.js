@@ -104,7 +104,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
             <div className={styles.stepsFade}></div>
             </Zoom>
             <div className={styles.stepsContainer}>
-            <Scrollbars style={{ height: 300 }}>
+            <Scrollbars style={{ height: response.steps.length*60 }}>
             {expand && walking !== true &&
             response.steps.map((step) => (
                         <Zoom in={menu==='Results'} mountOnEnter unmountOnExit>
