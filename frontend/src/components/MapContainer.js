@@ -137,22 +137,28 @@ function MapContainer({menu, setMenu}) {
     try {
       const lat = originBox.getPlaces()[0].geometry.location.lat();
       const lng = originBox.getPlaces()[0].geometry.location.lng();
-      if (originBox === destinationBox) {
+      if (originBox.getPlaces().length > 1) {
+        setOriginError("Destination must be a single address");
+      }
+      else if (originBox.getPlaces()[0].formatted_address === destination) {
         setOriginError("Origin cannot be the same as destination");
       }
       else if ((mapBounds.south <= lat && lat <= mapBounds.north) && (mapBounds.west <= lng && lng <= mapBounds.east)) {
+        if (originBox.getPlaces()[0].formatted_address !== destination) {
+          setDestinationError("");
+        }
         setOrigin(originBox.getPlaces()[0].formatted_address);
         setOriginError("");
       }
       else {
-        setOrigin("");
-        setOriginBox("");
+        // setOrigin("");
+        // setOriginBox("");
         setOriginError("Origin must be close to Dublin");
       }
     }
     catch {
-      setOrigin("");
-      setOriginBox("");
+      // setOrigin("");
+      // setOriginBox("");
       setOriginError("Enter a valid Origin");
     }
     setNewDirections(true);
@@ -162,22 +168,28 @@ function MapContainer({menu, setMenu}) {
     try {
       const lat = destinationBox.getPlaces()[0].geometry.location.lat();
       const lng = destinationBox.getPlaces()[0].geometry.location.lng();
-      if (destinationBox.getPlaces()[0].formatted_address == origin) {
+      if (destinationBox.getPlaces().length > 1) {
+        setDestinationError("Destination must be a single address");
+      }
+      else if (destinationBox.getPlaces()[0].formatted_address === origin) {
         setDestinationError("Destination cannot be the same as origin");
       }
       else if ((mapBounds.south <= lat && lat <= mapBounds.north) && (mapBounds.west <= lng && lng <= mapBounds.east)) {
+        if (destinationBox.getPlaces()[0].formatted_address !== origin) {
+          setOriginError("");
+        }
         setDestination(destinationBox.getPlaces()[0].formatted_address);
         setDestinationError("");
       }
       else {
-        setDestination("");
-        setDestinationBox("");
+        // setDestination("");
+        // setDestinationBox("");
         setDestinationError("Destination must be close to Dublin");
       }
     }
     catch {
-      setDestination("");
-      setDestinationBox("");
+      // setDestination("");
+      // setDestinationBox("");
       setDestinationError("Enter a valid destination");
     }
     setNewDirections(true);
@@ -272,7 +284,9 @@ function MapContainer({menu, setMenu}) {
                 destination !== '' &&
                 origin !== '' &&
                 newDirections === false &&
-                leaveArrive === "Leave At:"
+                leaveArrive === "Leave At:" &&
+                originError === "" &&
+                destinationError === ""
               ) && (
                 <React.Fragment>
                 <DirectionsService
@@ -306,7 +320,9 @@ function MapContainer({menu, setMenu}) {
                 destination !== '' &&
                 origin !== '' &&
                 newDirections === false &&
-                leaveArrive === "Arrive At:"
+                leaveArrive === "Arrive At:" &&
+                originError === "" &&
+                destinationError === ""
               ) && (
                 <React.Fragment>
                 <DirectionsService

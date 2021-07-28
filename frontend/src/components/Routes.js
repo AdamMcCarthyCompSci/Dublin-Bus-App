@@ -71,7 +71,6 @@ export function Routes({darkbackground, darkForeground, darkText}) {
             route,
             direction[direction.length - 1],
             (boardingStop.shortcommonname_en + " Bus stop: " + boardingStop.platecode).split(' ').pop(),
-            // boardingStop.split(' ').pop(),
             plateCode.split(' ').pop());
     }
 

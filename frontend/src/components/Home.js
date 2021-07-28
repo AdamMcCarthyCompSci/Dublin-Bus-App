@@ -160,7 +160,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
             </Grid>
             </Grid>
 
-            {origin !== "" && destination !== "" && 
+            {origin !== "" && destination !== "" && originError === "" && destinationError === "" && 
               <Button
               className={styles.submitButton}
               variant="contained" 
@@ -174,7 +174,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
                 Submit 
               </Button>
             }
-            {!(origin !== "" && destination !== "") && 
+            {!(origin !== "" && destination !== "") || (originError !== "" || destinationError !== "") && 
               <Button
               className={styles.submitButton}
               variant="contained" 

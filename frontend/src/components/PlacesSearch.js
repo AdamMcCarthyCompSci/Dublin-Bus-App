@@ -56,26 +56,18 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search, dark
           east: -5.26031,
           west: -7.26031,
         }}
+        options={{types: ['address']}}
         style={{top: "auto !important"}}
         >
           {/* Input text box for searching places */}
         <React.Fragment>
-        {error &&
           <TextField
             className={classes.input}
             placeholder={place ? place : search}
             inputProps={{ 'aria-label': 'search google maps', style: {color: darkText} }}
-            error
+            error={error}
             label={error}
           />
-        }
-        {!error &&
-          <TextField
-            className={classes.input}
-            placeholder={place ? place : search}
-            inputProps={{ 'aria-label': 'search google maps', style: {color: darkText} }}
-          />
-        }
         </React.Fragment>
             </StandaloneSearchBox>
         </Paper>
