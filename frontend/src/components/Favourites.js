@@ -30,10 +30,8 @@ export function Favourites({ darkText, darkBackground, darkForeground }) {
         )
     }
 
-    const deleteFavourite = () => {
-        return (
-            console.log("delete")
-        )
+    const deleteFavourite = (index) => {
+        setFavourites(favourites.filter((indexFavourite, favourite) => index !== indexFavourite))
     }
 
     return (
@@ -48,7 +46,7 @@ export function Favourites({ darkText, darkBackground, darkForeground }) {
             <Grid item xs={12}>
             <div style={{marginTop: "-10px"}}>
             <Scrollbars style={{ height: 170 }}>
-            {favourites.map((favourite) =>(
+            {favourites.map((favourite, index) =>(
                 <Paper className={styles.darkForeground} style={{backgroundColor: darkForeground, padding: "2px 4px", marginTop: "10px", marginBottom: "10px"}}>
                 <Grid container spacing={0}>
                 <Grid item xs={10}>
@@ -68,7 +66,7 @@ export function Favourites({ darkText, darkBackground, darkForeground }) {
                 </Grid>
                 <Grid item xs={1}>
                 <Tooltip title="Delete favourite" aria-label="Delete favourite">
-                    <Fab color="secondary" size="small" aria-label="delete" className={styles.editDeleteIcons} onClick={() => deleteFavourite()}>
+                    <Fab color="secondary" size="small" aria-label="delete" className={styles.editDeleteIcons} onClick={() => deleteFavourite(favourite)}>
                         <DeleteIcon/>
                     </Fab>
                 </Tooltip>
