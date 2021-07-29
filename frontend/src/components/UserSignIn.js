@@ -81,20 +81,23 @@ class LoginForm extends React.Component {
                             username and password!</Alert>}
                         <TextField
                             autoFocus
-                            margin="dense"
                             name="username"
                             label="Username"
                             type="text"
+                            style={{
+                                marginBottom: '16px'
+                            }}
+                            variant="outlined"
                             fullWidth
                             required
                             error={this.state.errors.includes("username")}
                             onChange={this.onInputChange}
                         />
                         <TextField
-                            margin="dense"
                             name="password"
                             label="Password"
                             type="password"
+                            variant="outlined"
                             fullWidth
                             required
                             error={this.state.errors.includes("password")}

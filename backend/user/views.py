@@ -1,10 +1,11 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
-from rest_framework import status, permissions
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import CustomUserSerializer
+from .models import AuthUser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.backends import TokenBackend
 
@@ -21,11 +22,12 @@ class UserAccount(APIView):
         token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
         data = TokenBackend(algorithm='HS256').decode(token, verify=False)
         user_id = (data['user_id'])
-        profile = User.objects.get(pk=user_id)
+        profile = AuthUser.objects.get(pk=user_id)
 
         return Response({
             'firstname': profile.first_name,
             'lastname': profile.last_name,
+            'fare_type': profile.fare_type,
             'username': profile.username,
             'email': profile.email
         }, status=status.HTTP_200_OK)
@@ -43,12 +45,16 @@ class UserAccount(APIView):
         token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
         data = TokenBackend(algorithm='HS256').decode(token, verify=False)
         user_id = (data['user_id'])
-        profile = User.objects.get(pk=user_id)
+        profile = AuthUser.objects.get(pk=user_id)
 
         firstname = request.data['firstname']
         lastname = request.data['lastname']
+        fare_type = request.data['fare_type']
+
         profile.first_name = firstname
         profile.last_name = lastname
+        profile.fare_type = fare_type
+
         profile.save()
 
         return Response(status=status.HTTP_200_OK)
