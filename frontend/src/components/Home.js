@@ -110,7 +110,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
 
 
-          <Directions 
+        <Directions 
           onOriginChanged={onOriginChanged}
           onOriginLoad={onOriginLoad}
           origin={origin}
@@ -131,7 +131,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
           setSelectedDate={setSelectedDate}
           setMenu={setMenu}
           showWeather={showWeather}
-          />
+        />
 
 
 
@@ -153,7 +153,28 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
 
         {/* {<p style={{color: darkText}}>Sign in or register to create and view your favourite routes</p>} */}
-        <Favourites darkText={darkText} darkForeground={darkForeground} darkBackground={darkBackground}/>
+        <Favourites
+          onOriginChanged={onOriginChanged}
+          onOriginLoad={onOriginLoad}
+          origin={origin}
+          setOrigin={setOrigin}
+          darkBackground={darkBackground}
+          darkForeground={darkForeground}
+          darkText={darkText}
+          originError={originError}
+          onDestinationChanged={onDestinationChanged}
+          onDestinationLoad={onDestinationLoad}
+          destination={destination}
+          setDestination={setDestination}
+          destinationError={destinationError}
+          leaveArrive={leaveArrive}
+          setLeaveArrive={setLeaveArrive}
+          setNewDirections={setNewDirections}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          setMenu={setMenu}
+          showWeather={showWeather}
+        />
 
 
 
