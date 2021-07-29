@@ -1,6 +1,6 @@
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
-from datetime import date
+from django.utils import timezone
 from .models import *
 
 
@@ -13,7 +13,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AuthUser
-        fields = ('first_name', 'last_name', 'email', 'username', 'password')
+        fields = ('first_name', 'last_name', 'fare_type', 'email', 'username', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -23,6 +23,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
         instance.is_superuser = False
         instance.is_staff = False
         instance.is_active = True
-        instance.date_joined = date.today()
+        instance.date_joined = timezone.now()
         instance.save()
         return instance

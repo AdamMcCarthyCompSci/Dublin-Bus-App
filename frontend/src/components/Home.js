@@ -16,11 +16,12 @@ import { LeaveArriveButton } from './LeaveArriveButton';
 import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 import SwipeableViews from "react-swipeable-views";
-import { Routes } from "./Routes.js";
+import Routes  from "./Routes.js";
 import axios from 'axios';
 import dayjs from 'dayjs';
 import Grid from '@material-ui/core/Grid';
 import { Favourites } from "./Favourites";
+import {useAuth} from "../auth";
 
 
   function TabPanel(props) {
@@ -36,7 +37,7 @@ import { Favourites } from "./Favourites";
       >
         {value === index && (
           <Box p={3}>
-            <Typography>{children}</Typography>
+            {children}
           </Box>
         )}
       </div>
@@ -61,6 +62,7 @@ import { Favourites } from "./Favourites";
 export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive, callbackResponse, walkingCallbackResponse, originError, destinationError}) {
     const [value, setValue] = React.useState(0);
     const theme = useTheme();
+    const [logged] = useAuth();
 
     const showWeather = async (time) => {
       const formatTime = dayjs(time).format("YYYY-MM-DD HH:mm:ss");
@@ -197,7 +199,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
 
 
-          <Routes darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>
+          <Routes logged={logged} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>
 
 
 

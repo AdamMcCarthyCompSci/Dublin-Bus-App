@@ -45,6 +45,11 @@ class AuthUser(models.Model):
     username = models.CharField(unique=True, max_length=150)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
+    fare_type = models.CharField(max_length=16, choices=(
+        ('Adult', 'Adult'),
+        ('Child (Under 19)', 'Child (Under 19)'),
+        ('Child (Under 16)', 'Child (Under 16)'),
+    ))
     email = models.CharField(max_length=254)
     is_staff = models.IntegerField()
     is_active = models.IntegerField()
