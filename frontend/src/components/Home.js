@@ -131,6 +131,8 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
           setSelectedDate={setSelectedDate}
           setMenu={setMenu}
           showWeather={showWeather}
+          favouriteRoute={false}
+          setFavouriteView={null}
         />
 
 

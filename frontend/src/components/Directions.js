@@ -3,20 +3,19 @@ import styles from './Map.module.css';
 import { PlacesSearch } from "./PlacesSearch";
 import { LeaveArriveButton } from './LeaveArriveButton';
 import DayJsUtils from '@date-io/dayjs';
-import { DateTimePicker } from "@material-ui/pickers";
+import { DateTimePicker, TimePicker } from "@material-ui/pickers";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
-export function Directions({onOriginChanged, onOriginLoad, origin, setOrigin, darkBackground, darkForeground, darkText, originError, onDestinationChanged, onDestinationLoad, destination, setDestination, destinationError, leaveArrive, setLeaveArrive, setNewDirections, selectedDate, setSelectedDate, setMenu, showWeather}) {
+export function Directions({onOriginChanged, onOriginLoad, origin, darkBackground, darkForeground, darkText, originError, onDestinationChanged, onDestinationLoad, destination, destinationError, leaveArrive, setLeaveArrive, setNewDirections, selectedDate, setSelectedDate, setMenu, showWeather, favouriteRoute, saveFavourite, setFavouriteView}) {
     return (
         <React.Fragment>
         <PlacesSearch 
         onPlacesChanged={onOriginChanged} 
         onPlacesLoad={onOriginLoad} 
         place={origin} 
-        setPlace={setOrigin}
         search={"Origin Search"}
         darkBackground={darkBackground}
         darkForeground={darkForeground}
@@ -27,7 +26,6 @@ export function Directions({onOriginChanged, onOriginLoad, origin, setOrigin, da
         onPlacesChanged={onDestinationChanged} 
         onPlacesLoad={onDestinationLoad} 
         place={destination} 
-        setPlace={setDestination}
         search={"Destination Search"}
         darkBackground={darkBackground}
         darkForeground={darkForeground}
@@ -36,11 +34,31 @@ export function Directions({onOriginChanged, onOriginLoad, origin, setOrigin, da
         />
 
         <Grid container spacing={1} alignItems="center" className={styles.dateAndButtonContainer} style={{marginBottom: "20px", width: "80%", marginLeft: "10%"}}>
-        <Grid item xs={2}>
+          
+          {!favouriteRoute && 
+          <Grid item xs={2}>
           <LeaveArriveButton leaveArrive={leaveArrive} setLeaveArrive={setLeaveArrive} setNewDirections={setNewDirections}/>
-        </Grid>
-        <Grid item xs={10}>
+          </Grid>
+          }
+        <Grid item xs={favouriteRoute ? 12 : 10}>
         <Paper component="form" className={styles.datePickerContainer} style={{backgroundColor: darkForeground}}>
+          {favouriteRoute &&
+          <MuiPickersUtilsProvider utils={DayJsUtils}>
+            <TimePicker
+            className={styles.datePicker}
+                value={selectedDate}
+                disablePast
+                onChange={setSelectedDate}
+                label="Select a Time"
+                showTodayButton
+                inputProps={{ style: {color: darkText} }}
+                InputLabelProps={{
+                  style: { color: darkText },
+                }}
+            />
+          </MuiPickersUtilsProvider>
+          }
+          {!favouriteRoute &&
           <MuiPickersUtilsProvider utils={DayJsUtils}>
             <DateTimePicker
             className={styles.datePicker}
@@ -56,11 +74,13 @@ export function Directions({onOriginChanged, onOriginLoad, origin, setOrigin, da
                 }}
             />
           </MuiPickersUtilsProvider>
+          }
           </Paper>
         </Grid>
         </Grid>
 
-        {origin !== "" && destination !== "" && originError === "" && destinationError === "" && 
+        {origin !== "" && destination !== "" && originError === "" && destinationError === "" &&
+        !favouriteRoute && 
           <Button
           className={styles.submitButton}
           variant="contained" 
@@ -75,16 +95,40 @@ export function Directions({onOriginChanged, onOriginLoad, origin, setOrigin, da
           </Button>
         }
         {((origin === "" || destination === "") || (originError !== "" || destinationError !== "")) && 
+        !favouriteRoute &&
           <Button
           className={styles.submitButton}
           variant="contained" 
           color="primary"
           disabled
+          > 
+            Submit 
+          </Button>
+        }
+
+        {origin !== "" && destination !== "" && originError === "" && destinationError === "" &&
+        favouriteRoute && 
+          <Button
+          className={styles.submitButton}
+          variant="contained" 
+          color="primary"
           onClick={() => {
-            // setMenu('Results');
-            // setNewDirections(false);
+            saveFavourite(origin, destination, selectedDate);
+            setNewDirections(false);
+            setFavouriteView(true);
             // Call prediction
           }}> 
+            Submit 
+          </Button>
+        }
+        {((origin === "" || destination === "") || (originError !== "" || destinationError !== "")) && 
+        favouriteRoute &&
+          <Button
+          className={styles.submitButton}
+          variant="contained" 
+          color="primary"
+          disabled
+          > 
             Submit 
           </Button>
         }
