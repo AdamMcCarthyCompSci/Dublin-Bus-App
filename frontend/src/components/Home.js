@@ -20,7 +20,9 @@ import Routes  from "./Routes.js";
 import axios from 'axios';
 import dayjs from 'dayjs';
 import Grid from '@material-ui/core/Grid';
+import { Favourites } from "./Favourites";
 import {useAuth} from "../auth";
+
 
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -209,7 +211,8 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
 
 
-        <p style={{color: darkText}}>Create Extra Features Here</p>
+        {/* {<p style={{color: darkText}}>Sign in or register to create and view your favourite routes</p>} */}
+        <Favourites darkText={darkText} darkForeground={darkForeground} darkBackground={darkBackground}/>
 
 
 

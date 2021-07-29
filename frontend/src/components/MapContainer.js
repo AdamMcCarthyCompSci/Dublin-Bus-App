@@ -113,7 +113,7 @@ function MapContainer({menu, setMenu}) {
   const [destination, setDestination] = React.useState('');
   const [settings, setSettings] = React.useState({
     showStops: true,
-    darkMode: true,
+    darkMode: false,
     showLeap: true,
     showWeather: true,
   });
