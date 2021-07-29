@@ -42,6 +42,14 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
         }
     }
 
+    const getStepsHeight = (steps) => {
+        if (steps.length < 5) {
+            return steps.length*60;
+        } else {
+            return 5*60;
+        }
+    }
+
     return (
         <div className={styles.directionsPaperContainer}>
         <React.Fragment>
@@ -103,27 +111,32 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
             <Zoom in={expand} mountOnEnter unmountOnExit>
             <div className={styles.stepsFade}></div>
             </Zoom>
-            <div className={styles.stepsContainer}>
-            <Scrollbars style={{ height: response.steps.length*60 }}>
+
             {expand && walking !== true &&
-            response.steps.map((step) => (
+            <div className={styles.stepsContainer}>
+            <Scrollbars style={{ height: getStepsHeight(response.steps) }}>
+            {response.steps.map((step) => (
                         <Zoom in={menu==='Results'} mountOnEnter unmountOnExit>
             <Paper elevation={3} className={styles.stepPaper} style={{backgroundColor: "#757de8"}}>
                 <p key={step.instructions} className={styles.directionsText}> {step.instructions} {getBusNumber(step)}</p>
             </Paper>
-            </Zoom>
-            ))}
+            </Zoom>))}
+            </Scrollbars>
+            </div>
+            }
 
             {expand && walking === true &&
-            walkingResponse.steps.map((step) => (
+            <div className={styles.stepsContainer}>
+            <Scrollbars style={{ height: getStepsHeight(walkingResponse.steps) }}>
+            {walkingResponse.steps.map((step) => (
                         <Zoom in={menu==='Results'} mountOnEnter unmountOnExit>
             <Paper elevation={3} className={styles.stepPaper} style={{backgroundColor: "#757de8"}}>
                 <p><div key={step.instructions} className={styles.walkingDirectionsText} dangerouslySetInnerHTML={{__html: step.instructions}} /></p>
             </Paper>
-            </Zoom>
-            ))}
+            </Zoom>))}
             </Scrollbars>
             </div>
+            }
 
             <Slide direction="up" in={menu==='Results'} mountOnEnter unmountOnExit>
             <Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984"}}>
