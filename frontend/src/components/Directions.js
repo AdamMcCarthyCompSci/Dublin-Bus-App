@@ -41,16 +41,14 @@ export function Directions({onOriginChanged, onOriginLoad, origin, darkBackgroun
           </Grid>
           }
         <Grid item xs={favouriteRoute ? 12 : 10}>
-        <Paper component="form" className={styles.datePickerContainer} style={{backgroundColor: darkForeground}}>
+        <Paper className={styles.datePickerContainer} style={{backgroundColor: darkForeground}}>
           {favouriteRoute &&
           <MuiPickersUtilsProvider utils={DayJsUtils}>
             <TimePicker
             className={styles.datePicker}
                 value={selectedDate}
-                disablePast
                 onChange={setSelectedDate}
                 label="Select a Time"
-                showTodayButton
                 inputProps={{ style: {color: darkText} }}
                 InputLabelProps={{
                   style: { color: darkText },

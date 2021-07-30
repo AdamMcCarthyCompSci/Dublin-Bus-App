@@ -196,7 +196,7 @@ export function Favourites({onOriginChanged, onOriginLoad, origin, setOrigin, da
                     </Grid>
                     <Grid container spacing={0}>
                         <Grid item xs={10}>
-                        <Typography style={{color: darkText}}>From {favourite.origin} to {favourite.destination} at {favourite.time.getHours()}:{favourite.time.getMinutes()}</Typography>
+                        <p style={{color: darkText}}>From {favourite.origin} to {favourite.destination} at {favourite.time.toString()}</p>
                         </Grid>
                         <Grid item xs={2}></Grid>
                     </Grid>
