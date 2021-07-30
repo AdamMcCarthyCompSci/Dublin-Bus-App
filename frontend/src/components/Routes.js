@@ -19,6 +19,9 @@ class Routes extends React.Component {
         this.state = {
             loading: false,
             routes: [],
+            directions: [],
+            boardingStops: [],
+            alightingStops: [],
             route: "",
             direction: "",
             boardingStop: "",
@@ -35,19 +38,15 @@ class Routes extends React.Component {
                 'Adult Leap',
                 'Child Leap (Under 19)',
                 'Child Cash (Under 16)'
-            ],
-            routeUnique: [],
-            directionUnique: []
+            ]
         }
 
-        this.getUnique = this.getUnique.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
         this.activateDirectionDropdown = this.activateDirectionDropdown.bind(this)
         this.activateBoardingDropdown = this.activateBoardingDropdown.bind(this)
         this.activateAlightingDropdown = this.activateAlightingDropdown.bind(this)
         this.activateFareType = this.activateFareType.bind(this)
         this.activateFinalDropdown = this.activateFinalDropdown.bind(this)
-        this.alightingFilter = this.alightingFilter.bind(this)
     }
 
     async componentDidMount() {
@@ -60,24 +59,12 @@ class Routes extends React.Component {
             this.setState({
                 ...this.state,
                 routes: result.data.routes,
-                loading: false,
-                routeUnique: this.getUnique(result.data.routes, 'busnumber'),
-                directionUnique: this.getUnique(result.data.routes, 'routedescription')
+                loading: false
             });
         };
         if (this.state.routes.length === 0) {
             await fetchData();
         }
-    }
-
-    getUnique(route, comp) {
-        const unique = route.map(e => e[comp])
-            // store the indexes of the unique objects
-            .map((e, i, final) => final.indexOf(e) === i && i)
-
-            // eliminate the false indexes & return unique objects
-            .filter((e) => route[e]).map(e => route[e]);
-        return unique;
     }
 
     async showPrice(route, direction, start, end, fare) {
@@ -119,7 +106,7 @@ class Routes extends React.Component {
             this.state.fareType);
     }
 
-    activateDirectionDropdown(e) {
+    async activateDirectionDropdown(e) {
         const {value} = e.target;
         this.setState({
             ...this.state,
@@ -129,15 +116,20 @@ class Routes extends React.Component {
             alightingStop: "",
             fareType: "",
             price: null,
-            directionDropdown: true,
             boardingDropdown: false,
             alightingDropdown: false,
             fareTypeDropdown: false,
-            finalDropdown: false,
+            finalDropdown: false
+        });
+        const result = await axios(process.env.REACT_APP_API_URL + '/bus/routes/' + value + '/directions');
+        this.setState({
+            ...this.state,
+            directions: result.data.directions,
+            directionDropdown: true
         });
     }
 
-    activateBoardingDropdown(e) {
+    async activateBoardingDropdown(e) {
         const {value} = e.target;
         this.setState({
             ...this.state,
@@ -146,14 +138,19 @@ class Routes extends React.Component {
             alightingStop: "",
             fareType: "",
             price: null,
-            boardingDropdown: true,
             alightingDropdown: false,
             fareTypeDropdown: false,
-            finalDropdown: false,
+            finalDropdown: false
+        });
+        const result = await axios(process.env.REACT_APP_API_URL + '/bus/routes/' + this.state.route + '/directions/' + value + '/boarding');
+        this.setState({
+            ...this.state,
+            boardingStops: result.data.boarding,
+            boardingDropdown: true
         });
     }
 
-    activateAlightingDropdown(e) {
+    async activateAlightingDropdown(e) {
         const {value} = e.target;
         this.setState({
             ...this.state,
@@ -161,9 +158,14 @@ class Routes extends React.Component {
             alightingStop: "",
             fareType: "",
             price: null,
-            alightingDropdown: true,
             fareTypeDropdown: false,
             finalDropdown: false,
+        });
+        const result = await axios(process.env.REACT_APP_API_URL + '/bus/routes/' + this.state.route + '/directions/' + this.state.direction + '/boarding/' + value + '/alighting');
+        this.setState({
+            ...this.state,
+            alightingStops: result.data.alighting,
+            alightingDropdown: true
         });
     }
 
@@ -199,13 +201,6 @@ class Routes extends React.Component {
         });
     }
 
-    alightingFilter(routes) {
-        const filtered = routes.filter(stopdetail => stopdetail.busnumber == this.state.route && stopdetail.routedescription + " " + stopdetail.direction == this.state.direction);
-        const boardingNumberIndex = (element) => element.platecode === this.state.boardingStop;
-        return filtered.slice(filtered.findIndex(boardingNumberIndex) + 1);
-    }
-
-
     render() {
         if (this.state.loading) {
             return (<div>
@@ -233,9 +228,7 @@ class Routes extends React.Component {
                         </Alert>)}
 
                     <Grid container spacing={1} style={{marginBottom: "20px"}}>
-                        <Grid item xs={6}>
-
-                            {/*Dropdown 1. Route numbers aka bus numbers.*/}
+                        {this.state.routes.length > 0 && <Grid item xs={6}>
                             <Paper className={styles.routeDropdownContainer}
                                    style={{backgroundColor: this.props.darkForeground}}>
                                 <FormControl>
@@ -247,22 +240,18 @@ class Routes extends React.Component {
                                         value={this.state.route}
                                         onChange={this.activateDirectionDropdown}
                                     >
-                                        {this.state.routeUnique.map((stopdetail, index) => (
-                                            <MenuItem key={stopdetail.id}
-                                                      value={stopdetail.busnumber}>{stopdetail.busnumber}</MenuItem>
+                                        {this.state.routes.map(route => (
+                                            <MenuItem key={route.routename}
+                                                      value={route.routename}>{route.routename}</MenuItem>
                                         ))}
                                     </Select>
                                     <FormHelperText style={{color: this.props.darkText}}>Select a Route</FormHelperText>
                                 </FormControl>
                             </Paper>
-
-                        </Grid>
-                        <Grid item xs={6}>
-
-                            {/*Dropdown 2 Route direction first stop on the route to last stop.*/}
+                        </Grid>}
+                        {this.state.directionDropdown && <Grid item xs={6}>
                             <Paper className={styles.routeDropdownContainer}
                                    style={{backgroundColor: this.props.darkForeground}}>
-                                {this.state.directionDropdown &&
                                 <FormControl>
                                     <InputLabel id="dropdown2"
                                                 style={{color: this.props.darkText}}>Direction</InputLabel>
@@ -273,23 +262,19 @@ class Routes extends React.Component {
                                         value={this.state.direction}
                                         onChange={this.activateBoardingDropdown}
                                     >
-                                        {this.state.directionUnique.filter(stopdetail => stopdetail.busnumber == this.state.route).map((stopdetail, index) => (
-                                            <MenuItem key={stopdetail.id}
-                                                      value={stopdetail.routedescription + " " + stopdetail.direction}>{stopdetail.routedescription + " " + stopdetail.direction}</MenuItem>
+                                        {this.state.directions.map(direction => (
+                                            <MenuItem key={direction.direction}
+                                                      value={direction.direction}>{direction.routedescription + " " + direction.direction}</MenuItem>
                                         ))}
                                     </Select>
                                     <FormHelperText style={{color: this.props.darkText}}>Select a
                                         Direction</FormHelperText>
                                 </FormControl>
-                                }
                             </Paper>
-                        </Grid>
-                        <Grid item xs={6}>
-
-                            {/*Dropdown 3 Boarding bus stop*/}
+                        </Grid>}
+                        {this.state.boardingDropdown && <Grid item xs={6}>
                             <Paper className={styles.routeDropdownContainer}
                                    style={{backgroundColor: this.props.darkForeground}}>
-                                {this.state.boardingDropdown &&
                                 <FormControl>
                                     <InputLabel id="dropdown3" style={{color: this.props.darkText}}>Boarding
                                         Stop</InputLabel>
@@ -299,24 +284,19 @@ class Routes extends React.Component {
                                         id="dropdown3"
                                         value={this.state.boardingStop}
                                         onChange={this.activateAlightingDropdown}>
-                                        {this.state.routes.filter(stopdetail => stopdetail.busnumber == this.state.route && (stopdetail.routedescription + " " + stopdetail.direction) == this.state.direction).map((stopdetail, index) => (
-                                            <MenuItem key={stopdetail.id}
-                                                      value={stopdetail.platecode}>{stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}</MenuItem>
+                                        {this.state.boardingStops.map(boarding => (
+                                            <MenuItem key={boarding.id}
+                                                      value={boarding.platecode}>{boarding.shortcommonname_en + " Bus Stop: " + boarding.platecode}</MenuItem>
                                         ))}
                                     </Select>
                                     <FormHelperText style={{color: this.props.darkText}}>Select a Boarding
                                         Stop</FormHelperText>
                                 </FormControl>
-                                }
                             </Paper>
-
-                        </Grid>
-                        <Grid item xs={6}>
-
-                            {/*Dropdown 4 alighting bus stop.*/}
+                        </Grid>}
+                        {this.state.alightingDropdown && <Grid item xs={6}>
                             <Paper className={styles.routeDropdownContainer}
                                    style={{backgroundColor: this.props.darkForeground}}>
-                                {this.state.alightingDropdown &&
                                 <FormControl>
                                     <InputLabel id="dropdown4" style={{color: this.props.darkText}}>Alighting
                                         Stop</InputLabel>
@@ -326,24 +306,19 @@ class Routes extends React.Component {
                                         id="dropdown4"
                                         value={this.state.alightingStop}
                                         onChange={this.activateFareType}>
-                                        {this.alightingFilter(this.state.routes).map((stopdetail, index) => (
-                                            <MenuItem key={stopdetail.id}
-                                                      value={stopdetail.platecode}>{stopdetail.shortcommonname_en + " Bus Stop: " + stopdetail.platecode}</MenuItem>
+                                        {this.state.alightingStops.map(alighting => (
+                                            <MenuItem key={alighting.id}
+                                                      value={alighting.platecode}>{alighting.shortcommonname_en + " Bus Stop: " + alighting.platecode}</MenuItem>
                                         ))}
                                     </Select>
                                     <FormHelperText style={{color: this.props.darkText}}>Select an Alighting
                                         Stop</FormHelperText>
                                 </FormControl>
-                                }
                             </Paper>
-                        </Grid>
-
-                        {!this.props.logged && <Grid item xs={6}>
-
-                            {/*Dropdown 5 fare type.*/}
+                        </Grid>}
+                        {(!this.props.logged && this.state.fareTypeDropdown) && <Grid item xs={6}>
                             <Paper className={styles.routeDropdownContainer}
                                    style={{backgroundColor: this.props.darkForeground}}>
-                                {this.state.fareTypeDropdown &&
                                 <FormControl>
                                     <InputLabel id="dropdown5" style={{color: this.props.darkText}}>Fare
                                         Type</InputLabel>
@@ -360,7 +335,6 @@ class Routes extends React.Component {
                                     <FormHelperText style={{color: this.props.darkText}}>Select fare
                                         type</FormHelperText>
                                 </FormControl>
-                                }
                             </Paper>
                         </Grid>}
                     </Grid>
