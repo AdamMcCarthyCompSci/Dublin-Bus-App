@@ -48,7 +48,7 @@ export function Directions({onOriginChanged, onOriginLoad, origin, darkBackgroun
             className={styles.datePicker}
                 value={selectedDate}
                 onChange={setSelectedDate}
-                label="Select a Time"
+                label="Select a Time to Arrive At"
                 inputProps={{ style: {color: darkText} }}
                 InputLabelProps={{
                   style: { color: darkText },
