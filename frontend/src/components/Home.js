@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styles from './Map.module.css';
 import Paper from '@material-ui/core/Paper';
 import DayJsUtils from '@date-io/dayjs';
@@ -12,12 +12,16 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import { PlacesSearch } from "./PlacesSearch";
+import { LeaveArriveButton } from './LeaveArriveButton';
 import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 import SwipeableViews from "react-swipeable-views";
-import { Routes } from "./Routes.js";
+import Routes  from "./Routes.js";
 import axios from 'axios';
 import dayjs from 'dayjs';
+import Grid from '@material-ui/core/Grid';
+import { Favourites } from "./Favourites";
+import {useAuth} from "../auth";
 
 
   function TabPanel(props) {
@@ -33,7 +37,7 @@ import dayjs from 'dayjs';
       >
         {value === index && (
           <Box p={3}>
-            <Typography>{children}</Typography>
+            {children}
           </Box>
         )}
       </div>
@@ -55,10 +59,10 @@ import dayjs from 'dayjs';
   }
 
 
-export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather}) {
-    const [selectedDate, setSelectedDate] = React.useState(new Date());
+export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive, callbackResponse, walkingCallbackResponse, originError, destinationError}) {
     const [value, setValue] = React.useState(0);
     const theme = useTheme();
+    const [logged] = useAuth();
 
     const showWeather = async (time) => {
       const formatTime = dayjs(time).format("YYYY-MM-DD HH:mm:ss");
@@ -94,13 +98,13 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
           value={value}
           onChange={handleChange}
           indicatorColor="secondary"
-          textColor="default"
+          textColor="inherit"
           variant="fullWidth"
           aria-label="full width tabs example"
         >
           <Tab label="Directions" {...a11yProps(0)} />
-          <Tab label="Timetable" {...a11yProps(1)} />
-          <Tab label="Extra Features" {...a11yProps(2)} />
+          <Tab label="Pricing" {...a11yProps(1)} />
+          <Tab label="Favourites" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
         {/* Swipeable views allows mobile devices to swipe between tabs */}
@@ -120,6 +124,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
             darkBackground={darkBackground}
             darkForeground={darkForeground}
             darkText={darkText}
+            error={originError}
             />
             <PlacesSearch 
             onPlacesChanged={onDestinationChanged} 
@@ -130,40 +135,49 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
             darkBackground={darkBackground}
             darkForeground={darkForeground}
             darkText={darkText}
+            error={destinationError}
             />
+
+            <Grid container spacing={1} alignItems="center" className={styles.dateAndButtonContainer} style={{marginBottom: "20px", width: "80%", marginLeft: "10%"}}>
+            <Grid item xs={2}>
+              <LeaveArriveButton leaveArrive={leaveArrive} setLeaveArrive={setLeaveArrive} setNewDirections={setNewDirections}/>
+            </Grid>
+            <Grid item xs={10}>
             <Paper component="form" className={styles.datePickerContainer} style={{backgroundColor: darkForeground}}>
-            <MuiPickersUtilsProvider utils={DayJsUtils}>
-              <DateTimePicker
-              className={styles.datePicker}
-                  value={selectedDate}
-                  disablePast
-                  maxDate={new Date().setDate(new Date().getDate()+1)}
-                  onChange={setSelectedDate}
-                  label="Select a Date and Time"
-                  showTodayButton
-                  inputProps={{ style: {color: darkText} }}
-                  InputLabelProps={{
-                    style: { color: darkText },
-                  }}
-              />
-            </MuiPickersUtilsProvider>
-            </Paper>
-            {origin !== "" && destination !== "" && 
+              <MuiPickersUtilsProvider utils={DayJsUtils}>
+                <DateTimePicker
+                className={styles.datePicker}
+                    value={selectedDate}
+                    disablePast
+                    maxDate={new Date().setDate(new Date().getDate()+1)}
+                    onChange={setSelectedDate}
+                    label="Select a Date and Time"
+                    showTodayButton
+                    inputProps={{ style: {color: darkText} }}
+                    InputLabelProps={{
+                      style: { color: darkText },
+                    }}
+                />
+              </MuiPickersUtilsProvider>
+              </Paper>
+            </Grid>
+            </Grid>
+
+            {origin !== "" && destination !== "" && originError === "" && destinationError === "" && 
               <Button
               className={styles.submitButton}
               variant="contained" 
               color="primary"
               onClick={() => {
                 setMenu('Results');
-                console.log(selectedDate);
                 showWeather(selectedDate);
-                console.log(weather);
+                setNewDirections(false);
                 // Call prediction
               }}> 
                 Submit 
               </Button>
             }
-            {!(origin !== "" && destination !== "") && 
+            {!(origin !== "" && destination !== "") || (originError !== "" || destinationError !== "") && 
               <Button
               className={styles.submitButton}
               variant="contained" 
@@ -171,6 +185,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
               disabled
               onClick={() => {
                 setMenu('Results');
+                setNewDirections(false);
                 // Call prediction
               }}> 
                 Submit 
@@ -184,7 +199,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
 
 
-          <Routes darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>
+          <Routes logged={logged} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>
 
 
 
@@ -196,7 +211,8 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
 
 
-        <p style={{color: darkText}}>Create Extra Features Here</p>
+        {/* {<p style={{color: darkText}}>Sign in or register to create and view your favourite routes</p>} */}
+        <Favourites darkText={darkText} darkForeground={darkForeground} darkBackground={darkBackground}/>
 
 
 

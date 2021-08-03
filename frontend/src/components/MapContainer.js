@@ -7,6 +7,7 @@ import { Home } from './Home';
 import { Settings } from './Settings';
 import Profile from './Profile';
 import { Results } from "./Results.js"
+import dayjs from 'dayjs';
 
 
 const containerStyle = {
@@ -14,7 +15,13 @@ const containerStyle = {
   height: '100vh'
 };
 
-const center = { lat: 53.345804, lng: -6.26031 }
+const center = { lat: 53.345804, lng: -6.26031 };
+const mapBounds = {
+  north: 54.345804,
+  south: 52.345804,
+  east: -5.26031,
+  west: -7.26031,
+};
 
 const darkModeStyle = [
   { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
@@ -97,24 +104,27 @@ const darkModeStyle = [
   },
 ]
 
-// Implement LatLng bounds
-
-
 function MapContainer({menu, setMenu}) {
-  const [originBox, setOriginBox] = React.useState(null);
-  const [destinationBox, setDestinationBox] = React.useState(null);
+  const [originBox, setOriginBox] = React.useState('');
+  const [destinationBox, setDestinationBox] = React.useState('');
   const [callbackResponse, setCallbackResponse] = React.useState(null);
+  const [walkingCallbackResponse, setWalkingCallbackResponse] = React.useState(null);
   const [origin, setOrigin] = React.useState('');
   const [destination, setDestination] = React.useState('');
-  // const [submit, setSubmit] = React.useState(false);
   const [settings, setSettings] = React.useState({
     showStops: true,
-    darkMode: true,
+    darkMode: false,
     showLeap: true,
     showWeather: true,
   });
   const [newDirections, setNewDirections] = React.useState(true);
+  const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [weather, setWeather] = React.useState({});
+  const [leaveArrive, setLeaveArrive] = React.useState('Leave At:');
+  const [walking, setWalking] = React.useState(null);
+  const [originError, setOriginError] = React.useState("");
+  const [destinationError, setDestinationError] = React.useState("");
+
 
   const darkBackground = settings.darkMode ? "#424242" : "";
   const darkForeground = settings.darkMode ? "#616161" : "";
@@ -122,15 +132,66 @@ function MapContainer({menu, setMenu}) {
 
   const lib = ['places'];
 
-
   // Next 4 functions are for the places search boxes
   const onOriginChanged = () => {
-    setOrigin(originBox.getPlaces()[0].formatted_address)
+    try {
+      const lat = originBox.getPlaces()[0].geometry.location.lat();
+      const lng = originBox.getPlaces()[0].geometry.location.lng();
+      if (originBox.getPlaces().length > 1) {
+        setOriginError("Destination must be a single address");
+      }
+      else if (originBox.getPlaces()[0].formatted_address === destination) {
+        setOriginError("Origin cannot be the same as destination");
+      }
+      else if ((mapBounds.south <= lat && lat <= mapBounds.north) && (mapBounds.west <= lng && lng <= mapBounds.east)) {
+        if (originBox.getPlaces()[0].formatted_address !== destination) {
+          setDestinationError("");
+        }
+        setOrigin(originBox.getPlaces()[0].formatted_address);
+        setOriginError("");
+      }
+      else {
+        // setOrigin("");
+        // setOriginBox("");
+        setOriginError("Origin must be close to Dublin");
+      }
+    }
+    catch {
+      // setOrigin("");
+      // setOriginBox("");
+      setOriginError("Enter a valid Origin");
+    }
     setNewDirections(true);
   };
 
   const onDestinationChanged = () => {
-    setDestination(destinationBox.getPlaces()[0].formatted_address)
+    try {
+      const lat = destinationBox.getPlaces()[0].geometry.location.lat();
+      const lng = destinationBox.getPlaces()[0].geometry.location.lng();
+      if (destinationBox.getPlaces().length > 1) {
+        setDestinationError("Destination must be a single address");
+      }
+      else if (destinationBox.getPlaces()[0].formatted_address === origin) {
+        setDestinationError("Destination cannot be the same as origin");
+      }
+      else if ((mapBounds.south <= lat && lat <= mapBounds.north) && (mapBounds.west <= lng && lng <= mapBounds.east)) {
+        if (destinationBox.getPlaces()[0].formatted_address !== origin) {
+          setOriginError("");
+        }
+        setDestination(destinationBox.getPlaces()[0].formatted_address);
+        setDestinationError("");
+      }
+      else {
+        // setDestination("");
+        // setDestinationBox("");
+        setDestinationError("Destination must be close to Dublin");
+      }
+    }
+    catch {
+      // setDestination("");
+      // setDestinationBox("");
+      setDestinationError("Enter a valid destination");
+    }
     setNewDirections(true);
   }
 
@@ -147,13 +208,25 @@ function MapContainer({menu, setMenu}) {
     if (response !== null) {
       if (response.status === 'OK') {
         setCallbackResponse(response)
-        setNewDirections(false);
+        setNewDirections(true);
       } else {
         console.log('response: ', response)
       }
     }
   }
 
+  const walkingDirectionsCallback = (response) => {
+    console.log("Walking:", response)
+
+    if (response !== null) {
+      if (response.status === 'OK') {
+        setWalkingCallbackResponse(response)
+        setNewDirections(true);
+      } else {
+        console.log('walking response: ', response)
+      }
+    }
+  }
 
   return (
     <div className = {styles.MapContainer}>
@@ -180,18 +253,27 @@ function MapContainer({menu, setMenu}) {
         onDestinationLoad={onDestinationLoad} 
         setDestination={setDestination}
         destination={destination}
-        // setSubmit={setSubmit}
         settings={settings}
         darkBackground={darkBackground}
         darkForeground={darkForeground}
         darkText={darkText}
         weather={weather}
         setWeather={setWeather}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+        newDirections={newDirections}
+        setNewDirections={setNewDirections}
+        leaveArrive={leaveArrive}
+        setLeaveArrive={setLeaveArrive}
+        callbackResponse={callbackResponse}
+        walkingCallbackResponse={walkingCallbackResponse}
+        originError={originError}
+        destinationError={destinationError}
         />}
         {/* Conditionally render views */}
         {menu == 'Profile' && <Profile display={menu == 'Profile'} setMenu={setMenu} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
         {menu == 'Settings' && <Settings display={menu == 'Settings'} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
-        {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings}/>}
+        {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings} leaveArrive={leaveArrive} walkingCallbackResponse={walkingCallbackResponse} walking={walking} setWalking={setWalking}/>}
         {/* Display bus stops */}
         {settings.showStops && <BusStops />}
         {settings.showLeap && <Leap />}
@@ -201,25 +283,78 @@ function MapContainer({menu, setMenu}) {
               (
                 destination !== '' &&
                 origin !== '' &&
-                newDirections === true
+                newDirections === false &&
+                leaveArrive === "Leave At:" &&
+                originError === "" &&
+                destinationError === ""
               ) && (
+                <React.Fragment>
                 <DirectionsService
                   options={{
                     destination: destination,
                     origin: origin,
                     travelMode: 'TRANSIT',
                     transitOptions: {
-                      // departureTime
+                      departureTime: dayjs(selectedDate).toDate(),
                       modes: ['BUS']
                     }
                   }}
                   callback={directionsCallback}
                 />
+                <DirectionsService
+                options={{
+                  destination: destination,
+                  origin: origin,
+                  travelMode: 'WALKING',
+                  drivingOptions: {
+                    departureTime: dayjs(selectedDate).toDate(),
+                  }
+                }}
+                callback={walkingDirectionsCallback}
+              />
+              </React.Fragment>
+              )
+            }
+                    {
+              (
+                destination !== '' &&
+                origin !== '' &&
+                newDirections === false &&
+                leaveArrive === "Arrive At:" &&
+                originError === "" &&
+                destinationError === ""
+              ) && (
+                <React.Fragment>
+                <DirectionsService
+                  options={{
+                    destination: destination,
+                    origin: origin,
+                    travelMode: 'TRANSIT',
+                    transitOptions: {
+                      arrivalTime: dayjs(selectedDate).toDate(),
+                      modes: ['BUS']
+                    }
+                  }}
+                  callback={directionsCallback}
+                />
+                <DirectionsService
+                options={{
+                  destination: destination,
+                  origin: origin,
+                  travelMode: 'WALKING',
+                  drivingOptions: {
+                    arrivalTime: dayjs(selectedDate).toDate(),
+                  }
+                }}
+                callback={walkingDirectionsCallback}
+              />
+              </React.Fragment>
               )
             }
 
+
             {
-              callbackResponse !== null && (
+              callbackResponse !== null && (walking === false || walking === null) && (
                 <DirectionsRenderer
                   options={{
                     directions: callbackResponse
@@ -227,20 +362,17 @@ function MapContainer({menu, setMenu}) {
                 />
               )
             }
-          {/* <DistanceMatrixService
-          options={{
-                    destinations: [{destination}],
-                    origins: [{origin}],
-                    travelMode: "TRANSIT",
-                    transitOptions: {
-                      modes: ['BUS']
-                    }
+
+{
+              walkingCallbackResponse !== null && walking === true && (
+                <DirectionsRenderer
+                  options={{
+                    directions: walkingCallbackResponse
                   }}
-          callback = {(response) => {console.log("DIRECTIONS:" + response)}}
-          /> */}
+                />
+              )
+            }
             
-
-
       </GoogleMap>
     </LoadScript>
     </div>

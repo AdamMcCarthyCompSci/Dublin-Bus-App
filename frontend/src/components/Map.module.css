@@ -64,14 +64,14 @@
     width: 200px;
 }
 .datePicker {
-    width: 80%;
-    margin-top: 20px;
-    margin-top: 20px;
+    width: 100%;
+    /* margin-top: 20px; */
 }
 .submitButton {
     margin-top: 30px;
     width: 50%;
 }
+
 .stepTitlePaper {
     padding: 1px;
     margin-bottom: 5px;
@@ -81,6 +81,9 @@
     margin-bottom: 5px;
 }
 .directionsText {
+    color: white;
+}
+.walkingDirectionsText {
     color: white;
 }
 .directionsPaperContainer {
@@ -99,10 +102,14 @@
 } */
 
 .datePickerContainer {
-    margin-bottom: 20px;
+    /* align-items: center; */
     padding: 2px 4px;
-    width: 80%;
-    margin-left: 10%;
+    /* height: 10px; */
+}
+.dateAndButtonContainer {
+    /* width: 80%;
+    margin-left: 10%; */
+    /* margin-bottom: 20px; */
 }
 .routeDropdownContainer {
     height: 70px;
@@ -114,4 +121,31 @@
     -moz-transform: translateY(-50%);
     -webkit-transform: translateY(-50%);
     -o-transform: translateY(-50%);
+}
+
+.walkOrBusBackButton {
+    /* top: 50%; */
+    transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+}
+
+.stepsContainer {
+    overflow: auto;
+    position: relative;
+  }
+.stepsFade {
+    /* border-radius: 5px; */
+    content:'';
+    z-index: 200;
+    top: 40px;
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(251, 251, 251, 1) 0%, rgba(251, 251, 251, 0) 100%);
+    position: relative;
+}
+
+.editDeleteIcons {
+    top: 25%;
 }
