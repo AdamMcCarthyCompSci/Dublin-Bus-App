@@ -12,8 +12,9 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import styles from './Map.module.css';
 import { Directions } from "./Directions";
 import Zoom from '@material-ui/core/Zoom';
+import dayjs from 'dayjs';
 
-export function Favourites({onOriginChanged, onOriginLoad, origin, setOrigin, darkBackground, darkForeground, darkText, originError, onDestinationChanged, onDestinationLoad, destination, setDestination, destinationError, leaveArrive, setLeaveArrive, setNewDirections, selectedDate, setSelectedDate, setMenu, showWeather}) {
+export function Favourites({origin, darkBackground, darkForeground, darkText, destination, leaveArrive, setLeaveArrive, setMenu, showWeather, setNewDirections, setOrigin, setDestination, originError, destinationError, setSelectedDate}) {
     const [favourites, setFavourites] = React.useState([
         // {title: "Morning Commute", origin: "O'Connell Street", destination: "UCD", time: "8:00"}, 
         // {title: "Evening Commute", origin: "UCD", destination: "O'Connell Street", time: "17:00"}, 
@@ -28,6 +29,7 @@ export function Favourites({onOriginChanged, onOriginLoad, origin, setOrigin, da
     const [favouriteOriginBox, setFavouriteOriginBox] = React.useState('');
     const [favouriteDestinationBox, setFavouriteDestinationBox] = React.useState('');
     const [newFavouriteDirections, setNewFavouriteDirections] = React.useState(true);
+    const [editingFavourite, setEditingFavourite] = React.useState(null);
 
     const mapBounds = {
         north: 54.345804,
@@ -112,18 +114,51 @@ export function Favourites({onOriginChanged, onOriginLoad, origin, setOrigin, da
         )
     }
 
-    const editFavourite = () => {
+    const editFavourite = (index) => {
+      const editing = favourites.filter((indexFavourite, favourite) => index === indexFavourite);
+      setFavouriteOrigin(editing[0].origin);
+      setFavouriteDestination(editing[0].destination);
+      setSelectedTime(editing[0].time);
+      setEditingFavourite(editing[0]);
+      // Editing a favourite and changing to another view before submitting deletes the favourite as of right now 
+      setFavourites(favourites.filter((indexFavourite, favourite) => index !== indexFavourite));
         return (
-            console.log("edit")
+            setFavouriteView(false)
         )
     }
 
     const saveFavourite = (origin, destination, time) => {
+        setFavouriteOrigin("");
+        setFavouriteDestination("");
+        setSelectedTime(new Date());
+        setEditingFavourite("");
         setFavourites([...favourites, {title: "Added!", origin: origin, destination: destination, time: time}])
     }
 
     const deleteFavourite = (index) => {
         setFavourites(favourites.filter((indexFavourite, favourite) => index !== indexFavourite))
+    }
+
+    const getFavouriteDescription = (favourite) => {
+      const description = "From " + favourite.origin + " to "  + favourite.destination + " at " + dayjs(favourite.time).format("HH:mm");
+      return (
+        description
+      )
+    }
+
+    const selectFavourite = (favourite) => {
+      const date = new Date();
+      console.log(originError, destinationError)
+      date.setHours(Number(dayjs(favourite.time).format("HH")));
+      date.setMinutes(Number(dayjs(favourite.time).format("mm")));
+      showWeather(date);
+      setSelectedDate(date);
+      setLeaveArrive("Arrive At:");
+      setOrigin(favourite.origin);
+      setDestination(favourite.destination);
+      setMenu('Results');
+      setNewDirections(false);
+      // Call prediction
     }
 
     return (
@@ -175,13 +210,14 @@ export function Favourites({onOriginChanged, onOriginLoad, origin, setOrigin, da
                     <Button
                     fullWidth={true}
                     variant="contained"
-                    color="primary">
+                    color="primary"
+                    onClick={() => selectFavourite(favourite)}>
                         <Typography>{favourite.title}</Typography> 
                     </Button>
                     </Grid>
                     <Grid item xs={1}>
                     <Tooltip title="Edit favourite" aria-label="Edit favourite">
-                        <Fab color="primary" size="small" aria-label="edit" className={styles.editDeleteIcons} onClick={() => editFavourite()}>
+                        <Fab color="primary" size="small" aria-label="edit" className={styles.editDeleteIcons} onClick={() => editFavourite(favourite)}>
                             <EditIcon/>
                         </Fab>
                     </Tooltip>
@@ -196,7 +232,7 @@ export function Favourites({onOriginChanged, onOriginLoad, origin, setOrigin, da
                     </Grid>
                     <Grid container spacing={0}>
                         <Grid item xs={10}>
-                        <p style={{color: darkText}}>From {favourite.origin} to {favourite.destination} at {favourite.time.toString()}</p>
+                        <p style={{color: darkText}}>{getFavouriteDescription(favourite)}</p>
                         </Grid>
                         <Grid item xs={2}></Grid>
                     </Grid>

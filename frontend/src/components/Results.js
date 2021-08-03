@@ -22,10 +22,12 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
 
     useEffect(() => {
         setResponse(callbackResponse ? callbackResponse.routes[0].legs[0] : null);
+        console.log("response", callbackResponse ? callbackResponse.routes[0].legs[0] : null);
     }, [callbackResponse, menu]);
 
     useEffect(() => {
         setWalkingResponse(walkingCallbackResponse ? walkingCallbackResponse.routes[0].legs[0] : null);
+        console.log("walkingResponse", walkingCallbackResponse ? walkingCallbackResponse.routes[0].legs[0] : null);
         setWalkingConditions(walkingCallbackResponse ? [walkingCallbackResponse.routes[0].legs[0].distance.value < 2000, weather.feels_like > 10, goodWeather.includes(weather.icon)] : [null]);
     }, [walkingCallbackResponse, menu]);
 
