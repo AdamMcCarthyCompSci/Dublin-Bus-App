@@ -42,12 +42,13 @@ class UserRegister extends React.Component {
     }
 
     onInputChange(event) {
-        this.setState({
+         this.setState({
             [event.target.name]: event.target.value,
             errors: this.state.errors.filter(e => {
                 return e !== event.target.name;
             })
         });
+
     }
 
     validateForm() {
@@ -75,6 +76,7 @@ class UserRegister extends React.Component {
     handleClose() {
         this.props.setRegister(false);
         this.setState({ checkbox: false });
+        this.setState({ errors: [] });
     }
 
     submitRegister(e) {
