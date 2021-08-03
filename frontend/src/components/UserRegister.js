@@ -74,6 +74,7 @@ class UserRegister extends React.Component {
 
     handleClose() {
         this.props.setRegister(false);
+        this.setState({ checkbox: false });
     }
 
     submitRegister(e) {
