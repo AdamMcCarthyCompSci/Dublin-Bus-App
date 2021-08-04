@@ -31,25 +31,28 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
 
     useEffect( () => {
       async function fetchData(){
-        const result = await axios(
-            process.env.REACT_APP_API_URL + '/user/',
-        )
+        const result = await axios({
+          url: process.env.REACT_APP_API_URL + '/user/',
+        })
         setFavourites(result.data.favourites)
         }
-        fetchData();
-    },[])
+      fetchData();
+    },
+    [])
 
     useEffect( () => {
-      async function postData()
-      const result = await axios({
-        method: 'POST',
-        url: process.env.REACT_APP_API_URL + "/user/",
-        data: {
+      async function postData(){
+        const result = await axios({
+          method: 'POST',
+          url: process.env.REACT_APP_API_URL + '/user/',
+          data: {
             favourites: favourites
-        }
-    })
-    postData();
-    }, [favourites])
+          }
+      })
+    }
+      postData();
+    }, 
+    [favourites])
 
     const mapBounds = {
         north: 54.345804,

@@ -53,7 +53,8 @@ const classes = useStyles();
           value={favouriteTitle}
           onChange={handleTitleChange}
           placeholder={favouriteTitle ? favouriteTitle : "Enter a title"}
-          // placeholder={title ? title : "Enter a title"}
+          error={favouriteTitle.length > 25}
+          label={favouriteTitle.length > 25 ? "Title cannot be more than 25 characters" : ""}
           inputProps={{ 'aria-label': 'search google maps', style: {color: darkText} }}
         />
         </Paper>
@@ -150,7 +151,7 @@ const classes = useStyles();
           </Button>
         }
 
-        {origin !== "" && destination !== "" && originError === "" && destinationError === "" &&
+        {origin !== "" && destination !== "" && originError === "" && destinationError === "" && favouriteTitle.length <= 25 &&
         favouriteRoute && 
           <Button
           className={styles.favouriteSubmitButton}
@@ -166,7 +167,7 @@ const classes = useStyles();
             Submit 
           </Button>
         }
-        {((origin === "" || destination === "") || (originError !== "" || destinationError !== "")) && 
+        {(((origin === "" || destination === "") || (originError !== "" || destinationError !== "")) || favouriteTitle.length > 25 ) && 
         favouriteRoute &&
           <Button
           className={styles.favouriteSubmitButton}
