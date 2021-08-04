@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
@@ -15,11 +16,7 @@ import Zoom from '@material-ui/core/Zoom';
 import dayjs from 'dayjs';
 
 export function Favourites({origin, darkBackground, darkForeground, darkText, destination, leaveArrive, setLeaveArrive, setMenu, showWeather, setNewDirections, setOrigin, setDestination, originError, destinationError, setSelectedDate}) {
-    const [favourites, setFavourites] = React.useState([
-        // {title: "Morning Commute", origin: "O'Connell Street", destination: "UCD", time: "8:00"}, 
-        // {title: "Evening Commute", origin: "UCD", destination: "O'Connell Street", time: "17:00"}, 
-        // {title: "Training", origin: "O'Connell Street", destination: "Phoenix Park", time: "20:00"}
-    ]);
+    const [favourites, setFavourites] = React.useState([]);
     const [favouriteView, setFavouriteView] = React.useState(true);
     const [selectedTime, setSelectedTime] = React.useState(new Date());
     const [favouriteTitle, setFavouriteTitle] = React.useState("")
@@ -31,6 +28,16 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
     const [favouriteDestinationBox, setFavouriteDestinationBox] = React.useState('');
     const [newFavouriteDirections, setNewFavouriteDirections] = React.useState(true);
     const [editingFavourite, setEditingFavourite] = React.useState(null);
+
+    // useEffect( () => {
+    //   async function fetchData(){
+    //     const result = await axios(
+    //         process.env.REACT_APP_API_URL + '/bus/favourites',
+    //     )
+    //     setFavourites(result.data.favourites)
+    //     }
+    //     fetchData();
+    // },[])
 
     const mapBounds = {
         north: 54.345804,
