@@ -5,22 +5,20 @@ import { useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import Slide from '@material-ui/core/Slide';
 import SwipeableViews from "react-swipeable-views";
-import Routes from "./Routes.js";
+import Routes  from "./Routes.js";
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { Directions } from "./Directions";
 import { Favourites } from "./Favourites";
 import {useAuth} from "../auth";
 
-
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
-  
+
     return (
       <div
         role="tabpanel"
@@ -30,20 +28,20 @@ import {useAuth} from "../auth";
         {...other}
       >
         {value === index && (
-          <Box p={3}>
-            <Typography>{children}</Typography>
+          <Box p={3} style={{ maxHeight: '200px', overflowY: 'scroll'}}>
+            {children}
           </Box>
         )}
       </div>
     );
   }
-  
+
   TabPanel.propTypes = {
     children: PropTypes.node,
     index: PropTypes.any.isRequired,
     value: PropTypes.any.isRequired,
   };
-  
+
   // Tab functionality
   function a11yProps(index) {
     return {
@@ -84,7 +82,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
     return (
       <div className={styles.homeContainer}>
-      
+
       <Slide direction="up" in={menu==='Home'} mountOnEnter unmountOnExit>
       <Paper elevation={3} className={styles.homePaper} style={{backgroundColor: darkBackground}}>
       <AppBar position="static" color="primary">
@@ -109,80 +107,64 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
       >
         {/* First tab, contains location search boces and date/time picker */}
         <TabPanel value={value} index={0} dir={theme.direction} style={{height:"310px"}}>
-
-
-
-        <Directions 
-          onOriginChanged={onOriginChanged}
-          onOriginLoad={onOriginLoad}
-          origin={origin}
-          setOrigin={setOrigin}
-          darkBackground={darkBackground}
-          darkForeground={darkForeground}
-          darkText={darkText}
-          originError={originError}
-          onDestinationChanged={onDestinationChanged}
-          onDestinationLoad={onDestinationLoad}
-          destination={destination}
-          setDestination={setDestination}
-          destinationError={destinationError}
-          leaveArrive={leaveArrive}
-          setLeaveArrive={setLeaveArrive}
-          setNewDirections={setNewDirections}
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          setMenu={setMenu}
-          showWeather={showWeather}
-          favouriteRoute={false}
-          setFavouriteView={null}
-        />
-
-
-
+            <Directions
+                onOriginChanged={onOriginChanged}
+                onOriginLoad={onOriginLoad}
+                origin={origin}
+                setOrigin={setOrigin}
+                darkBackground={darkBackground}
+                darkForeground={darkForeground}
+                darkText={darkText}
+                originError={originError}
+                onDestinationChanged={onDestinationChanged}
+                onDestinationLoad={onDestinationLoad}
+                destination={destination}
+                setDestination={setDestination}
+                destinationError={destinationError}
+                leaveArrive={leaveArrive}
+                setLeaveArrive={setLeaveArrive}
+                setNewDirections={setNewDirections}
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                setMenu={setMenu}
+                showWeather={showWeather}
+                favouriteRoute={false}
+                setFavouriteView={null}
+            />
         </TabPanel>
         {/* Second tab, contains route dropdowns */}
         <TabPanel value={value} index={1} dir={theme.direction} style={{height:"310px"}}>
-
-
-
-        <Routes logged={logged} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>
-
-
-
+            <Routes
+                logged={logged}
+                darkBackground={darkBackground}
+                darkForeground={darkForeground}
+                darkText={darkText}
+            />
         </TabPanel>
         {/* Third tab, contains miscellaneous features */}
         <TabPanel value={value} index={2} dir={theme.direction} style={{height:"310px"}}>
-
-
-
-
-        {/* {<p style={{color: darkText}}>Sign in or register to create and view your favourite routes</p>} */}
-        <Favourites
-          onOriginChanged={onOriginChanged}
-          onOriginLoad={onOriginLoad}
-          origin={origin}
-          setOrigin={setOrigin}
-          darkBackground={darkBackground}
-          darkForeground={darkForeground}
-          darkText={darkText}
-          originError={originError}
-          onDestinationChanged={onDestinationChanged}
-          onDestinationLoad={onDestinationLoad}
-          destination={destination}
-          setDestination={setDestination}
-          destinationError={destinationError}
-          leaveArrive={leaveArrive}
-          setLeaveArrive={setLeaveArrive}
-          setNewDirections={setNewDirections}
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          setMenu={setMenu}
-          showWeather={showWeather}
-        />
-
-
-
-
+            <Favourites
+                onOriginChanged={onOriginChanged}
+                onOriginLoad={onOriginLoad}
+                origin={origin}
+                setOrigin={setOrigin}
+                darkBackground={darkBackground}
+                darkForeground={darkForeground}
+                darkText={darkText}
+                originError={originError}
+                onDestinationChanged={onDestinationChanged}
+                onDestinationLoad={onDestinationLoad}
+                destination={destination}
+                setDestination={setDestination}
+                destinationError={destinationError}
+                leaveArrive={leaveArrive}
+                setLeaveArrive={setLeaveArrive}
+                setNewDirections={setNewDirections}
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                setMenu={setMenu}
+                showWeather={showWeather}
+            />
         </TabPanel>
       </SwipeableViews>
 

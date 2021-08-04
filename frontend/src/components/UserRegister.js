@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from "axios";
-import { PrivacyPolicy } from "./PrivacyPolicy.js";
+import {PrivacyPolicy} from "./PrivacyPolicy.js";
 import Button from "@material-ui/core/Button";
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -8,22 +8,29 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from "@material-ui/lab/Alert";
-import Container from '@material-ui/core/Container';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import {logout} from "../auth";
 
 class UserRegister extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-        showHidePolicy: false,
-        privacyCheckbox: false,
-        ageCheckbox: false,
-        isOpen: false,
-        errors: []
+            showHidePolicy: false,
+            privacyCheckbox: false,
+            ageCheckbox: false,
+            isOpen: false,
+            errors: [],
+            first_name: null,
+            last_name: null,
+            fare_type: 'Adult',
+            username: null,
+            email: null,
+            password: null,
+            confirm_password: null
         };
 
         this.hideComponent = this.hideComponent.bind(this);
@@ -34,21 +41,21 @@ class UserRegister extends React.Component {
     }
 
     handleChange = () => {
-        this.setState({ privacyCheckbox: !this.state.privacyCheckbox });
+        this.setState({privacyCheckbox: !this.state.privacyCheckbox});
 
     };
 
-    handleAgeChange = () =>{
-    this.setState({ ageCheckbox: !this.state.ageCheckbox });
+    handleAgeChange = () => {
+        this.setState({ageCheckbox: !this.state.ageCheckbox});
     }
 
     hideComponent() {
-        this.setState({ showHidePolicy: !this.state.showHidePolicy });
-        this.setState({ isOpen: !this.state.isOpen});
+        this.setState({showHidePolicy: !this.state.showHidePolicy});
+        this.setState({isOpen: !this.state.isOpen});
     }
 
     onInputChange(event) {
-         this.setState({
+        this.setState({
             [event.target.name]: event.target.value,
             errors: this.state.errors.filter(e => {
                 return e !== event.target.name;
@@ -81,9 +88,9 @@ class UserRegister extends React.Component {
 
     handleClose() {
         this.props.setRegister(false);
-        this.setState({ privacyCheckbox : false });
-        this.setState({ ageCheckbox : false });
-        this.setState({ errors: [] });
+        this.setState({privacyCheckbox: false});
+        this.setState({ageCheckbox: false});
+        this.setState({errors: []});
     }
 
     submitRegister(e) {
@@ -99,9 +106,11 @@ class UserRegister extends React.Component {
                 email: this.state.email,
                 password: this.state.password
             }
-        }, this.state).then((res) => {
-            this.handleClose();
-            this.props.setLogin(true);
+        }, this.state).then(res => {
+            if (res.status === 201) {
+                this.handleClose();
+                this.props.setLogin(true);
+            }
         }).catch(() => {
             this.setState({
                 errors: ['request']
@@ -110,8 +119,8 @@ class UserRegister extends React.Component {
     }
 
     render() {
-    const {showHidePolicy}=this.state;
-    let buttonText=this.state.isOpen ? "Close": "View Privacy Statement";
+        const {showHidePolicy} = this.state;
+        let buttonText = this.state.isOpen ? "Close" : "View Privacy Statement";
         return (
             <Dialog
                 open={this.props.show}
@@ -139,7 +148,7 @@ class UserRegister extends React.Component {
                         />
                         <TextField
                             name="last_name"
-                            label="Surname"
+                            label="Last Name"
                             type="text"
                             style={{
                                 marginBottom: '16px'
@@ -162,6 +171,7 @@ class UserRegister extends React.Component {
                                 variant="outlined"
                                 name="fare_type"
                                 label="Fare Type"
+                                value={this.state.fare_type}
                                 required
                                 onChange={this.onInputChange}
                             >
@@ -211,19 +221,31 @@ class UserRegister extends React.Component {
                             InputProps={{inputProps: {min: 8}}}
                             onChange={this.onInputChange}
                         />
+                        <TextField
+                            name="confirm_password"
+                            label="Confirm Password"
+                            type="password"
+                            style={{
+                                marginBottom: '16px'
+                            }}
+                            variant="outlined"
+                            fullWidth
+                            required
+                            error={this.state.errors.includes("confirm_password")}
+                            InputProps={{inputProps: {min: 8}}}
+                            onChange={this.onInputChange}
+                        />
 
-                           <input onChange={this.handleAgeChange} type="checkbox" id="ageconsent" name="ageconsent"
-                               value="ageconsent"/>
-                               <label htmlFor="ageconsent"> Please tick to confirm you are 16 years or older.</label>
+                        <div><input onChange={this.handleAgeChange} type="checkbox" id="ageconsent" name="ageconsent"
+                                    value="ageconsent"/>
+                            <label htmlFor="ageconsent"> Please tick to confirm you are 16 years or older.</label></div>
 
-                               <p></p>
-
-                        <input onChange={this.handleChange} type="checkbox" id="privacypolicy" name="privacypolicy"
-                               value="privacypolicy"/>
-                         <label htmlFor="privacypolicy"> Please tick to confirm you have read and accept our privacy
-                            agreement.</label>
+                        <div><input onChange={this.handleChange} type="checkbox" id="privacypolicy" name="privacypolicy"
+                                    value="privacypolicy"/>
+                            <label htmlFor="privacypolicy"> Please tick to confirm you have read and accept our privacy
+                                agreement.</label></div>
                         {showHidePolicy && <PrivacyPolicy/>}
-                               <div style={{textAlign: 'center'}}>
+                        <div style={{textAlign: 'center'}}>
                             <Button
                                 variant="text"
                                 color="primary"
@@ -233,24 +255,21 @@ class UserRegister extends React.Component {
                             </Button>
                         </div>
 
-
-
-
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">
                             Close
                         </Button>
-                        <Button id='register' type="submit" onClick={this.validateForm} variant="contained" color="primary" disabled={!this.state.privacyCheckbox || !this.state.ageCheckbox} enabled={this.state.privacyCheckbox || this.state.ageCheckbox}>
+                        <Button id='register' type="submit" onClick={this.validateForm} variant="contained"
+                                color="primary"
+                                disabled={!this.state.privacyCheckbox || !this.state.ageCheckbox || this.state.password !== this.state.confirm_password}>
                             Register
                         </Button>
                     </DialogActions>
                 </form>
             </Dialog>
-
         );
     }
-
 }
 
 export default UserRegister;

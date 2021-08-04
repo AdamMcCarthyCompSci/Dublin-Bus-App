@@ -3,6 +3,7 @@ import requests
 from .models import *
 from datetime import datetime
 from rest_framework_simplejwt.backends import TokenBackend
+import toolz
 
 
 def stops(request):
@@ -36,16 +37,18 @@ def boarding(request, route_id, direction_id):
     boarding = [
         {"id": route.dublin_bus_routes_id, "busnumber": route.routename, "routedescription": route.routedescription,
          "direction": route.direction, "platecode": route.platecode, "shortcommonname_en": route.shortcommonname_en, "stopsequence": route.stopsequence}
-        for route in DublinBusRoutes.objects.filter(routename=route_id, direction=direction_id).order_by('stopsequence')]
+        for route in DublinBusRoutes.objects.filter(routename=route_id, direction=direction_id).order_by('dublin_bus_routes_id', 'stopsequence')]
+    toolz.unique(boarding, key=lambda x: x.platecode)
     return JsonResponse({'boarding': boarding})
 
 
 def alighting(request, route_id, direction_id, boarding_id):
-    boarding = DublinBusRoutes.objects.get(routename=route_id, direction=direction_id, platecode=boarding_id)
+    boarding = DublinBusRoutes.objects.filter(routename=route_id, direction=direction_id, platecode=boarding_id).order_by('dublin_bus_routes_id')[0]
     alighting = [
         {"id": route.dublin_bus_routes_id, "busnumber": route.routename, "routedescription": route.routedescription,
          "direction": route.direction, "platecode": route.platecode, "shortcommonname_en": route.shortcommonname_en, "stopsequence": route.stopsequence}
-        for route in DublinBusRoutes.objects.filter(routename=route_id, direction=direction_id, stopsequence__gt=boarding.stopsequence).order_by('stopsequence')]
+        for route in DublinBusRoutes.objects.filter(routename=route_id, direction=direction_id, stopsequence__gt=boarding.stopsequence).order_by('dublin_bus_routes_id', 'stopsequence')]
+    toolz.unique(alighting, key=lambda x: x.platecode)
     return JsonResponse({'alighting': alighting})
 
 

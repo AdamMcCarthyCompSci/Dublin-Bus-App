@@ -95,6 +95,7 @@ class Routes extends React.Component {
                 price: result.data
             });
         }
+        // document.getElementById("price").scrollIntoView();
     }
 
     async handleSubmit() {
@@ -108,79 +109,86 @@ class Routes extends React.Component {
 
     async activateDirectionDropdown(e) {
         const {value} = e.target;
-        this.setState({
+        await this.setState({
             ...this.state,
             route: value,
             direction: "",
+            directions: [],
             boardingStop: "",
             alightingStop: "",
             fareType: "",
             price: null,
+            directionDropdown: true,
             boardingDropdown: false,
             alightingDropdown: false,
             fareTypeDropdown: false,
             finalDropdown: false
         });
+        // document.getElementById("direction").scrollIntoView();
         const result = await axios(process.env.REACT_APP_API_URL + '/bus/routes/' + value + '/directions');
         this.setState({
             ...this.state,
-            directions: result.data.directions,
-            directionDropdown: true
+            directions: result.data.directions
         });
     }
 
     async activateBoardingDropdown(e) {
         const {value} = e.target;
-        this.setState({
+        await this.setState({
             ...this.state,
             direction: value,
             boardingStop: "",
+            boardingStops: [],
             alightingStop: "",
             fareType: "",
             price: null,
+            boardingDropdown: true,
             alightingDropdown: false,
             fareTypeDropdown: false,
             finalDropdown: false
         });
+        // document.getElementById("boarding").scrollIntoView();
         const result = await axios(process.env.REACT_APP_API_URL + '/bus/routes/' + this.state.route + '/directions/' + value + '/boarding');
         this.setState({
             ...this.state,
-            boardingStops: result.data.boarding,
-            boardingDropdown: true
+            boardingStops: result.data.boarding
         });
     }
 
     async activateAlightingDropdown(e) {
         const {value} = e.target;
-        this.setState({
+        await this.setState({
             ...this.state,
             boardingStop: value,
             alightingStop: "",
+            alightingStops: [],
             fareType: "",
             price: null,
+            alightingDropdown: true,
             fareTypeDropdown: false,
             finalDropdown: false,
         });
+        // document.getElementById("alighting").scrollIntoView();
         const result = await axios(process.env.REACT_APP_API_URL + '/bus/routes/' + this.state.route + '/directions/' + this.state.direction + '/boarding/' + value + '/alighting');
         this.setState({
             ...this.state,
-            alightingStops: result.data.alighting,
-            alightingDropdown: true
+            alightingStops: result.data.alighting
         });
     }
 
-    activateFareType(e) {
+    async activateFareType(e) {
         const {value} = e.target;
         if (this.props.logged) {
-            this.setState({
+            await this.setState({
                 ...this.state,
                 alightingStop: value,
                 fareType: "",
                 price: null,
                 finalDropdown: true,
             });
+            // document.getElementById("submit").scrollIntoView();
         } else {
-            this.setState({
+            await this.setState({
                 ...this.state,
                 alightingStop: value,
                 fareType: "",
@@ -188,55 +196,60 @@ class Routes extends React.Component {
                 fareTypeDropdown: true,
                 finalDropdown: false,
             });
+            // document.getElementById("fare").scrollIntoView();
         }
     }
 
-    activateFinalDropdown(e) {
+    async activateFinalDropdown(e) {
         const {value} = e.target;
-        this.setState({
+        await this.setState({
             ...this.state,
             fareType: value,
             price: null,
             finalDropdown: true,
         });
+        // document.getElementById("submit").scrollIntoView();
     }
 
     render() {
         if (this.state.loading) {
-            return (<div>
+            return (<React.Fragment>
                 <CircularProgress/>
                 <div style={{color: this.props.darkText, marginTop: '8px'}}>Retrieving routes...</div>
-            </div>);
+            </React.Fragment>);
         } else {
             return (
-                <div style={{overflowY: 'scroll', maxHeight: '220px'}}>
+                <React.Fragment>
                     {this.state.price && (this.props.logged ?
-                        (this.state.price.cost ? <Alert severity="info" style={{marginBottom: '16px'}}>
+                            (this.state.price.cost ? <Alert id="price" severity="info" style={{marginBottom: '16px'}}>
+                                    Your journey will cost: €{this.state.price.cost}
+                                </Alert>
+                                :
+                                <Alert id="price" severity="info" style={{marginBottom: '16px'}}>
+                                    Your journey will cost:
+                                    <ul style={{textAlign: 'left', marginBottom: 0}}>
+                                        <li>Leap Card: €{this.state.price.leap}</li>
+                                        <li>Cash: €{this.state.price.cash}</li>
+                                    </ul>
+                                </Alert>)
+                            :
+                            <Alert id="price" severity="info" style={{marginBottom: '16px'}}>
                                 Your journey will cost: €{this.state.price.cost}
                             </Alert>
-                            :
-                            <Alert severity="info" style={{marginBottom: '16px'}}>
-                                Your journey will cost:
-                                <ul style={{textAlign: 'left', marginBottom: 0}}>
-                                    <li>Leap Card: €{this.state.price.leap}</li>
-                                    <li>Cash: €{this.state.price.cash}</li>
-                                </ul>
-                            </Alert>)
-                        :
-                        <Alert severity="info" style={{marginBottom: '16px'}}>
-                            Your journey will cost: €{this.state.price.cost}
-                        </Alert>)}
-
-                    <Grid container spacing={1} style={{marginBottom: "20px"}}>
-                        {this.state.routes.length > 0 && <Grid item xs={6}>
+                    )}
+                    <Grid container spacing={1} style={{marginBottom: "8px"}}>
+                        {this.state.routes.length > 0 && <Grid item xs={12} md={6} id="route">
                             <Paper className={styles.routeDropdownContainer}
                                    style={{backgroundColor: this.props.darkForeground}}>
-                                <FormControl>
+                                <FormHelperText style={{color: this.props.darkText, marginBottom: '8px'}}>1. Select a
+                                    Route</FormHelperText>
+                                <FormControl variant="outlined" fullWidth>
                                     <InputLabel id="dropdown1" style={{color: this.props.darkText}}>Route</InputLabel>
                                     <Select
                                         style={{color: this.props.darkText}}
                                         labelId="dropdown1"
                                         id="dropdown1"
+                                        label="Route"
                                         value={this.state.route}
                                         onChange={this.activateDirectionDropdown}
                                     >
@@ -245,95 +258,142 @@ class Routes extends React.Component {
                                                       value={route.routename}>{route.routename}</MenuItem>
                                         ))}
                                     </Select>
-                                    <FormHelperText style={{color: this.props.darkText}}>Select a Route</FormHelperText>
                                 </FormControl>
                             </Paper>
                         </Grid>}
-                        {this.state.directionDropdown && <Grid item xs={6}>
+                        {this.state.directionDropdown && (
+                            <Grid item xs={12} md={6} id="direction">
+                                <Paper className={styles.routeDropdownContainer}
+                                       style={{backgroundColor: this.props.darkForeground}}>
+                                    {this.state.directions.length > 0 ?
+                                        <div>
+                                            <FormHelperText style={{color: this.props.darkText, marginBottom: '8px'}}>2.
+                                                Select a
+                                                Direction</FormHelperText>
+                                            <FormControl variant="outlined" fullWidth>
+                                                <InputLabel id="dropdown2"
+                                                            style={{color: this.props.darkText}}>Direction</InputLabel>
+                                                <Select
+                                                    style={{color: this.props.darkText}}
+                                                    labelId="dropdown2"
+                                                    id="dropdown2"
+                                                    label="Direction"
+                                                    value={this.state.direction}
+                                                    onChange={this.activateBoardingDropdown}
+                                                >
+                                                    {this.state.directions.map(direction => (
+                                                        <MenuItem key={direction.direction}
+                                                                  value={direction.direction}>{direction.routedescription + " " + direction.direction}</MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </div>
+                                        :
+                                        <div style={{padding: '15px 0'}}>
+                                            <CircularProgress size={33}/>
+                                            <div>
+                                                <small style={{color: this.props.darkText, marginTop: '8px'}}>
+                                                    Retrieving directions...
+                                                </small>
+                                            </div>
+                                        </div>
+                                    }
+                                </Paper>
+                            </Grid>)}
+                        {this.state.boardingDropdown && <Grid item xs={12} md={6} id="boarding">
                             <Paper className={styles.routeDropdownContainer}
                                    style={{backgroundColor: this.props.darkForeground}}>
-                                <FormControl>
-                                    <InputLabel id="dropdown2"
-                                                style={{color: this.props.darkText}}>Direction</InputLabel>
-                                    <Select
-                                        style={{color: this.props.darkText}}
-                                        labelId="dropdown2"
-                                        id="dropdown2"
-                                        value={this.state.direction}
-                                        onChange={this.activateBoardingDropdown}
-                                    >
-                                        {this.state.directions.map(direction => (
-                                            <MenuItem key={direction.direction}
-                                                      value={direction.direction}>{direction.routedescription + " " + direction.direction}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    <FormHelperText style={{color: this.props.darkText}}>Select a
-                                        Direction</FormHelperText>
-                                </FormControl>
+                                {this.state.boardingStops.length > 0 ?
+                                    <div>
+                                        <FormHelperText style={{color: this.props.darkText, marginBottom: '8px'}}>3.
+                                            Select a Boarding
+                                            Stop</FormHelperText>
+                                        <FormControl variant="outlined" fullWidth>
+                                            <InputLabel id="dropdown3" style={{color: this.props.darkText}}>Boarding
+                                                Stop</InputLabel>
+                                            <Select
+                                                style={{color: this.props.darkText}}
+                                                labelId="dropdown3"
+                                                id="dropdown3"
+                                                label="Boarding Stop"
+                                                value={this.state.boardingStop}
+                                                onChange={this.activateAlightingDropdown}>
+                                                {this.state.boardingStops.map(boarding => (
+                                                    <MenuItem key={boarding.id}
+                                                              value={boarding.platecode}>{boarding.shortcommonname_en + " Bus Stop: " + boarding.platecode}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </div>
+                                    :
+                                    <div style={{padding: '15px 0'}}>
+                                        <CircularProgress size={33}/>
+                                        <div>
+                                            <small style={{color: this.props.darkText, marginTop: '8px'}}>
+                                                Retrieving boarding stops...
+                                            </small>
+                                        </div>
+                                    </div>
+                                }
                             </Paper>
                         </Grid>}
-                        {this.state.boardingDropdown && <Grid item xs={6}>
+                        {this.state.alightingDropdown && <Grid item xs={12} md={6} id="alighting">
                             <Paper className={styles.routeDropdownContainer}
                                    style={{backgroundColor: this.props.darkForeground}}>
-                                <FormControl>
-                                    <InputLabel id="dropdown3" style={{color: this.props.darkText}}>Boarding
-                                        Stop</InputLabel>
-                                    <Select
-                                        style={{color: this.props.darkText}}
-                                        labelId="dropdown3"
-                                        id="dropdown3"
-                                        value={this.state.boardingStop}
-                                        onChange={this.activateAlightingDropdown}>
-                                        {this.state.boardingStops.map(boarding => (
-                                            <MenuItem key={boarding.id}
-                                                      value={boarding.platecode}>{boarding.shortcommonname_en + " Bus Stop: " + boarding.platecode}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    <FormHelperText style={{color: this.props.darkText}}>Select a Boarding
-                                        Stop</FormHelperText>
-                                </FormControl>
+                                {this.state.alightingStops.length > 0 ?
+                                    <div>
+                                        <FormHelperText style={{color: this.props.darkText, marginBottom: '8px'}}>4. Select an Alighting
+                                            Stop</FormHelperText>
+                                        <FormControl variant="outlined" fullWidth>
+                                            <InputLabel id="dropdown4"
+                                                        style={{color: this.props.darkText, marginBottom: '8px'}}>Alighting
+                                                Stop</InputLabel>
+                                            <Select
+                                                style={{color: this.props.darkText}}
+                                                labelId="dropdown4"
+                                                id="dropdown4"
+                                                label="Alighting Stop"
+                                                fullWidth
+                                                value={this.state.alightingStop}
+                                                onChange={this.activateFareType}>
+                                                {this.state.alightingStops.map(alighting => (
+                                                    <MenuItem key={alighting.id}
+                                                              value={alighting.platecode}>{alighting.shortcommonname_en + " Bus Stop: " + alighting.platecode}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </div>
+                                    :
+                                    <div style={{padding: '15px 0'}}>
+                                        <CircularProgress size={33}/>
+                                        <div>
+                                            <small style={{color: this.props.darkText, marginTop: '8px'}}>
+                                                Retrieving alighting stops...
+                                            </small>
+                                        </div>
+                                    </div>
+                                }
                             </Paper>
                         </Grid>}
-                        {this.state.alightingDropdown && <Grid item xs={6}>
+                        {(!this.props.logged && this.state.fareTypeDropdown) && <Grid item xs={12} md={6} id="fare">
                             <Paper className={styles.routeDropdownContainer}
                                    style={{backgroundColor: this.props.darkForeground}}>
-                                <FormControl>
-                                    <InputLabel id="dropdown4" style={{color: this.props.darkText}}>Alighting
-                                        Stop</InputLabel>
-                                    <Select
-                                        style={{color: this.props.darkText}}
-                                        labelId="dropdown4"
-                                        id="dropdown4"
-                                        value={this.state.alightingStop}
-                                        onChange={this.activateFareType}>
-                                        {this.state.alightingStops.map(alighting => (
-                                            <MenuItem key={alighting.id}
-                                                      value={alighting.platecode}>{alighting.shortcommonname_en + " Bus Stop: " + alighting.platecode}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    <FormHelperText style={{color: this.props.darkText}}>Select an Alighting
-                                        Stop</FormHelperText>
-                                </FormControl>
-                            </Paper>
-                        </Grid>}
-                        {(!this.props.logged && this.state.fareTypeDropdown) && <Grid item xs={6}>
-                            <Paper className={styles.routeDropdownContainer}
-                                   style={{backgroundColor: this.props.darkForeground}}>
-                                <FormControl>
+                                <FormHelperText style={{color: this.props.darkText, marginBottom: '8px'}}>5. Select fare
+                                    type</FormHelperText>
+                                <FormControl variant="outlined" fullWidth>
                                     <InputLabel id="dropdown5" style={{color: this.props.darkText}}>Fare
                                         Type</InputLabel>
                                     <Select
                                         style={{color: this.props.darkText}}
                                         labelId="dropdown5"
                                         id="dropdown5"
+                                        label="Fare Type"
                                         value={this.state.fareType}
                                         onChange={this.activateFinalDropdown}>
                                         {this.state.fares.map((fare, index) => (
                                             <MenuItem key={index} value={fare}>{fare}</MenuItem>
                                         ))}
                                     </Select>
-                                    <FormHelperText style={{color: this.props.darkText}}>Select fare
-                                        type</FormHelperText>
                                 </FormControl>
                             </Paper>
                         </Grid>}
@@ -344,11 +404,15 @@ class Routes extends React.Component {
                         className={styles.submitButton}
                         variant="contained"
                         color="primary"
-                        onClick={this.handleSubmit}>
+                        id="submit"
+                        fullWidth
+                        onClick={this.handleSubmit}
+                        size="large"
+                    >
                         Submit
                     </Button>
                     }
-                </div>
+                </React.Fragment>
             )
         }
     }
