@@ -107,6 +107,7 @@
 } */
 
 .datePickerContainer {
+    margin-top: -10px;
     /* align-items: center; */
     padding: 2px 4px;
     /* height: 10px; */

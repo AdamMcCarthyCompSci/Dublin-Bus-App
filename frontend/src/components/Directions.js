@@ -157,7 +157,7 @@ const classes = useStyles();
           className={styles.favouriteSubmitButton}
           variant="contained" 
           color="primary"
-          style={{marginTop:"-25px"}}
+          style={{marginTop:"-20px"}}
           onClick={() => {
             saveFavourite(favouriteTitle ? favouriteTitle : "Unnamed Route", origin, destination, selectedDate);
             setNewDirections(false);
@@ -173,7 +173,7 @@ const classes = useStyles();
           className={styles.favouriteSubmitButton}
           variant="contained" 
           color="primary"
-          style={{marginTop:"-25px"}}
+          style={{marginTop:"-20px"}}
           disabled
           > 
             Submit 
