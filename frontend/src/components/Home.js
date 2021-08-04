@@ -15,6 +15,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import { Directions } from "./Directions";
 import { Favourites } from "./Favourites";
+import {useAuth} from "../auth";
 
 
   function TabPanel(props) {
@@ -55,6 +56,7 @@ import { Favourites } from "./Favourites";
 export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive, callbackResponse, walkingCallbackResponse, originError, destinationError}) {
     const [value, setValue] = React.useState(0);
     const theme = useTheme();
+    const [logged] = useAuth();
 
     const showWeather = async (time) => {
       const formatTime = dayjs(time).format("YYYY-MM-DD HH:mm:ss");
@@ -143,7 +145,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
 
 
-          <Routes darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>
+        <Routes logged={logged} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>
 
 
 
