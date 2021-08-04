@@ -10,7 +10,7 @@ import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import Slide from '@material-ui/core/Slide';
 import SwipeableViews from "react-swipeable-views";
-import { Routes } from "./Routes.js";
+import Routes from "./Routes.js";
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { Directions } from "./Directions";
