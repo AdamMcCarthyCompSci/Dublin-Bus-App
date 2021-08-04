@@ -8,10 +8,56 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
 
-export function Directions({onOriginChanged, onOriginLoad, origin, darkBackground, darkForeground, darkText, originError, onDestinationChanged, onDestinationLoad, destination, destinationError, leaveArrive, setLeaveArrive, setNewDirections, selectedDate, setSelectedDate, setMenu, showWeather, favouriteRoute, saveFavourite, setFavouriteView}) {
-    return (
+export function Directions({onOriginChanged, onOriginLoad, origin, darkBackground, darkForeground, darkText, originError, onDestinationChanged, onDestinationLoad, destination, destinationError, leaveArrive, setLeaveArrive, setNewDirections, selectedDate, setSelectedDate, setMenu, showWeather, favouriteRoute, saveFavourite, setFavouriteView, favouriteTitle, handleTitleChange}) {
+  const useStyles = makeStyles((theme) => ({
+    searchPaper: {
+      padding: '2px 4px',
+      marginTop: '-10px',
+      marginBottom: '20px',
+      alignItems: 'center',
+      width: "80%",
+      marginLeft: "10%",
+      zIndex: 2,
+    },
+    standaloneSearchBox: {
+      // marginLeft: theme.spacing(1),
+      flex: 1,
+      position: "absolute",
+      width: "100%",
+      margin: "auto",
+      height: "auto",
+    },
+    input: {
+      // marginLeft: theme.spacing(1),
+      flex: 1,
+      width: "100%",
+      margin: "auto",
+      height: "auto",
+    },
+    inputTextColor:{
+      // color:'#002984'
+  }
+  }));
+
+const classes = useStyles();  
+  
+  return (
         <React.Fragment>
+        {favouriteRoute &&
+          <Paper className={classes.searchPaper} style={{backgroundColor: darkForeground}}>
+          <TextField
+          className={classes.input}
+          value={favouriteTitle}
+          onChange={handleTitleChange}
+          placeholder={favouriteTitle ? favouriteTitle : "Enter a title"}
+          // placeholder={title ? title : "Enter a title"}
+          inputProps={{ 'aria-label': 'search google maps', style: {color: darkText} }}
+        />
+        </Paper>
+        }
         <PlacesSearch 
         onPlacesChanged={onOriginChanged} 
         onPlacesLoad={onOriginLoad} 
@@ -107,11 +153,12 @@ export function Directions({onOriginChanged, onOriginLoad, origin, darkBackgroun
         {origin !== "" && destination !== "" && originError === "" && destinationError === "" &&
         favouriteRoute && 
           <Button
-          className={styles.submitButton}
+          className={styles.favouriteSubmitButton}
           variant="contained" 
           color="primary"
+          style={{marginTop:"-25px"}}
           onClick={() => {
-            saveFavourite(origin, destination, selectedDate);
+            saveFavourite(favouriteTitle ? favouriteTitle : "Unnamed Route", origin, destination, selectedDate);
             setNewDirections(false);
             setFavouriteView(true);
             // Call prediction
@@ -122,9 +169,10 @@ export function Directions({onOriginChanged, onOriginLoad, origin, darkBackgroun
         {((origin === "" || destination === "") || (originError !== "" || destinationError !== "")) && 
         favouriteRoute &&
           <Button
-          className={styles.submitButton}
+          className={styles.favouriteSubmitButton}
           variant="contained" 
           color="primary"
+          style={{marginTop:"-25px"}}
           disabled
           > 
             Submit 

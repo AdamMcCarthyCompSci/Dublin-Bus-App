@@ -72,6 +72,11 @@
     width: 50%;
 }
 
+.favouriteSubmitButton {
+    /* margin-top: 10px; */
+    width: 50%;
+}
+
 .stepTitlePaper {
     padding: 1px;
     margin-bottom: 5px;

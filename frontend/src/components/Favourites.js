@@ -22,6 +22,7 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
     ]);
     const [favouriteView, setFavouriteView] = React.useState(true);
     const [selectedTime, setSelectedTime] = React.useState(new Date());
+    const [favouriteTitle, setFavouriteTitle] = React.useState("")
     const [favouriteOrigin, setFavouriteOrigin] = React.useState('');
     const [favouriteDestination, setFavouriteDestination] = React.useState('');
     const [favouriteOriginError, setFavouriteOriginError] = React.useState("");
@@ -116,6 +117,7 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
 
     const editFavourite = (index) => {
       const editing = favourites.filter((indexFavourite, favourite) => index === indexFavourite);
+      setFavouriteTitle(editing[0].title);
       setFavouriteOrigin(editing[0].origin);
       setFavouriteDestination(editing[0].destination);
       setSelectedTime(editing[0].time);
@@ -127,12 +129,13 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
         )
     }
 
-    const saveFavourite = (origin, destination, time) => {
+    const saveFavourite = (title, origin, destination, time) => {
+        setFavouriteTitle("");
         setFavouriteOrigin("");
         setFavouriteDestination("");
         setSelectedTime(new Date());
         setEditingFavourite("");
-        setFavourites([...favourites, {title: "Added!", origin: origin, destination: destination, time: time}])
+        setFavourites([...favourites, {title: title, origin: origin, destination: destination, time: time}])
     }
 
     const deleteFavourite = (index) => {
@@ -161,6 +164,10 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
       // Call prediction
     }
 
+    const handleTitleChange = (event) => {
+      setFavouriteTitle(event.target.value);
+    }
+
     return (
         <React.Fragment>
             <Zoom in={!favouriteView} mountOnEnter unmountOnExit>
@@ -186,6 +193,8 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
                     favouriteRoute={true}
                     saveFavourite={saveFavourite}
                     setFavouriteView={setFavouriteView}
+                    favouriteTitle={favouriteTitle}
+                    handleTitleChange={handleTitleChange}
                 />
             </Zoom>
             
