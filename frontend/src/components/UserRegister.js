@@ -20,7 +20,8 @@ class UserRegister extends React.Component {
         super(props);
         this.state = {
         showHidePolicy: false,
-        checkbox: false,
+        privacyCheckbox: false,
+        ageCheckbox: false,
         isOpen: false,
         errors: []
         };
@@ -33,8 +34,13 @@ class UserRegister extends React.Component {
     }
 
     handleChange = () => {
-        this.setState({ checkbox: !this.state.checkbox });
+        this.setState({ privacyCheckbox: !this.state.privacyCheckbox });
+
     };
+
+    handleAgeChange = () =>{
+    this.setState({ ageCheckbox: !this.state.ageCheckbox });
+    }
 
     hideComponent() {
         this.setState({ showHidePolicy: !this.state.showHidePolicy });
@@ -75,7 +81,8 @@ class UserRegister extends React.Component {
 
     handleClose() {
         this.props.setRegister(false);
-        this.setState({ checkbox: false });
+        this.setState({ privacyCheckbox : false });
+        this.setState({ ageCheckbox : false });
         this.setState({ errors: [] });
     }
 
@@ -204,12 +211,19 @@ class UserRegister extends React.Component {
                             InputProps={{inputProps: {min: 8}}}
                             onChange={this.onInputChange}
                         />
+
+                           <input onChange={this.handleAgeChange} type="checkbox" id="ageconsent" name="ageconsent"
+                               value="ageconsent"/>
+                               <label htmlFor="ageconsent"> Please tick to confirm you are 16 years or older.</label>
+
+                               <p></p>
+
                         <input onChange={this.handleChange} type="checkbox" id="privacypolicy" name="privacypolicy"
                                value="privacypolicy"/>
-                        <label htmlFor="privacypolicy"> Please tick to confirm you have read and accept our privacy
+                         <label htmlFor="privacypolicy"> Please tick to confirm you have read and accept our privacy
                             agreement.</label>
                         {showHidePolicy && <PrivacyPolicy/>}
-                        <div style={{textAlign: 'center'}}>
+                               <div style={{textAlign: 'center'}}>
                             <Button
                                 variant="text"
                                 color="primary"
@@ -218,12 +232,16 @@ class UserRegister extends React.Component {
                                 {buttonText}
                             </Button>
                         </div>
+
+
+
+
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">
                             Close
                         </Button>
-                        <Button id='register' type="submit" onClick={this.validateForm} variant="contained" color="primary" disabled={!this.state.checkbox} enabled={this.state.checkbox}>
+                        <Button id='register' type="submit" onClick={this.validateForm} variant="contained" color="primary" disabled={!this.state.privacyCheckbox || !this.state.ageCheckbox} enabled={this.state.privacyCheckbox || this.state.ageCheckbox}>
                             Register
                         </Button>
                     </DialogActions>
