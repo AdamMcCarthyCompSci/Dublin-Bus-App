@@ -29,15 +29,27 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
     const [newFavouriteDirections, setNewFavouriteDirections] = React.useState(true);
     const [editingFavourite, setEditingFavourite] = React.useState(null);
 
-    // useEffect( () => {
-    //   async function fetchData(){
-    //     const result = await axios(
-    //         process.env.REACT_APP_API_URL + '/bus/favourites',
-    //     )
-    //     setFavourites(result.data.favourites)
-    //     }
-    //     fetchData();
-    // },[])
+    useEffect( () => {
+      async function fetchData(){
+        const result = await axios(
+            process.env.REACT_APP_API_URL + '/user/',
+        )
+        setFavourites(result.data.favourites)
+        }
+        fetchData();
+    },[])
+
+    useEffect( () => {
+      async function postData()
+      const result = await axios({
+        method: 'POST',
+        url: process.env.REACT_APP_API_URL + "/user/",
+        data: {
+            favourites: favourites
+        }
+    })
+    postData();
+    }, [favourites])
 
     const mapBounds = {
         north: 54.345804,

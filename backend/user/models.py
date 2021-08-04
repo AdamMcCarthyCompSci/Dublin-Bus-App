@@ -50,6 +50,7 @@ class AuthUser(models.Model):
         ('Child (Under 19)', 'Child (Under 19)'),
         ('Child (Under 16)', 'Child (Under 16)'),
     ))
+    favourites = models.CharField(max_length=1000)
     email = models.CharField(max_length=254)
     is_staff = models.IntegerField()
     is_active = models.IntegerField()
