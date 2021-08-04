@@ -7,10 +7,6 @@ import Switch from '@material-ui/core/Switch';
 
 export function Settings({display, settings, setSettings, darkBackground, darkForeground, darkText}) {
 
-    const handleChange = (event) => {
-        setSettings({ ...settings, [event.target.name]: event.target.checked });
-    };
-
     return (
         <div className={styles.settingsContainer}>
             <Slide direction="up" in={display} mountOnEnter unmountOnExit>

@@ -15,8 +15,11 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import InputIcon from '@material-ui/icons/Input';
 import {useAuth, logout} from "../auth";
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import Divider from '@material-ui/core/Divider';
 
-export function FloatingActionButton({menu, setMenu, setLogin, setRegister}) {
+export function FloatingActionButton({menu, setMenu, setLogin, setRegister, settings, setSettings, darkBackground, darkForeground, darkText}) {
     const [state, setState] = React.useState({
         left: false
     })
@@ -32,6 +35,10 @@ export function FloatingActionButton({menu, setMenu, setLogin, setRegister}) {
         }
         setState({...state, [anchor]: open});
     }
+
+    const handleChange = (event) => {
+        setSettings({ ...settings, [event.target.name]: event.target.checked });
+    };
 
     return (
         <div className={styles.menuButton}>
@@ -76,17 +83,6 @@ export function FloatingActionButton({menu, setMenu, setLogin, setRegister}) {
                                 </ListItem>
                                 <ListItem
                                     button
-                                    key={'Settings'}
-                                    onClick={() => handleListClick('Settings')}
-                                    selected={menu === 'Settings'}
-                                >
-                                    <ListItemIcon>
-                                        <SettingsIcon style={{paddingRight: '30'}}/>
-                                        <ListItemText primary={'Settings'}/>
-                                    </ListItemIcon>
-                                </ListItem>
-                                <ListItem
-                                    button
                                     key={'Logout'}
                                     onClick={() => {
                                         logout();
@@ -99,6 +95,53 @@ export function FloatingActionButton({menu, setMenu, setLogin, setRegister}) {
                                         <ListItemText primary={'Logout'}/>
                                     </ListItemIcon>
                                 </ListItem>
+                                
+                                <Divider />
+
+                                <FormControlLabel
+                                    control={
+                                    <Switch
+                                        checked={settings.showStops}
+                                        onChange={handleChange}
+                                        name="showStops"
+                                        color="primary"
+                                    />
+                                    }
+                                    label="Display Stops"
+                                />
+                                <FormControlLabel
+                                    control={
+                                    <Switch
+                                        checked={settings.darkMode}
+                                        onChange={handleChange}
+                                        name="darkMode"
+                                        color="primary"
+                                    />
+                                    }
+                                    label="Toggle Dark Mode"
+                                />
+                                <FormControlLabel
+                                    control={
+                                    <Switch
+                                        checked={settings.showLeap}
+                                        onChange={handleChange}
+                                        name="showLeap"
+                                        color="primary"
+                                    />
+                                    }
+                                    label="Display Leap"
+                                />
+                                <FormControlLabel
+                                    control={
+                                    <Switch
+                                        checked={settings.showWeather}
+                                        onChange={handleChange}
+                                        name="showWeather"
+                                        color="primary"
+                                    />
+                                    }
+                                    label="Display Weather"
+                                />
                             </div>
                         ) : (
                             <div>

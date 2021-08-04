@@ -4,7 +4,6 @@ import styles from './Map.module.css';
 import { BusStops } from "./BusStops";
 import { Leap } from "./Leap.js"
 import { Home } from './Home';
-import { Settings } from './Settings';
 import Profile from './Profile';
 import { Results } from "./Results.js"
 import dayjs from 'dayjs';
@@ -104,19 +103,13 @@ const darkModeStyle = [
   },
 ]
 
-function MapContainer({menu, setMenu}) {
+function MapContainer({menu, setMenu, settings, setSettings, darkBackground, darkForeground, darkText}) {
   const [originBox, setOriginBox] = React.useState('');
   const [destinationBox, setDestinationBox] = React.useState('');
   const [callbackResponse, setCallbackResponse] = React.useState(null);
   const [walkingCallbackResponse, setWalkingCallbackResponse] = React.useState(null);
   const [origin, setOrigin] = React.useState('');
   const [destination, setDestination] = React.useState('');
-  const [settings, setSettings] = React.useState({
-    showStops: true,
-    darkMode: false,
-    showLeap: true,
-    showWeather: true,
-  });
   const [newDirections, setNewDirections] = React.useState(true);
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [weather, setWeather] = React.useState({});
@@ -124,11 +117,6 @@ function MapContainer({menu, setMenu}) {
   const [walking, setWalking] = React.useState(null);
   const [originError, setOriginError] = React.useState("");
   const [destinationError, setDestinationError] = React.useState("");
-
-
-  const darkBackground = settings.darkMode ? "#424242" : "";
-  const darkForeground = settings.darkMode ? "#616161" : "";
-  const darkText = settings.darkMode ? "#ffffff" : "";
 
   const lib = ['places'];
 
@@ -272,7 +260,6 @@ function MapContainer({menu, setMenu}) {
         />}
         {/* Conditionally render views */}
         {menu == 'Profile' && <Profile display={menu == 'Profile'} setMenu={setMenu} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
-        {menu == 'Settings' && <Settings display={menu == 'Settings'} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
         {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings} leaveArrive={leaveArrive} walkingCallbackResponse={walkingCallbackResponse} walking={walking} setWalking={setWalking}/>}
         {/* Display bus stops */}
         {settings.showStops && <BusStops />}
