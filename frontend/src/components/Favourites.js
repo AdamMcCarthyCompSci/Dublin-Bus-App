@@ -211,7 +211,7 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
                 <div style={{marginTop: "-10px"}}>
                 <Scrollbars style={{ height: 170 }}>
                     {favourites.length === 0 &&
-                    <p>Create a favourite route to see it here</p>}
+                    <p style={{color: darkText}}>Create a favourite route to see it here</p>}
                 {favourites.map((favourite, index) =>(
                     <Paper className={styles.darkForeground} style={{backgroundColor: darkForeground, padding: "2px 4px", marginTop: "10px", marginBottom: "10px"}}>
                     <Grid container spacing={0}>
