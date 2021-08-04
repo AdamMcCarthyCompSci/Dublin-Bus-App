@@ -41,7 +41,7 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search, dark
     const classes = useStyles();
 
     return (
-        <Paper component="form" className={classes.searchPaper} style={{backgroundColor: darkForeground}}>
+        <Paper className={classes.searchPaper} style={{backgroundColor: darkForeground}}>
           {/* Places search functionality */}
         <StandaloneSearchBox
         className={classes.standaloneSearchBox}
@@ -67,6 +67,7 @@ export function PlacesSearch({onPlacesChanged, onPlacesLoad, place, search, dark
             inputProps={{ 'aria-label': 'search google maps', style: {color: darkText} }}
             error={error}
             label={error}
+            type="search"
           />
         </React.Fragment>
             </StandaloneSearchBox>

@@ -342,7 +342,7 @@ function MapContainer({menu, setMenu}) {
                   destination: destination,
                   origin: origin,
                   travelMode: 'WALKING',
-                  drivingOptions: {
+                  transitOptions: {
                     arrivalTime: dayjs(selectedDate).toDate(),
                   }
                 }}
