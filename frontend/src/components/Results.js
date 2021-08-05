@@ -6,7 +6,6 @@ import Zoom from '@material-ui/core/Zoom';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import Fab from '@material-ui/core/Fab';
-import zIndex from '@material-ui/core/styles/zIndex';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Grid from '@material-ui/core/Grid';
 import DirectionsWalkIcon from '@material-ui/icons/DirectionsWalk';
@@ -18,16 +17,18 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
     const [response, setResponse] = React.useState(null);
     const [walkingResponse, setWalkingResponse] = React.useState(null);
     const [walkingConditions, setWalkingConditions] = React.useState([])
-    const goodWeather = ["01d", "01n", "02d", "02n", "03d", "03n", "04d", "04n"];
 
     useEffect(() => {
         setResponse(callbackResponse ? callbackResponse.routes[0].legs[0] : null);
+        console.log("response", callbackResponse ? callbackResponse.routes[0].legs[0] : null);
     }, [callbackResponse, menu]);
 
     useEffect(() => {
+        const goodWeather = ["01d", "01n", "02d", "02n", "03d", "03n", "04d", "04n"];
         setWalkingResponse(walkingCallbackResponse ? walkingCallbackResponse.routes[0].legs[0] : null);
+        console.log("walkingResponse", walkingCallbackResponse ? walkingCallbackResponse.routes[0].legs[0] : null);
         setWalkingConditions(walkingCallbackResponse ? [walkingCallbackResponse.routes[0].legs[0].distance.value < 2000, weather.feels_like > 10, goodWeather.includes(weather.icon)] : [null]);
-    }, [walkingCallbackResponse, menu]);
+    }, [walkingCallbackResponse, menu, weather]);
 
 
     const getBusNumber = (step) => {
@@ -62,7 +63,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
                 <Grid item xs={8}>
                 <p className={styles.directionsText}><b>The weather looks nice and it's not too far ({response.distance.text}), perhaps consider walking?</b></p>
                 {weather && settings.showWeather &&
-                        <img src={'http://openweathermap.org/img/wn/' + weather.icon + '.png'} />
+                        <img src={'http://openweathermap.org/img/wn/' + weather.icon + '.png'} alt="weather icon" />
                     }  
                 </Grid>
                 <Grid item xs={2}>

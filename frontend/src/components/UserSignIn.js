@@ -56,9 +56,11 @@ class LoginForm extends React.Component {
                 username: this.state.username,
                 password: this.state.password,
             }
-        }, this.state).then((res) => {
-            login(res.data);
-            this.handleClose();
+        }, this.state).then(res => {
+            if (res.status === 200) {
+                login(res.data);
+                this.handleClose();
+            }
         }).catch(() => {
             this.setState({
                 errors: ['request']

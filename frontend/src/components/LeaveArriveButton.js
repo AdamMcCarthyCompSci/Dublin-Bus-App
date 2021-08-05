@@ -8,38 +8,40 @@ export function LeaveArriveButton({leaveArrive, setLeaveArrive, setNewDirections
 
     const handleLeaveArrive = () => {
         setLeaveArrive((leaveArrive === 'Leave At:') ? 'Arrive At:' : 'Leave At:');
-        setNewDirections(true); 
+        setNewDirections(true);
     }
 
     return (
         <React.Fragment>
             {leaveArrive === 'Leave At:'
             &&
-            <Zoom in={leaveArrive === 'Leave At:'}> 
-            <Button
-            variant="contained"
-            color="primary"
-            startIcon={<LoopIcon />}
-            size="large"
-            onClick={() => handleLeaveArrive()}
-            >
-                {leaveArrive}
-            </Button>
+            <Zoom in={leaveArrive === 'Leave At:'}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<LoopIcon/>}
+                    size="large"
+                    fullWidth
+                    onClick={() => handleLeaveArrive()}
+                >
+                    {leaveArrive}
+                </Button>
             </Zoom>
             }
 
             {leaveArrive === 'Arrive At:'
             &&
             <Zoom in={leaveArrive === 'Arrive At:'}>
-            <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AutorenewIcon />}
-            size="large"
-            onClick={() => handleLeaveArrive()}
-            >
-                {leaveArrive}
-            </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AutorenewIcon/>}
+                    size="large"
+                    fullWidth
+                    onClick={() => handleLeaveArrive()}
+                >
+                    {leaveArrive}
+                </Button>
             </Zoom>
             }
         </React.Fragment>
