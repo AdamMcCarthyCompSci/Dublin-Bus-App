@@ -70,7 +70,7 @@ class UserAccount(APIView):
 
 
 @api_view(["PUT"])
-@permission_classes(IsAuthenticated)
+@permission_classes([IsAuthenticated])
 def change_password(request):
     token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
     data = TokenBackend(algorithm='HS256').decode(token, verify=False)

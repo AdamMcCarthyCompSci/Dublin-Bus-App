@@ -1,5 +1,5 @@
 import React from 'react';
-import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer, DistanceMatrixService } from '@react-google-maps/api';
+import { GoogleMap, useLoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 import styles from './Map.module.css';
 import { BusStops } from "./BusStops";
 import { Leap } from "./Leap.js"
@@ -124,13 +124,12 @@ function MapContainer({menu, setMenu}) {
   const [walking, setWalking] = React.useState(null);
   const [originError, setOriginError] = React.useState("");
   const [destinationError, setDestinationError] = React.useState("");
+  const [lib] = React.useState(['places']);
 
 
   const darkBackground = settings.darkMode ? "#424242" : "";
   const darkForeground = settings.darkMode ? "#616161" : "";
   const darkText = settings.darkMode ? "#ffffff" : "";
-
-  const lib = ['places'];
 
   // Next 4 functions are for the places search boxes
   const onOriginChanged = () => {
@@ -228,29 +227,31 @@ function MapContainer({menu, setMenu}) {
     }
   }
 
+  const { isLoaded } = useLoadScript({
+    libraries: lib,
+      googleMapsApiKey: "AIzaSyAbXR_N5FTc0sO4lMQcsXgPQat7wUnVKl4"
+  });
+
   return (
     <div className = {styles.MapContainer}>
 
       {/* react-google-maps library for the Google Maps API */}
-    <LoadScript
-      libraries={lib}
-      googleMapsApiKey="AIzaSyAbXR_N5FTc0sO4lMQcsXgPQat7wUnVKl4"
-    >
+      {isLoaded &&
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
         zoom = { 14 }
         options={{streetViewControl: false, strictBounds: false, mapTypeControl: false, styles: (settings.darkMode ? darkModeStyle : [])}}
       >
-        {menu == 'Home' && <Home
+        {menu === 'Home' && <Home
         menu={menu}
         setMenu={setMenu}
-        onOriginChanged={onOriginChanged} 
-        onOriginLoad={onOriginLoad} 
+        onOriginChanged={onOriginChanged}
+        onOriginLoad={onOriginLoad}
         setOrigin={setOrigin}
-        origin={origin} 
-        onDestinationChanged={onDestinationChanged} 
-        onDestinationLoad={onDestinationLoad} 
+        origin={origin}
+        onDestinationChanged={onDestinationChanged}
+        onDestinationLoad={onDestinationLoad}
         setDestination={setDestination}
         destination={destination}
         settings={settings}
@@ -271,13 +272,13 @@ function MapContainer({menu, setMenu}) {
         destinationError={destinationError}
         />}
         {/* Conditionally render views */}
-        {menu == 'Profile' && <Profile display={menu == 'Profile'} setMenu={setMenu} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
-        {menu == 'Settings' && <Settings display={menu == 'Settings'} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
+        {menu === 'Profile' && <Profile display={menu === 'Profile'} setMenu={setMenu} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
+        {menu === 'Settings' && <Settings display={menu === 'Settings'} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
         {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings} leaveArrive={leaveArrive} walkingCallbackResponse={walkingCallbackResponse} walking={walking} setWalking={setWalking}/>}
         {/* Display bus stops */}
         {settings.showStops && <BusStops />}
         {settings.showLeap && <Leap />}
-        
+
         {/* If origin and destination search boxes are filled in, then display bus directions */}
         {
               (
@@ -372,9 +373,8 @@ function MapContainer({menu, setMenu}) {
                 />
               )
             }
-            
       </GoogleMap>
-    </LoadScript>
+      }
     </div>
   )
 }
