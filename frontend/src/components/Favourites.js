@@ -222,6 +222,7 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
             
             {favouriteView &&
                 <Grid container spacing={0}>
+                {favourites.length < 10 &&  
                 <Grid item xs={12}>
                     <Tooltip title="Create favourite" aria-label="Create favourite" style={{marginTop: "-10px", marginBottom: "20px"}}>
                         <Fab color="primary" aria-label="menu" onClick={() => createFavourite()}>
@@ -229,6 +230,14 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
                         </Fab>
                     </Tooltip>
                 </Grid>
+                }
+                {favourites.length >= 10 &&
+                <Grid item xs={12}>
+                <Paper className={styles.darkForeground} style={{backgroundColor: darkForeground, padding: "2px 4px",marginTop: "-10px", marginBottom: "20px"}}>
+                <p style={{color: darkText}}>You have reached the max number of favourites. Delete a favourite to free up space.</p>
+                </Paper>
+                </Grid>
+                }
                 <Grid item xs={12}>
                 <div style={{marginTop: "-10px"}}>
                 <Scrollbars style={{ height: 170 }}>
