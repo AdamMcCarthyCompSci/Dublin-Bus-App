@@ -27,6 +27,11 @@ const darkModeStyle = [
   { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
   { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
   {
+    featureType: "poi",
+    elementType: "labels",
+    stylers: [{visibility: "off",}]
+  },
+  {
     featureType: "administrative.locality",
     elementType: "labels.text.fill",
     stylers: [{ color: "#d59563" }],
@@ -34,7 +39,7 @@ const darkModeStyle = [
   {
     featureType: "poi",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#d59563" }],
+    stylers: [{ color: "#d59563"}],
   },
   {
     featureType: "poi.park",
@@ -228,7 +233,12 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
         mapContainerStyle={containerStyle}
         center={center}
         zoom = { 14 }
-        options={{streetViewControl: false, strictBounds: false, mapTypeControl: false, styles: (settings.darkMode ? darkModeStyle : [])}}
+        mapOptions={{clickableIcons: false}}
+        options={{streetViewControl: false, strictBounds: false, mapTypeControl: false, clickableIcons: false, styles: (settings.darkMode ? darkModeStyle : [  {
+          featureType: "poi",
+          elementType: "labels",
+          stylers: [{visibility: "off",}]
+        }])}}
       >
         {menu == 'Home' && <Home
         menu={menu}

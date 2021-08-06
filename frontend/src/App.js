@@ -12,9 +12,9 @@ function App() {
     const [login, setLogin] = React.useState(false);
     const [register, setRegister] = React.useState(false);
     const [settings, setSettings] = React.useState({
-        showStops: true,
+        showStops: false,
         darkMode: false,
-        showLeap: true,
+        showLeap: false,
         showWeather: true,
       });
       const darkBackground = settings.darkMode ? "#424242" : "";
