@@ -85,6 +85,9 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
       setValue(index);
     };
 
+    const placeholder = () => {
+      return
+    }
 
     return (
       <div className={styles.homeContainer}>
@@ -139,8 +142,10 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
           setSelectedDate={setSelectedDate}
           setMenu={setMenu}
           showWeather={showWeather}
+          favouriteTitle
           favouriteRoute={false}
           setFavouriteView={null}
+          favouriteTitle={""}
         />
 
 
