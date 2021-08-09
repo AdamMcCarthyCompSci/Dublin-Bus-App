@@ -5,6 +5,7 @@ import { useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
@@ -16,7 +17,9 @@ import dayjs from 'dayjs';
 import { Directions } from "./Directions";
 import { Favourites } from "./Favourites";
 import {useAuth} from "../auth";
-
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import Zoom from '@material-ui/core/Zoom';
 
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -55,6 +58,7 @@ import {useAuth} from "../auth";
 
 export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive, callbackResponse, walkingCallbackResponse, originError, destinationError}) {
     const [value, setValue] = React.useState(0);
+    const [expand, setExpand] = React.useState(true);
     const theme = useTheme();
     const [logged] = useAuth();
 
@@ -86,6 +90,8 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
       <div className={styles.homeContainer}>
       
       <Slide direction="up" in={menu==='Home'} mountOnEnter unmountOnExit>
+      <div>
+      {expand &&
       <Paper elevation={3} className={styles.homePaper} style={{backgroundColor: darkBackground}}>
       <AppBar position="static" color="primary">
         <Tabs
@@ -108,7 +114,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
         onChangeIndex={handleChangeIndex}
       >
         {/* First tab, contains location search boces and date/time picker */}
-        <TabPanel value={value} index={0} dir={theme.direction} style={{height:"310px"}}>
+        <TabPanel value={value} index={0} dir={theme.direction} style={{height:"350px"}}>
 
 
 
@@ -141,7 +147,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
         </TabPanel>
         {/* Second tab, contains route dropdowns */}
-        <TabPanel value={value} index={1} dir={theme.direction} style={{height:"310px"}}>
+        <TabPanel value={value} index={1} dir={theme.direction} style={{height:"350px"}}>
 
 
 
@@ -151,7 +157,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
         </TabPanel>
         {/* Third tab, contains miscellaneous features */}
-        <TabPanel value={value} index={2} dir={theme.direction} style={{height:"310px"}}>
+        <TabPanel value={value} index={2} dir={theme.direction} style={{height:"350px"}}>
 
 
 
@@ -182,11 +188,12 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
 
 
-
         </TabPanel>
       </SwipeableViews>
-
       </Paper>
+      }
+      <Button className={styles.homeHide} fullWidth={true} variant="contained" color="primary" onClick={() => {setExpand(!expand)}}>{expand && <Zoom in={expand}><ExpandMoreIcon/></Zoom>}{!expand && <Zoom in={!expand}><ExpandLessIcon/></Zoom>}</Button>
+      </div>
       </Slide>
       </div>
     )
