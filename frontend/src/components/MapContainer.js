@@ -118,7 +118,7 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
   const [newDirections, setNewDirections] = React.useState(true);
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [weather, setWeather] = React.useState({});
-  const [leaveArrive, setLeaveArrive] = React.useState('Leave At:');
+  const [leaveArrive, setLeaveArrive] = React.useState('Leave:');
   const [walking, setWalking] = React.useState(null);
   const [originError, setOriginError] = React.useState("");
   const [destinationError, setDestinationError] = React.useState("");
@@ -281,7 +281,7 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
                 destination !== '' &&
                 origin !== '' &&
                 newDirections === false &&
-                leaveArrive === "Leave At:" &&
+                leaveArrive === "Leave:" &&
                 originError === "" &&
                 destinationError === ""
               ) && (
@@ -317,7 +317,7 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
                 destination !== '' &&
                 origin !== '' &&
                 newDirections === false &&
-                leaveArrive === "Arrive At:" &&
+                leaveArrive === "Arrive:" &&
                 originError === "" &&
                 destinationError === ""
               ) && (
