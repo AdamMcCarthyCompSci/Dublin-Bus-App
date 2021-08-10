@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import styles from './Map.module.css';
 import Paper from '@material-ui/core/Paper';
 import Slide from '@material-ui/core/Slide';
@@ -68,15 +68,17 @@ class Profile extends React.Component {
                 },
                 body: JSON.stringify(this.state.profile)
             }
-        ).then(() => {
-            this.setState({
-                show_profile_alert: true
-            });
-            setTimeout(() => {
+        ).then(res => {
+            if (res.status === 200) {
                 this.setState({
-                    show_profile_alert: false
+                    show_profile_alert: true
                 });
-            }, 5000);
+                setTimeout(() => {
+                    this.setState({
+                        show_profile_alert: false
+                    });
+                }, 5000);
+            }
         }).catch(() => {
             this.setState({
                 errors: ['request']
@@ -99,22 +101,24 @@ class Profile extends React.Component {
                     confirm_password: this.state.confirm_password,
                 })
             }
-        ).then(() => {
-            this.setState(
-                {
-                    old_password: '',
-                    new_password: '',
-                    confirm_password: ''
-                }
-            );
-            this.setState({
-                show_password_alert: true
-            });
-            setTimeout(() => {
+        ).then(res => {
+            if (res.status === 200) {
+                this.setState(
+                    {
+                        old_password: '',
+                        new_password: '',
+                        confirm_password: ''
+                    }
+                );
                 this.setState({
-                    show_password_alert: false
+                    show_password_alert: true
                 });
-            }, 5000);
+                setTimeout(() => {
+                    this.setState({
+                        show_password_alert: false
+                    });
+                }, 5000);
+            }
         }).catch(() => {
             this.setState({
                 errors: ['request']
@@ -122,16 +126,17 @@ class Profile extends React.Component {
         });
     }
 
-    deleteUser(e) {
-        e.preventDefault();
+    deleteUser() {
         authFetch(
             process.env.REACT_APP_API_URL + "/user/",
             {
                 method: "DELETE"
             }
-        ).then(() => {
-            logout();
-            this.props.setMenu("Home");
+        ).then(res => {
+            if (res.status === 204) {
+                logout();
+                this.props.setMenu("Home");
+            }
         });
     }
 
@@ -298,7 +303,7 @@ class Profile extends React.Component {
                                 marginTop: '48px'
                             }}>Delete account</h1>
                             <div><Button id="btnDeleteAccount" variant="contained" color="secondary"
-                                         onClick={this.deleteUser}>Delete My Account</Button>
+                                         onClick={() => { if (window.confirm('Are you sure you want to delete your account?')) this.deleteUser() } }>Delete My Account</Button>
                             </div>
                         </div>
                     </Paper>

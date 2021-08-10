@@ -1,5 +1,5 @@
 import React from 'react';
-import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer, DistanceMatrixService } from '@react-google-maps/api';
+import { GoogleMap, useLoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 import styles from './Map.module.css';
 import { BusStops } from "./BusStops";
 import { Leap } from "./Leap.js"
@@ -122,6 +122,7 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
   const [walking, setWalking] = React.useState(null);
   const [originError, setOriginError] = React.useState("");
   const [destinationError, setDestinationError] = React.useState("");
+  const [lib] = React.useState(['places']);
 
   const lib = ['places'];
 
@@ -221,14 +222,16 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
     }
   }
 
+  const { isLoaded } = useLoadScript({
+    libraries: lib,
+      googleMapsApiKey: "AIzaSyAbXR_N5FTc0sO4lMQcsXgPQat7wUnVKl4"
+  });
+
   return (
     <div className = {styles.MapContainer}>
 
       {/* react-google-maps library for the Google Maps API */}
-    <LoadScript
-      libraries={lib}
-      googleMapsApiKey="AIzaSyAbXR_N5FTc0sO4lMQcsXgPQat7wUnVKl4"
-    >
+      {isLoaded &&
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
@@ -240,15 +243,15 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
           stylers: [{visibility: "off",}]
         }])}}
       >
-        {menu == 'Home' && <Home
+        {menu === 'Home' && <Home
         menu={menu}
         setMenu={setMenu}
-        onOriginChanged={onOriginChanged} 
-        onOriginLoad={onOriginLoad} 
+        onOriginChanged={onOriginChanged}
+        onOriginLoad={onOriginLoad}
         setOrigin={setOrigin}
-        origin={origin} 
-        onDestinationChanged={onDestinationChanged} 
-        onDestinationLoad={onDestinationLoad} 
+        origin={origin}
+        onDestinationChanged={onDestinationChanged}
+        onDestinationLoad={onDestinationLoad}
         setDestination={setDestination}
         destination={destination}
         settings={settings}
@@ -274,7 +277,7 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
         {/* Display bus stops */}
         {settings.showStops && <BusStops />}
         {settings.showLeap && <Leap />}
-        
+
         {/* If origin and destination search boxes are filled in, then display bus directions */}
         {
               (
@@ -369,9 +372,8 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
                 />
               )
             }
-            
       </GoogleMap>
-    </LoadScript>
+      }
     </div>
   )
 }

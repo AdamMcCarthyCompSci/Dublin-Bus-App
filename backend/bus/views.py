@@ -1,9 +1,9 @@
 from django.http import JsonResponse
 import requests
-from rest_framework import permissions
 from .models import *
 from datetime import datetime
 from rest_framework_simplejwt.backends import TokenBackend
+import toolz
 
 
 def stops(request):
@@ -22,12 +22,34 @@ def leap(request):
 
 
 def routes(request):
-    permission_classes = (permissions.AllowAny,)
-    routes = [
+    return JsonResponse({'routes': list(DublinBusRoutes.objects.values('routename').order_by('routename').distinct())})
+
+
+def directions(request, route_id):
+    directions = [
         {"id": route.dublin_bus_routes_id, "busnumber": route.routename, "routedescription": route.routedescription,
          "direction": route.direction, "platecode": route.platecode, "shortcommonname_en": route.shortcommonname_en}
-        for route in DublinBusRoutes.objects.all()]
-    return JsonResponse({'routes': routes})
+        for route in DublinBusRoutes.objects.filter(routename=route_id, stopsequence=1).order_by('direction')]
+    return JsonResponse({'directions': directions})
+
+
+def boarding(request, route_id, direction_id):
+    boarding = [
+        {"id": route.dublin_bus_routes_id, "busnumber": route.routename, "routedescription": route.routedescription,
+         "direction": route.direction, "platecode": route.platecode, "shortcommonname_en": route.shortcommonname_en, "stopsequence": route.stopsequence}
+        for route in DublinBusRoutes.objects.filter(routename=route_id, direction=direction_id).order_by('dublin_bus_routes_id', 'stopsequence')]
+    toolz.unique(boarding, key=lambda x: x.platecode)
+    return JsonResponse({'boarding': boarding})
+
+
+def alighting(request, route_id, direction_id, boarding_id):
+    boarding = DublinBusRoutes.objects.filter(routename=route_id, direction=direction_id, platecode=boarding_id).order_by('dublin_bus_routes_id')[0]
+    alighting = [
+        {"id": route.dublin_bus_routes_id, "busnumber": route.routename, "routedescription": route.routedescription,
+         "direction": route.direction, "platecode": route.platecode, "shortcommonname_en": route.shortcommonname_en, "stopsequence": route.stopsequence}
+        for route in DublinBusRoutes.objects.filter(routename=route_id, direction=direction_id, stopsequence__gt=boarding.stopsequence).order_by('dublin_bus_routes_id', 'stopsequence')]
+    toolz.unique(alighting, key=lambda x: x.platecode)
+    return JsonResponse({'alighting': alighting})
 
 
 def price(request):

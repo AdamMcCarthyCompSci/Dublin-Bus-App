@@ -47,7 +47,6 @@ const classes = useStyles();
   return (
         <React.Fragment>
         {favouriteRoute &&
-          <Paper className={classes.searchPaper} style={{backgroundColor: darkForeground}}>
           <TextField
           className={classes.input}
           value={favouriteTitle}
@@ -55,47 +54,53 @@ const classes = useStyles();
           placeholder={favouriteTitle ? favouriteTitle : "Enter a title"}
           error={favouriteTitle.length > 25}
           label={favouriteTitle.length > 25 ? "Title cannot be more than 25 characters" : ""}
+//           variant="outlined"
           inputProps={{ 'aria-label': 'search google maps', style: {color: darkText} }}
         />
-        </Paper>
         }
         <PlacesSearch 
         onPlacesChanged={onOriginChanged} 
         onPlacesLoad={onOriginLoad} 
         place={origin} 
         search={"Origin Search"}
+        label={"Search origin"}
         darkBackground={darkBackground}
         darkForeground={darkForeground}
         darkText={darkText}
         error={originError}
+        style={{marginTop: '16px'}}
         />
         <PlacesSearch 
         onPlacesChanged={onDestinationChanged} 
         onPlacesLoad={onDestinationLoad} 
         place={destination} 
         search={"Destination Search"}
+        label={"Search destination"}
         darkBackground={darkBackground}
         darkForeground={darkForeground}
         darkText={darkText}
         error={destinationError}
+        style={{marginTop: '16px'}}
         />
 
-        <Grid container spacing={1} alignItems="center" className={styles.dateAndButtonContainer} style={{marginBottom: "20px", width: "80%", marginLeft: "10%"}}>
+        <Grid container spacing={1} alignItems="center" className={styles.dateAndButtonContainer} style={{marginTop: "16px", marginBottom: "16px"}}>
           
           {!favouriteRoute && 
-          <Grid item xs={4}>
+
+//         <Paper className={styles.datePickerContainer} style={{backgroundColor: darkForeground}}>
+          <Grid item xs={12} md={3}>
           <LeaveArriveButton leaveArrive={leaveArrive} setLeaveArrive={setLeaveArrive} setNewDirections={setNewDirections}/>
           </Grid>
           }
-        <Grid item xs={favouriteRoute ? 12 : 8}>
-        <Paper className={styles.datePickerContainer} style={{backgroundColor: darkForeground}}>
+        <Grid item xs={12} md={favouriteRoute ? 12 : 9}>
           {favouriteRoute &&
           <MuiPickersUtilsProvider utils={DayJsUtils}>
             <TimePicker
-            className={styles.datePicker}
+                className={styles.datePicker}
                 value={selectedDate}
                 onChange={setSelectedDate}
                 label="Select a Time to Arrive At"
+                inputVariant="outlined"
                 inputProps={{ style: {color: darkText} }}
                 InputLabelProps={{
                   style: { color: darkText },
@@ -106,12 +111,13 @@ const classes = useStyles();
           {!favouriteRoute &&
           <MuiPickersUtilsProvider utils={DayJsUtils}>
             <DateTimePicker
-            className={styles.datePicker}
+                className={styles.datePicker}
                 value={selectedDate}
                 disablePast
                 maxDate={new Date().setDate(new Date().getDate()+1)}
                 onChange={setSelectedDate}
                 label="Select a Date and Time"
+                inputVariant="outlined"
                 showTodayButton
                 inputProps={{ style: {color: darkText} }}
                 InputLabelProps={{
@@ -120,7 +126,6 @@ const classes = useStyles();
             />
           </MuiPickersUtilsProvider>
           }
-          </Paper>
         </Grid>
         </Grid>
 
@@ -130,6 +135,8 @@ const classes = useStyles();
           className={styles.submitButton}
           variant="contained" 
           color="primary"
+          size="large"
+          fullWidth
           onClick={() => {
             setMenu('Results');
             showWeather(selectedDate);
@@ -145,6 +152,8 @@ const classes = useStyles();
           className={styles.submitButton}
           variant="contained" 
           color="primary"
+          size="large"
+          fullWidth
           disabled
           > 
             Submit 

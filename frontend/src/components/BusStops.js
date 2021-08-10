@@ -35,6 +35,7 @@ export function BusStops() {
             <Circle
             center={{"lat": stop.stop_lat, "lng": stop.stop_lon}}
             options={options}
+            key={stop.id}
           />
         )))
     )
