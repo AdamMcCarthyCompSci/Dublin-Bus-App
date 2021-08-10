@@ -4,7 +4,6 @@ import styles from './Map.module.css';
 import { BusStops } from "./BusStops";
 import { Leap } from "./Leap.js"
 import { Home } from './Home';
-import { Settings } from './Settings';
 import Profile from './Profile';
 import { Results } from "./Results.js"
 import dayjs from 'dayjs';
@@ -28,6 +27,11 @@ const darkModeStyle = [
   { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
   { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
   {
+    featureType: "poi",
+    elementType: "labels",
+    stylers: [{visibility: "off",}]
+  },
+  {
     featureType: "administrative.locality",
     elementType: "labels.text.fill",
     stylers: [{ color: "#d59563" }],
@@ -35,7 +39,7 @@ const darkModeStyle = [
   {
     featureType: "poi",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#d59563" }],
+    stylers: [{ color: "#d59563"}],
   },
   {
     featureType: "poi.park",
@@ -104,32 +108,23 @@ const darkModeStyle = [
   },
 ]
 
-function MapContainer({menu, setMenu}) {
+function MapContainer({menu, setMenu, settings, setSettings, darkBackground, darkForeground, darkText}) {
   const [originBox, setOriginBox] = React.useState('');
   const [destinationBox, setDestinationBox] = React.useState('');
   const [callbackResponse, setCallbackResponse] = React.useState(null);
   const [walkingCallbackResponse, setWalkingCallbackResponse] = React.useState(null);
   const [origin, setOrigin] = React.useState('');
   const [destination, setDestination] = React.useState('');
-  const [settings, setSettings] = React.useState({
-    showStops: true,
-    darkMode: false,
-    showLeap: true,
-    showWeather: true,
-  });
   const [newDirections, setNewDirections] = React.useState(true);
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [weather, setWeather] = React.useState({});
-  const [leaveArrive, setLeaveArrive] = React.useState('Leave At:');
+  const [leaveArrive, setLeaveArrive] = React.useState('Leave:');
   const [walking, setWalking] = React.useState(null);
   const [originError, setOriginError] = React.useState("");
   const [destinationError, setDestinationError] = React.useState("");
   const [lib] = React.useState(['places']);
 
-
-  const darkBackground = settings.darkMode ? "#424242" : "";
-  const darkForeground = settings.darkMode ? "#616161" : "";
-  const darkText = settings.darkMode ? "#ffffff" : "";
+  const lib = ['places'];
 
   // Next 4 functions are for the places search boxes
   const onOriginChanged = () => {
@@ -241,7 +236,12 @@ function MapContainer({menu, setMenu}) {
         mapContainerStyle={containerStyle}
         center={center}
         zoom = { 14 }
-        options={{streetViewControl: false, strictBounds: false, mapTypeControl: false, styles: (settings.darkMode ? darkModeStyle : [])}}
+        mapOptions={{clickableIcons: false}}
+        options={{streetViewControl: false, strictBounds: false, mapTypeControl: false, clickableIcons: false, styles: (settings.darkMode ? darkModeStyle : [  {
+          featureType: "poi",
+          elementType: "labels",
+          stylers: [{visibility: "off",}]
+        }])}}
       >
         {menu === 'Home' && <Home
         menu={menu}
@@ -272,8 +272,7 @@ function MapContainer({menu, setMenu}) {
         destinationError={destinationError}
         />}
         {/* Conditionally render views */}
-        {menu === 'Profile' && <Profile display={menu === 'Profile'} setMenu={setMenu} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
-        {menu === 'Settings' && <Settings display={menu === 'Settings'} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
+        {menu == 'Profile' && <Profile display={menu == 'Profile'} setMenu={setMenu} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
         {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings} leaveArrive={leaveArrive} walkingCallbackResponse={walkingCallbackResponse} walking={walking} setWalking={setWalking}/>}
         {/* Display bus stops */}
         {settings.showStops && <BusStops />}
@@ -285,7 +284,7 @@ function MapContainer({menu, setMenu}) {
                 destination !== '' &&
                 origin !== '' &&
                 newDirections === false &&
-                leaveArrive === "Leave At:" &&
+                leaveArrive === "Leave:" &&
                 originError === "" &&
                 destinationError === ""
               ) && (
@@ -321,7 +320,7 @@ function MapContainer({menu, setMenu}) {
                 destination !== '' &&
                 origin !== '' &&
                 newDirections === false &&
-                leaveArrive === "Arrive At:" &&
+                leaveArrive === "Arrive:" &&
                 originError === "" &&
                 destinationError === ""
               ) && (

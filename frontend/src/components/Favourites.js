@@ -29,15 +29,30 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
     const [newFavouriteDirections, setNewFavouriteDirections] = React.useState(true);
     const [editingFavourite, setEditingFavourite] = React.useState(null);
 
-    // useEffect( () => {
-    //   async function fetchData(){
-    //     const result = await axios(
-    //         process.env.REACT_APP_API_URL + '/bus/favourites',
-    //     )
-    //     setFavourites(result.data.favourites)
-    //     }
-    //     fetchData();
-    // },[])
+    useEffect( () => {
+      async function fetchData(){
+        const result = await axios({
+          url: process.env.REACT_APP_API_URL + '/user/',
+        })
+        setFavourites(result.data.favourites)
+        }
+      fetchData();
+    },
+    [])
+
+    useEffect( () => {
+      async function postData(){
+        const result = await axios({
+          method: 'POST',
+          url: process.env.REACT_APP_API_URL + '/user/',
+          data: {
+            favourites: favourites
+          }
+      })
+    }
+      postData();
+    }, 
+    [favourites])
 
     const mapBounds = {
         north: 54.345804,
@@ -207,6 +222,7 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
             
             {favouriteView &&
                 <Grid container spacing={0}>
+                {favourites.length < 10 &&  
                 <Grid item xs={12}>
                     <Tooltip title="Create favourite" aria-label="Create favourite" style={{marginTop: "-10px", marginBottom: "20px"}}>
                         <Fab color="primary" aria-label="menu" onClick={() => createFavourite()}>
@@ -214,6 +230,14 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
                         </Fab>
                     </Tooltip>
                 </Grid>
+                }
+                {favourites.length >= 10 &&
+                <Grid item xs={12}>
+                <Paper className={styles.darkForeground} style={{backgroundColor: darkForeground, padding: "2px 4px",marginTop: "-10px", marginBottom: "20px"}}>
+                <p style={{color: darkText}}>You have reached the max number of favourites. Delete a favourite to free up space.</p>
+                </Paper>
+                </Grid>
+                }
                 <Grid item xs={12}>
                 <div style={{marginTop: "-10px"}}>
                 <Scrollbars style={{ height: 170 }}>

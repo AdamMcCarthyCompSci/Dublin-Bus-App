@@ -52,8 +52,9 @@ const classes = useStyles();
           value={favouriteTitle}
           onChange={handleTitleChange}
           placeholder={favouriteTitle ? favouriteTitle : "Enter a title"}
-          label={"Stop title"}
-          variant="outlined"
+          error={favouriteTitle.length > 25}
+          label={favouriteTitle.length > 25 ? "Title cannot be more than 25 characters" : ""}
+//           variant="outlined"
           inputProps={{ 'aria-label': 'search google maps', style: {color: darkText} }}
         />
         }
@@ -85,6 +86,8 @@ const classes = useStyles();
         <Grid container spacing={1} alignItems="center" className={styles.dateAndButtonContainer} style={{marginTop: "16px", marginBottom: "16px"}}>
           
           {!favouriteRoute && 
+
+//         <Paper className={styles.datePickerContainer} style={{backgroundColor: darkForeground}}>
           <Grid item xs={12} md={3}>
           <LeaveArriveButton leaveArrive={leaveArrive} setLeaveArrive={setLeaveArrive} setNewDirections={setNewDirections}/>
           </Grid>
@@ -157,14 +160,13 @@ const classes = useStyles();
           </Button>
         }
 
-        {origin !== "" && destination !== "" && originError === "" && destinationError === "" &&
+        {origin !== "" && destination !== "" && originError === "" && destinationError === "" && favouriteTitle.length <= 25 &&
         favouriteRoute && 
           <Button
           className={styles.favouriteSubmitButton}
           variant="contained" 
           color="primary"
-          size="large"
-          fullWidth
+          style={{marginTop:"-20px"}}
           onClick={() => {
             saveFavourite(favouriteTitle ? favouriteTitle : "Unnamed Route", origin, destination, selectedDate);
             setNewDirections(false);
@@ -174,14 +176,13 @@ const classes = useStyles();
             Submit 
           </Button>
         }
-        {((origin === "" || destination === "") || (originError !== "" || destinationError !== "")) && 
+        {(((origin === "" || destination === "") || (originError !== "" || destinationError !== "")) || favouriteTitle.length > 25 ) && 
         favouriteRoute &&
           <Button
           className={styles.favouriteSubmitButton}
           variant="contained" 
           color="primary"
-          size="large"
-          fullWidth
+          style={{marginTop:"-20px"}}
           disabled
           > 
             Submit 

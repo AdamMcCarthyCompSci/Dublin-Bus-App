@@ -28,6 +28,7 @@ class UserAccount(APIView):
             'firstname': profile.first_name,
             'lastname': profile.last_name,
             'fare_type': profile.fare_type,
+            'favourites': profile.favourites,
             'username': profile.username,
             'email': profile.email
         }, status=status.HTTP_200_OK)
@@ -50,10 +51,12 @@ class UserAccount(APIView):
         firstname = request.data['firstname']
         lastname = request.data['lastname']
         fare_type = request.data['fare_type']
+        favourites = request.data['favourites']
 
         profile.first_name = firstname
         profile.last_name = lastname
         profile.fare_type = fare_type
+        profile.favourites = favourites
 
         profile.save()
 
