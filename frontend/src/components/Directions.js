@@ -51,6 +51,7 @@ const classes = useStyles();
           className={classes.input}
           value={favouriteTitle}
           onChange={handleTitleChange}
+          variant="outlined"
           placeholder={favouriteTitle ? favouriteTitle : "Enter a title"}
           error={favouriteTitle.length > 25}
           label={favouriteTitle.length > 25 ? "Title cannot be more than 25 characters" : ""}
@@ -63,36 +64,36 @@ const classes = useStyles();
         onPlacesLoad={onOriginLoad} 
         place={origin} 
         search={"Origin Search"}
-        label={"Search origin"}
+        label={"Origin"}
         darkBackground={darkBackground}
         darkForeground={darkForeground}
         darkText={darkText}
         error={originError}
-        style={{marginTop: '16px'}}
+        style={{marginTop: '10px'}}
         />
         <PlacesSearch 
         onPlacesChanged={onDestinationChanged} 
         onPlacesLoad={onDestinationLoad} 
         place={destination} 
         search={"Destination Search"}
-        label={"Search destination"}
+        label={"Destination"}
         darkBackground={darkBackground}
         darkForeground={darkForeground}
         darkText={darkText}
         error={destinationError}
-        style={{marginTop: '16px'}}
+        style={{marginTop: '10px'}}
         />
 
-        <Grid container spacing={1} alignItems="center" className={styles.dateAndButtonContainer} style={{marginTop: "16px", marginBottom: "16px"}}>
+        <Grid container spacing={1} alignItems="center" className={styles.dateAndButtonContainer} style={{marginTop: "10px", marginBottom: "20px"}}>
           
           {!favouriteRoute && 
 
 //         <Paper className={styles.datePickerContainer} style={{backgroundColor: darkForeground}}>
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} md={2}>
           <LeaveArriveButton leaveArrive={leaveArrive} setLeaveArrive={setLeaveArrive} setNewDirections={setNewDirections}/>
           </Grid>
           }
-        <Grid item xs={12} md={favouriteRoute ? 12 : 9}>
+        <Grid item xs={12} md={favouriteRoute ? 12 : 10}>
           {favouriteRoute &&
           <MuiPickersUtilsProvider utils={DayJsUtils}>
             <TimePicker

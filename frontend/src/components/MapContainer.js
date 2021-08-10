@@ -124,8 +124,6 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
   const [destinationError, setDestinationError] = React.useState("");
   const [lib] = React.useState(['places']);
 
-  const lib = ['places'];
-
   // Next 4 functions are for the places search boxes
   const onOriginChanged = () => {
     try {

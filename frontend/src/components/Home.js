@@ -117,10 +117,10 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
         onChangeIndex={handleChangeIndex}
       >
         {/* First tab, contains location search boces and date/time picker */}
-        <TabPanel value={value} index={0} dir={theme.direction} style={{height:"350px"}}>
+        <TabPanel value={value} index={0} dir={theme.direction} style={{height:"400px"}}>
 
 
-
+        <div style={{marginBottom: "40px"}}>
         <Directions 
           onOriginChanged={onOriginChanged}
           onOriginLoad={onOriginLoad}
@@ -147,12 +147,13 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
           setFavouriteView={null}
           favouriteTitle={""}
         />
+        </div>
 
 
 
         </TabPanel>
         {/* Second tab, contains route dropdowns */}
-        <TabPanel value={value} index={1} dir={theme.direction} style={{height:"350px"}}>
+        <TabPanel value={value} index={1} dir={theme.direction} style={{height:"400px"}}>
 
 
 
@@ -162,7 +163,7 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
         </TabPanel>
         {/* Third tab, contains miscellaneous features */}
-        <TabPanel value={value} index={2} dir={theme.direction} style={{height:"350px"}}>
+        <TabPanel value={value} index={2} dir={theme.direction} style={{height:"400px"}}>
 
 
 

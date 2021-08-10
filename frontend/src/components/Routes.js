@@ -402,6 +402,7 @@ class Routes extends React.Component {
                     {this.state.finalDropdown &&
                     <Button
                         className={styles.submitButton}
+                        style={{marginBottom: "30px"}}
                         variant="contained"
                         color="primary"
                         id="submit"
