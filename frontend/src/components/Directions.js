@@ -83,11 +83,11 @@ const classes = useStyles();
         <Grid container spacing={1} alignItems="center" className={styles.dateAndButtonContainer} style={{marginBottom: "20px", width: "80%", marginLeft: "10%"}}>
           
           {!favouriteRoute && 
-          <Grid item xs={2}>
+          <Grid item xs={4}>
           <LeaveArriveButton leaveArrive={leaveArrive} setLeaveArrive={setLeaveArrive} setNewDirections={setNewDirections}/>
           </Grid>
           }
-        <Grid item xs={favouriteRoute ? 12 : 10}>
+        <Grid item xs={favouriteRoute ? 12 : 8}>
         <Paper className={styles.datePickerContainer} style={{backgroundColor: darkForeground}}>
           {favouriteRoute &&
           <MuiPickersUtilsProvider utils={DayJsUtils}>

@@ -20,7 +20,6 @@ export function LeaveArriveButton({leaveArrive, setLeaveArrive, setNewDirections
             variant="contained"
             color="primary"
             startIcon={<LoopIcon />}
-            size="large"
             style={{marginTop: "-10px"}}
             onClick={() => handleLeaveArrive()}
             >
@@ -36,7 +35,6 @@ export function LeaveArriveButton({leaveArrive, setLeaveArrive, setNewDirections
             variant="contained"
             color="primary"
             startIcon={<AutorenewIcon />}
-            size="large"
             style={{marginTop: "-10px"}}
             onClick={() => handleLeaveArrive()}
             >
