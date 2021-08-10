@@ -178,7 +178,7 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
       date.setMinutes(Number(dayjs(favourite.time).format("mm")));
       showWeather(date);
       setSelectedDate(date);
-      setLeaveArrive("Arrive At:");
+      setLeaveArrive("Arrive:");
       setOrigin(favourite.origin);
       setDestination(favourite.destination);
       setMenu('Results');

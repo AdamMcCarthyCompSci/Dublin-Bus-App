@@ -165,7 +165,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
                     </Fab>
                     <p className={styles.directionsText}><b>To {response.end_address} ({response.distance.text})</b></p>
                     {(walking === false || walking === null) &&
-                        <p className={styles.directionsText}><i>Predicted {leaveArrive === "Leave At:" ? "arrival" : "departure"} time: {leaveArrive === "Leave At:" ? response.arrival_time.text : response.departure_time.text} ({response.duration.text})</i></p>
+                        <p className={styles.directionsText}><i>Predicted {leaveArrive === "Leave:" ? "arrival" : "departure"} time: {leaveArrive === "Leave:" ? response.arrival_time.text : response.departure_time.text} ({response.duration.text})</i></p>
                     }
                     {walking === true &&
                         <p className={styles.directionsText}><i>Walking Distance: {walkingResponse.distance.text} ({walkingResponse.duration.text})</i></p>
