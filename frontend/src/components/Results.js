@@ -31,11 +31,13 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
     }, [walkingCallbackResponse, menu, weather]);
 
 
-    const getBusNumber = (step) => {
+    const departureStop = (step) => {
         if ("transit" in step) {
-            const busNumber = step.transit.line.short_name;
+            const line = step.transit.line.short_name;
+            const depart = step.transit.departure_stop.name;
+            const arrive = step.transit.arrival_stop.name;
             return (
-                "(" + busNumber + ")"
+                "(Route " + line + ": get off at " + arrive + ")"
             )
         }
         else {
@@ -48,6 +50,19 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
             return steps.length*60;
         } else {
             return 5*60;
+        }
+    }
+
+    const displayPredictedTime = () => {
+        if ("arrival_time" in response && "departure_time" in response) {
+            return (
+                (leaveArrive === "Leave:" ? "arrival" : "departure") + " time: " + (leaveArrive === "Leave:" ? response.arrival_time.text : response.departure_time.text) + "(" + response.duration.text + ")"
+            )
+        }
+        else {
+            return (
+                "Duration: " + response.duration.text
+            )
         }
     }
 
@@ -119,7 +134,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
             {response.steps.map((step) => (
                         <Zoom in={menu==='Results'} mountOnEnter unmountOnExit>
             <Paper elevation={3} className={styles.stepPaper} style={{backgroundColor: "#757de8"}}>
-                <p key={step.instructions} className={styles.directionsText}> {step.instructions} {getBusNumber(step)}</p>
+                <p key={step.instructions} className={styles.directionsText}> {step.instructions} {departureStop(step)}</p>
             </Paper>
             </Zoom>))}
             </Scrollbars>
@@ -165,7 +180,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
                     </Fab>
                     <p className={styles.directionsText}><b>To {response.end_address} ({response.distance.text})</b></p>
                     {(walking === false || walking === null) &&
-                        <p className={styles.directionsText}><i>Predicted {leaveArrive === "Leave:" ? "arrival" : "departure"} time: {leaveArrive === "Leave:" ? response.arrival_time.text : response.departure_time.text} ({response.duration.text})</i></p>
+                        <p className={styles.directionsText}><i>Predicted {displayPredictedTime()}</i></p>
                     }
                     {walking === true &&
                         <p className={styles.directionsText}><i>Walking Distance: {walkingResponse.distance.text} ({walkingResponse.duration.text})</i></p>
@@ -184,8 +199,22 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
             )}
             {callbackResponse === null && (
                 <div className={styles.directionsPaperContainer}>
-                <Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984"}}>
+                <Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984", padding: "5px"}}>
+                <Grid container spacing={0}>
+                <Grid item xs={2}>
+                <Fab color="primary" aria-label="back" className={styles.resultsBackButton} onClick={() => {
+                        setMenu("Home");
+                        setWalking(null);
+                        }}>
+                        <ArrowBackIcon />
+                    </Fab>
+                </Grid>
+                <Grid item xs={8}>
                 <p className={styles.directionsText}>Creating Route...</p>
+                </Grid>
+                <Grid item xs={2}>                    
+                </Grid>
+                </Grid>
                 </Paper>
                 </div>
             )}

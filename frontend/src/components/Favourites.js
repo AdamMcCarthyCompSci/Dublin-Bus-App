@@ -246,7 +246,7 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
                 {favourites.map((favourite, index) =>(
                     <Paper className={styles.darkForeground} style={{backgroundColor: darkForeground, padding: "2px 4px", marginTop: "10px", marginBottom: "10px"}}>
                     <Grid container spacing={0}>
-                    <Grid item xs={10}>
+                    <Grid item md={10} xs={8}>
                     <Button
                     fullWidth={true}
                     variant="contained"
@@ -255,14 +255,14 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
                         <Typography>{favourite.title}</Typography> 
                     </Button>
                     </Grid>
-                    <Grid item xs={1}>
+                    <Grid item md={1} xs={2}>
                     <Tooltip title="Edit favourite" aria-label="Edit favourite">
                         <Fab color="primary" size="small" aria-label="edit" className={styles.editDeleteIcons} onClick={() => editFavourite(favourite)}>
                             <EditIcon/>
                         </Fab>
                     </Tooltip>
                     </Grid>
-                    <Grid item xs={1}>
+                    <Grid item md={1} xs={2}>
                     <Tooltip title="Delete favourite" aria-label="Delete favourite">
                         <Fab color="secondary" size="small" aria-label="delete" className={styles.editDeleteIcons} onClick={() => deleteFavourite(favourite)}>
                             <DeleteIcon/>
