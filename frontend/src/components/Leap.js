@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
-import { Circle } from '@react-google-maps/api';
 import { MarkerClusterer, Marker, InfoWindow } from '@react-google-maps/api';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';

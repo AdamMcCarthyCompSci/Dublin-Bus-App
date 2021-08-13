@@ -223,8 +223,8 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
   }
 
     useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
+    if (window.navigator.geolocation) {
+      window.navigator.geolocation.getCurrentPosition(
         (position) => {
           const pos = {
             lat: position.coords.latitude,
