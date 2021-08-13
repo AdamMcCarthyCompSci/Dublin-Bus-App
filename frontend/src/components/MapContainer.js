@@ -1,7 +1,8 @@
-import React from 'react';
-import { GoogleMap, useLoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
+import React, { useEffect } from 'react';
+import { GoogleMap, useLoadScript, DirectionsService, DirectionsRenderer, Circle } from '@react-google-maps/api';
 import styles from './Map.module.css';
 import { BusStops } from "./BusStops";
+import { CurrentLocation } from "./CurrentLocation";
 import { Leap } from "./Leap.js"
 import { Home } from './Home';
 import Profile from './Profile';
@@ -14,7 +15,7 @@ const containerStyle = {
   height: '100vh'
 };
 
-const center = { lat: 53.345804, lng: -6.26031 };
+let center = { lat: 53.345804, lng: -6.26031 };
 const mapBounds = {
   north: 54.345804,
   south: 52.345804,
@@ -123,6 +124,7 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
   const [originError, setOriginError] = React.useState("");
   const [destinationError, setDestinationError] = React.useState("");
   const [lib] = React.useState(['places']);
+  const [currentPos, setCurrentPos] = React.useState(null);
 
   // Next 4 functions are for the places search boxes
   const onOriginChanged = () => {
@@ -219,6 +221,31 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
       }
     }
   }
+
+    useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          console.log(pos);
+          setNewDirections(true);
+          setOriginError("");
+          setCurrentPos(pos);
+        },
+        () => {
+          console.log("The Geolocation service failed.");
+          setCurrentPos(null);
+        }
+      );
+    } else {
+      // Browser doesn't support Geolocation
+      console.log("Your browser doesn't support geolocation.");
+      setCurrentPos(null);
+    }
+});
 
   const { isLoaded } = useLoadScript({
     libraries: lib,
@@ -370,6 +397,7 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
                 />
               )
             }
+            {currentPos && <CurrentLocation position={currentPos}/>}
       </GoogleMap>
       }
     </div>
