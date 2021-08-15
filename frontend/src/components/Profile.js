@@ -56,7 +56,6 @@ class Profile extends React.Component {
         });
     }
 
-
     updateProfile(e) {
         e.preventDefault();
         authFetch(
@@ -139,7 +138,6 @@ class Profile extends React.Component {
             }
         });
     }
-
 
     render() {
         if (this.state.profile === null) {

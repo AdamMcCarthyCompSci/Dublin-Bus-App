@@ -9,10 +9,10 @@ import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import Slide from '@material-ui/core/Slide';
 import SwipeableViews from "react-swipeable-views";
-import Routes  from "./Routes.js";
+import Pricing  from "./Pricing.js";
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { Directions } from "./Directions";
+import Directions from "./Directions";
 import { Favourites } from "./Favourites";
 import {useAuth} from "../auth";
 
@@ -51,7 +51,7 @@ import {useAuth} from "../auth";
   }
 
 
-export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive, callbackResponse, walkingCallbackResponse, originError, destinationError}) {
+export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive, callbackResponse, walkingCallbackResponse, originError, destinationError, setPrediction, prediction}) {
     const [value, setValue] = React.useState(0);
     const theme = useTheme();
     const [logged] = useAuth();
@@ -66,9 +66,9 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
       .catch(error => {
         console.log("error:", error)
       });
-      setWeather(result.data.weather);
-      console.log(result.data.weather);
-  }
+      await setWeather(result.data.weather);
+      return result.data.weather;
+    }
 
     // Event handler for tabs
     const handleChange = (event, newValue) => {
@@ -79,6 +79,31 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
       setValue(index);
     };
 
+    const predict = async ({ weather, route, direction, boarding, alighting }) => {
+      const day = dayjs(selectedDate).format("dddd");
+      const hour = dayjs(selectedDate).format("HH:00:00");
+      const result = await axios.get(process.env.REACT_APP_API_URL + "/bus/predict", {
+          params: {
+              route,
+              direction,
+              boarding,
+              alighting,
+              day,
+              hour,
+              temp: weather.temp,
+              weather: weather.main_description
+          }
+      })
+      .catch(error => {
+        console.log("error:", error);
+      });
+      const time = leaveArrive === 'Leave At:' ? dayjs(selectedDate).add(result.data.prediction, 'second').format('h:mm A') : dayjs(selectedDate).subtract(result.data.prediction, 'second').format('h:mm A');
+      const duration = Math.max(Math.floor(result.data.prediction / 60), 1);
+      setPrediction({
+          time,
+          duration
+      });
+  }
 
     return (
       <div className={styles.homeContainer}>
@@ -128,13 +153,15 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
                 setSelectedDate={setSelectedDate}
                 setMenu={setMenu}
                 showWeather={showWeather}
+                predict={predict}
+                setPrediction={setPrediction}
                 favouriteRoute={false}
                 setFavouriteView={null}
             />
         </TabPanel>
         {/* Second tab, contains route dropdowns */}
         <TabPanel value={value} index={1} dir={theme.direction} style={{height:"310px"}}>
-            <Routes
+            <Pricing
                 logged={logged}
                 darkBackground={darkBackground}
                 darkForeground={darkForeground}

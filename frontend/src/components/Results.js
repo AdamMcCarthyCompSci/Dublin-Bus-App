@@ -12,7 +12,7 @@ import DirectionsWalkIcon from '@material-ui/icons/DirectionsWalk';
 import DirectionsBusIcon from '@material-ui/icons/DirectionsBus';
 import { Scrollbars } from 'react-custom-scrollbars';
 
-export function Results({menu, setMenu, callbackResponse, weather, settings, leaveArrive, walkingCallbackResponse, walking, setWalking}) {
+export function Results({menu, setMenu, prediction, callbackResponse, weather, settings, leaveArrive, walkingCallbackResponse, walking, setWalking}) {
     const [expand, setExpand] = React.useState(false);
     const [response, setResponse] = React.useState(null);
     const [walkingResponse, setWalkingResponse] = React.useState(null);
@@ -20,13 +20,11 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
 
     useEffect(() => {
         setResponse(callbackResponse ? callbackResponse.routes[0].legs[0] : null);
-        console.log("response", callbackResponse ? callbackResponse.routes[0].legs[0] : null);
     }, [callbackResponse, menu]);
 
     useEffect(() => {
         const goodWeather = ["01d", "01n", "02d", "02n", "03d", "03n", "04d", "04n"];
         setWalkingResponse(walkingCallbackResponse ? walkingCallbackResponse.routes[0].legs[0] : null);
-        console.log("walkingResponse", walkingCallbackResponse ? walkingCallbackResponse.routes[0].legs[0] : null);
         setWalkingConditions(walkingCallbackResponse ? [walkingCallbackResponse.routes[0].legs[0].distance.value < 2000, weather.feels_like > 10, goodWeather.includes(weather.icon)] : [null]);
     }, [walkingCallbackResponse, menu, weather]);
 
@@ -54,7 +52,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
     return (
         <div className={styles.directionsPaperContainer}>
         <React.Fragment>
-        {(!walkingConditions.includes(false) && walking === null && response !== null && walkingResponse !== null) &&
+        {(!walkingConditions.includes(false) && walking === null && response !== null && walkingResponse !== null && prediction !== null) &&
         <Slide direction="up" in={menu==='Results'} mountOnEnter unmountOnExit>
             <Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984"}}>
             <Grid container spacing={0}>
@@ -86,7 +84,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
                         <DirectionsBusIcon />
                     </Zoom>
                     </Fab>
-                    <p className={styles.directionsText}><i>{response.duration.text}</i></p>
+                    <p className={styles.directionsText}><i>{prediction.duration} {prediction.duration > 1 ? 'mins' : 'min'}</i></p>
                 </Grid>
                 <Grid item xs={4}>
                     <Fab size="large" color="primary" aria-label="menu" style={{marginTop: "5px"}} onClick={() => {
@@ -107,7 +105,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
 
 
 
-            {((walkingConditions.includes(false) && response !== null && walkingResponse !== null) || (walking !== null && response !== null && walkingResponse !== null)) && (
+            {((walkingConditions.includes(false) && response !== null && walkingResponse !== null && prediction !== null) || (walking !== null && response !== null && walkingResponse !== null && prediction !== null)) && (
             <React.Fragment>
             <Zoom in={expand} mountOnEnter unmountOnExit>
             <div className={styles.stepsFade}></div>
@@ -164,8 +162,8 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
                     }
                     </Fab>
                     <p className={styles.directionsText}><b>To {response.end_address} ({response.distance.text})</b></p>
-                    {(walking === false || walking === null) &&
-                        <p className={styles.directionsText}><i>Predicted {leaveArrive === "Leave At:" ? "arrival" : "departure"} time: {leaveArrive === "Leave At:" ? response.arrival_time.text : response.departure_time.text} ({response.duration.text})</i></p>
+                    {(walking === false || walking === null && prediction) &&
+                        <p className={styles.directionsText}><i>Predicted {leaveArrive === "Leave At:" ? "arrival" : "departure"} time: {prediction.time} ({prediction.duration} {prediction.duration > 1 ? 'minutes' : 'minute'})</i></p>
                     }
                     {walking === true &&
                         <p className={styles.directionsText}><i>Walking Distance: {walkingResponse.distance.text} ({walkingResponse.duration.text})</i></p>
@@ -182,7 +180,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
 
             </React.Fragment>
             )}
-            {callbackResponse === null && (
+            {callbackResponse === null || prediction === null && (
                 <div className={styles.directionsPaperContainer}>
                 <Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984"}}>
                 <p className={styles.directionsText}>Creating Route...</p>

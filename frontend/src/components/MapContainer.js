@@ -107,6 +107,7 @@ const darkModeStyle = [
 function MapContainer({menu, setMenu}) {
   const [originBox, setOriginBox] = React.useState('');
   const [destinationBox, setDestinationBox] = React.useState('');
+  const [prediction, setPrediction] = React.useState(null);
   const [callbackResponse, setCallbackResponse] = React.useState(null);
   const [walkingCallbackResponse, setWalkingCallbackResponse] = React.useState(null);
   const [origin, setOrigin] = React.useState('');
@@ -202,27 +203,19 @@ function MapContainer({menu, setMenu}) {
   };
 
   const directionsCallback = (response) => {
-    console.log(response)
-
     if (response !== null) {
       if (response.status === 'OK') {
         setCallbackResponse(response)
         setNewDirections(true);
-      } else {
-        console.log('response: ', response)
       }
     }
   }
 
   const walkingDirectionsCallback = (response) => {
-    console.log("Walking:", response)
-
     if (response !== null) {
       if (response.status === 'OK') {
         setWalkingCallbackResponse(response)
         setNewDirections(true);
-      } else {
-        console.log('walking response: ', response)
       }
     }
   }
@@ -270,11 +263,13 @@ function MapContainer({menu, setMenu}) {
         walkingCallbackResponse={walkingCallbackResponse}
         originError={originError}
         destinationError={destinationError}
+        prediction={prediction}
+        setPrediction={setPrediction}
         />}
         {/* Conditionally render views */}
         {menu === 'Profile' && <Profile display={menu === 'Profile'} setMenu={setMenu} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
         {menu === 'Settings' && <Settings display={menu === 'Settings'} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
-        {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings} leaveArrive={leaveArrive} walkingCallbackResponse={walkingCallbackResponse} walking={walking} setWalking={setWalking}/>}
+        {menu === 'Results' && <Results menu={menu} setMenu={setMenu} prediction={prediction} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings} leaveArrive={leaveArrive} walkingCallbackResponse={walkingCallbackResponse} walking={walking} setWalking={setWalking}/>}
         {/* Display bus stops */}
         {settings.showStops && <BusStops />}
         {settings.showLeap && <Leap />}

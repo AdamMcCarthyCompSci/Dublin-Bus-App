@@ -11,7 +11,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { Scrollbars } from 'react-custom-scrollbars';
 import styles from './Map.module.css';
-import { Directions } from "./Directions";
+import Directions from "./Directions";
 import Zoom from '@material-ui/core/Zoom';
 import dayjs from 'dayjs';
 
