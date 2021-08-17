@@ -226,14 +226,24 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
     if (window.navigator.geolocation) {
       window.navigator.geolocation.getCurrentPosition(
         (position) => {
+          console.log("position:", position);
           const pos = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
-          console.log(pos);
-          setNewDirections(true);
-          setOriginError("");
           setCurrentPos(pos);
+          if (origin === "" && destination === "") {
+            if ((mapBounds.south <= pos.lat && pos.lat <= mapBounds.north) && (mapBounds.west <= pos.lng && pos.lng <= mapBounds.east)) {
+              setOrigin("Current Location")
+              console.log(pos);
+              setNewDirections(true);
+              setCurrentPos(pos.lat.toString() + "," + pos.lng.toString())
+              setOriginError("");
+            }
+            else {
+              console.log("Current location out of bounds! Leaving Origin blank.")
+            }
+          }
         },
         () => {
           console.log("The Geolocation service failed.");
@@ -246,6 +256,19 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
       setCurrentPos(null);
     }
 });
+
+  const getOrigin = () => {
+    if (origin === "Current Location" && currentPos) {
+      return (
+        currentPos
+      );
+    }
+    else {
+      return (
+        origin
+      )
+    }
+  }
 
   const { isLoaded } = useLoadScript({
     libraries: lib,
@@ -317,7 +340,7 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
                 <DirectionsService
                   options={{
                     destination: destination,
-                    origin: origin,
+                    origin: getOrigin(),
                     travelMode: 'TRANSIT',
                     transitOptions: {
                       departureTime: dayjs(selectedDate).toDate(),
