@@ -264,7 +264,7 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
                     </Grid>
                     <Grid item md={1} xs={2}>
                     <Tooltip title="Delete favourite" aria-label="Delete favourite">
-                        <Fab color="secondary" size="small" aria-label="delete" className={styles.editDeleteIcons} onClick={() => deleteFavourite(favourite)}>
+                        <Fab color="secondary" size="small" aria-label="delete" className={styles.editDeleteIcons} onClick={() => {if (window.confirm('Are you sure you want to delete this favourite?')) deleteFavourite(favourite)}}>
                             <DeleteIcon/>
                         </Fab>
                     </Tooltip>
