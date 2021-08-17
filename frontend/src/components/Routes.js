@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from "@material-ui/lab/Alert";
+import MuiAlert from '@material-ui/lab/Alert';
 
 class Routes extends React.Component {
     constructor(props) {
@@ -38,7 +39,8 @@ class Routes extends React.Component {
                 'Adult Leap',
                 'Child Leap (Under 19)',
                 'Child Cash (Under 16)'
-            ]
+            ],
+            pricingError: false,
         }
 
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -99,12 +101,25 @@ class Routes extends React.Component {
     }
 
     async handleSubmit() {
-        await this.showPrice(
-            this.state.route,
-            this.state.direction[this.state.direction.length - 1],
-            this.state.boardingStop,
-            this.state.alightingStop,
-            this.state.fareType);
+        try {
+            await this.showPrice(
+                this.state.route,
+                this.state.direction[this.state.direction.length - 1],
+                this.state.boardingStop,
+                this.state.alightingStop,
+                this.state.fareType);
+                
+                this.setState({
+                    ...this.state,
+                    pricingError: false
+                })
+        }
+        catch {
+            this.setState({
+                ...this.state,
+                pricingError: true
+            })
+        }
     }
 
     async activateDirectionDropdown(e) {
@@ -402,7 +417,7 @@ class Routes extends React.Component {
                     {this.state.finalDropdown &&
                     <Button
                         className={styles.submitButton}
-                        style={{marginBottom: "30px"}}
+                        style={{marginBottom: "10px"}}
                         variant="contained"
                         color="primary"
                         id="submit"
@@ -413,6 +428,8 @@ class Routes extends React.Component {
                         Submit
                     </Button>
                     }
+
+                    {this.state.pricingError && <Alert severity="error">An error has occurred!</Alert>}
                 </React.Fragment>
             )
         }
