@@ -12,18 +12,19 @@
 }
 .paper {
     width: 100%;
-    height: 310px;
-    margin-bottom: 10px;
+    height: 400px;
 }
 
 .homePaper {
     width: 100%;
-    height: 310px;
+    height: 400px;
+}
+.homePaper > div {
+    overflow-y: scroll;
 }
 .resultsPaper {
     width: 100%;
-    height: 310px;
-    margin-bottom: 10px;
+    height: 400px;
 }
 .profileContainer {
     position: absolute;
@@ -34,7 +35,7 @@
 }
 .profilePaper {
     width: 100%;
-    height: 310px;
+    height: 90vh;
 }
 .settingsContainer {
     position: absolute;
@@ -45,7 +46,7 @@
 }
 .settingsPaper {
     width: 100%;
-    height: 310px;
+    height: 400px;
 }
 
 .menuButton {
@@ -93,7 +94,7 @@
 
 /* Directions tab - extends to full height */
 /* .MuiBox-root {
-    height: 310px;
+    height: 400px;
 } */
 
 .datePickerContainer {
@@ -128,7 +129,7 @@
 }
 
 .stepsContainer {
-    overflow: auto;
+    /* overflow: auto; */
     position: relative;
   }
 .stepsFade {
@@ -150,9 +151,10 @@
         margin-left: 15%;
         margin-right: 15%;
         width: 70%;
+         margin-bottom: 10px;
     }
     .homePaper {
-        margin-bottom: 10px;
+         margin-bottom: 10px;
     }
     .profileContainer {
        margin-left: 15%;

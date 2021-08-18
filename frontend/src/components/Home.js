@@ -5,20 +5,24 @@ import { useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import Slide from '@material-ui/core/Slide';
 import SwipeableViews from "react-swipeable-views";
-import Routes  from "./Routes.js";
+import Pricing  from "./Pricing.js";
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { Directions } from "./Directions";
 import { Favourites } from "./Favourites";
 import {useAuth} from "../auth";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import Zoom from '@material-ui/core/Zoom';
 
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
-
+  
     return (
       <div
         role="tabpanel"
@@ -28,20 +32,20 @@ import {useAuth} from "../auth";
         {...other}
       >
         {value === index && (
-          <Box p={3} style={{ maxHeight: '200px', overflowY: 'scroll'}}>
+          <Box p={3} style={{ height: '304px', overflowY: 'scroll' }}>
             {children}
           </Box>
         )}
       </div>
     );
   }
-
+  
   TabPanel.propTypes = {
     children: PropTypes.node,
     index: PropTypes.any.isRequired,
     value: PropTypes.any.isRequired,
   };
-
+  
   // Tab functionality
   function a11yProps(index) {
     return {
@@ -51,24 +55,11 @@ import {useAuth} from "../auth";
   }
 
 
-export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive, callbackResponse, walkingCallbackResponse, originError, destinationError}) {
+export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive, callbackResponse, walkingCallbackResponse, originError, destinationError, prediction, setPrediction}) {
     const [value, setValue] = React.useState(0);
+    const [expand, setExpand] = React.useState(true);
     const theme = useTheme();
     const [logged] = useAuth();
-
-    const showWeather = async (time) => {
-      const formatTime = dayjs(time).format("YYYY-MM-DD HH:mm:ss");
-      const result = await axios.get(process.env.REACT_APP_API_URL + "/bus/weather", {
-          params: {
-              time: formatTime,
-          }
-      })
-      .catch(error => {
-        console.log("error:", error)
-      });
-      setWeather(result.data.weather);
-      console.log(result.data.weather);
-  }
 
     // Event handler for tabs
     const handleChange = (event, newValue) => {
@@ -79,11 +70,16 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
       setValue(index);
     };
 
+    const placeholder = () => {
+      return
+    }
 
     return (
       <div className={styles.homeContainer}>
-
+      
       <Slide direction="up" in={menu==='Home'} mountOnEnter unmountOnExit>
+      <div>
+      {expand &&
       <Paper elevation={3} className={styles.homePaper} style={{backgroundColor: darkBackground}}>
       <AppBar position="static" color="primary">
         <Tabs
@@ -106,69 +102,93 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
         onChangeIndex={handleChangeIndex}
       >
         {/* First tab, contains location search boces and date/time picker */}
-        <TabPanel value={value} index={0} dir={theme.direction} style={{height:"310px"}}>
-            <Directions
-                onOriginChanged={onOriginChanged}
-                onOriginLoad={onOriginLoad}
-                origin={origin}
-                setOrigin={setOrigin}
-                darkBackground={darkBackground}
-                darkForeground={darkForeground}
-                darkText={darkText}
-                originError={originError}
-                onDestinationChanged={onDestinationChanged}
-                onDestinationLoad={onDestinationLoad}
-                destination={destination}
-                setDestination={setDestination}
-                destinationError={destinationError}
-                leaveArrive={leaveArrive}
-                setLeaveArrive={setLeaveArrive}
-                setNewDirections={setNewDirections}
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
-                setMenu={setMenu}
-                showWeather={showWeather}
-                favouriteRoute={false}
-                setFavouriteView={null}
-            />
+        <TabPanel value={value} index={0} dir={theme.direction} style={{height:"400px"}}>
+
+
+        <div style={{marginBottom: "40px"}}>
+        <Directions 
+          onOriginChanged={onOriginChanged}
+          onOriginLoad={onOriginLoad}
+          origin={origin}
+          setOrigin={setOrigin}
+          darkBackground={darkBackground}
+          darkForeground={darkForeground}
+          darkText={darkText}
+          originError={originError}
+          onDestinationChanged={onDestinationChanged}
+          onDestinationLoad={onDestinationLoad}
+          destination={destination}
+          setDestination={setDestination}
+          destinationError={destinationError}
+          leaveArrive={leaveArrive}
+          setLeaveArrive={setLeaveArrive}
+          setNewDirections={setNewDirections}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          setMenu={setMenu}
+          favouriteTitle
+          favouriteRoute={false}
+          setFavouriteView={null}
+          favouriteTitle={""}
+          prediction={prediction}
+          setPrediction={setPrediction}
+        />
+        </div>
+
+
+
         </TabPanel>
         {/* Second tab, contains route dropdowns */}
-        <TabPanel value={value} index={1} dir={theme.direction} style={{height:"310px"}}>
-            <Routes
+        <TabPanel value={value} index={1} dir={theme.direction} style={{height:"400px"}}>
+
+
+
+            <Pricing
                 logged={logged}
                 darkBackground={darkBackground}
                 darkForeground={darkForeground}
                 darkText={darkText}
             />
+
+
         </TabPanel>
         {/* Third tab, contains miscellaneous features */}
-        <TabPanel value={value} index={2} dir={theme.direction} style={{height:"310px"}}>
-            <Favourites
-                onOriginChanged={onOriginChanged}
-                onOriginLoad={onOriginLoad}
-                origin={origin}
-                setOrigin={setOrigin}
-                darkBackground={darkBackground}
-                darkForeground={darkForeground}
-                darkText={darkText}
-                originError={originError}
-                onDestinationChanged={onDestinationChanged}
-                onDestinationLoad={onDestinationLoad}
-                destination={destination}
-                setDestination={setDestination}
-                destinationError={destinationError}
-                leaveArrive={leaveArrive}
-                setLeaveArrive={setLeaveArrive}
-                setNewDirections={setNewDirections}
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
-                setMenu={setMenu}
-                showWeather={showWeather}
-            />
+        <TabPanel value={value} index={2} dir={theme.direction} style={{height:"400px"}}>
+
+
+
+
+        {/* {<p style={{color: darkText}}>Sign in or register to create and view your favourite routes</p>} */}
+        <Favourites
+          onOriginChanged={onOriginChanged}
+          onOriginLoad={onOriginLoad}
+          origin={origin}
+          setOrigin={setOrigin}
+          darkBackground={darkBackground}
+          darkForeground={darkForeground}
+          darkText={darkText}
+          originError={originError}
+          onDestinationChanged={onDestinationChanged}
+          onDestinationLoad={onDestinationLoad}
+          destination={destination}
+          setDestination={setDestination}
+          destinationError={destinationError}
+          leaveArrive={leaveArrive}
+          setLeaveArrive={setLeaveArrive}
+          setNewDirections={setNewDirections}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          setMenu={setMenu}
+        />
+
+
+
         </TabPanel>
       </SwipeableViews>
-
       </Paper>
+      }
+      <Button className={styles.homeHide} fullWidth={true} variant="contained" color="primary" onClick={() => {setExpand(!expand)}}>{expand && <Zoom in={expand}><ExpandMoreIcon/></Zoom>}{!expand && <Zoom in={!expand}><ExpandLessIcon/></Zoom>}</Button>
+      </div>
       </Slide>
       </div>
     )

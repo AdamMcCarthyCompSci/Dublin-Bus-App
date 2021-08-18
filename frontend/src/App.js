@@ -11,12 +11,21 @@ function App() {
     const [menu, setMenu] = React.useState('Home');
     const [login, setLogin] = React.useState(false);
     const [register, setRegister] = React.useState(false);
+    const [settings, setSettings] = React.useState({
+        showStops: false,
+        darkMode: false,
+        showLeap: false,
+        showWeather: true,
+      });
+      const darkBackground = settings.darkMode ? "#424242" : "";
+      const darkForeground = settings.darkMode ? "#616161" : "";
+      const darkText = settings.darkMode ? "#ffffff" : "";
 
     return (
         <div className="App">
 
-            <MapContainer menu={menu} setMenu={setMenu}/>
-            <FloatingActionButton menu={menu} setMenu={setMenu} setLogin={setLogin} setRegister={setRegister}/>
+            <MapContainer menu={menu} setMenu={setMenu} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>
+            <FloatingActionButton menu={menu} setMenu={setMenu} setLogin={setLogin} setRegister={setRegister} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>
             <UserRegister show={register} setRegister={setRegister} setLogin={setLogin}/>
             <UserSignIn show={login} setLogin={setLogin}/>
         </div>

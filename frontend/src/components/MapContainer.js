@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GoogleMap, useLoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 import styles from './Map.module.css';
 import { BusStops } from "./BusStops";
+import { CurrentLocation } from "./CurrentLocation";
 import { Leap } from "./Leap.js"
 import { Home } from './Home';
-import { Settings } from './Settings';
 import Profile from './Profile';
 import { Results } from "./Results.js"
 import dayjs from 'dayjs';
+import axios from "axios";
 
 
 const containerStyle = {
@@ -27,6 +28,11 @@ const darkModeStyle = [
   { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
   { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
   { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+  {
+    featureType: "poi",
+    elementType: "labels",
+    stylers: [{visibility: "off",}]
+  },
   {
     featureType: "administrative.locality",
     elementType: "labels.text.fill",
@@ -104,32 +110,23 @@ const darkModeStyle = [
   },
 ]
 
-function MapContainer({menu, setMenu}) {
+function MapContainer({menu, setMenu, settings, setSettings, darkBackground, darkForeground, darkText}) {
   const [originBox, setOriginBox] = React.useState('');
   const [destinationBox, setDestinationBox] = React.useState('');
+  const [prediction, setPrediction] = React.useState(null);
   const [callbackResponse, setCallbackResponse] = React.useState(null);
   const [walkingCallbackResponse, setWalkingCallbackResponse] = React.useState(null);
   const [origin, setOrigin] = React.useState('');
   const [destination, setDestination] = React.useState('');
-  const [settings, setSettings] = React.useState({
-    showStops: true,
-    darkMode: false,
-    showLeap: true,
-    showWeather: true,
-  });
   const [newDirections, setNewDirections] = React.useState(true);
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [weather, setWeather] = React.useState({});
-  const [leaveArrive, setLeaveArrive] = React.useState('Leave At:');
+  const [leaveArrive, setLeaveArrive] = React.useState('Leave:');
   const [walking, setWalking] = React.useState(null);
   const [originError, setOriginError] = React.useState("");
   const [destinationError, setDestinationError] = React.useState("");
   const [lib] = React.useState(['places']);
-
-
-  const darkBackground = settings.darkMode ? "#424242" : "";
-  const darkForeground = settings.darkMode ? "#616161" : "";
-  const darkText = settings.darkMode ? "#ffffff" : "";
+  const [currentPos, setCurrentPos] = React.useState(null);
 
   // Next 4 functions are for the places search boxes
   const onOriginChanged = () => {
@@ -201,29 +198,154 @@ function MapContainer({menu, setMenu}) {
     setDestinationBox(ref);
   };
 
-  const directionsCallback = (response) => {
-    console.log(response)
-
+  const directionsCallback = async (response) => {
+    // console.log(response)
     if (response !== null) {
       if (response.status === 'OK') {
+        await showWeather(selectedDate);
         setCallbackResponse(response)
         setNewDirections(true);
       } else {
-        console.log('response: ', response)
+        // console.log('response: ', response)
       }
     }
   }
 
+  useEffect(() => {
+    async function fetchPrediction() {
+      if (weather && callbackResponse) {
+        const steps = callbackResponse.routes[0].legs[0].steps;
+        const buses = steps.filter(s => s.travel_mode === 'TRANSIT');
+        const predictions = [];
+
+        for (const bus of buses) {
+          const route = bus.transit.line.short_name;
+          const boardingStop = bus.transit.departure_stop.name.match(/stop (.*)$/);
+          const boardingStopId = boardingStop ? boardingStop[1] : null;
+          const alightingStop = bus.transit.arrival_stop.name.match(/stop (.*)$/);
+          const alightingStopId = alightingStop ? alightingStop[1] : null;
+          const stops = bus.transit.num_stops;
+
+          if (route && (boardingStopId && alightingStopId) || (boardingStopId && !alightingStopId && stops) || (!boardingStopId && alightingStopId && stops)) {
+            const prediction = await predict(route, boardingStopId, alightingStopId, stops);
+            if(prediction) {
+              predictions.push(prediction);
+            }
+          }
+        }
+        setPrediction(predictions);
+      }
+    }
+    fetchPrediction();
+  }, [weather])
+
   const walkingDirectionsCallback = (response) => {
-    console.log("Walking:", response)
+    // console.log("Walking:", response)
 
     if (response !== null) {
       if (response.status === 'OK') {
         setWalkingCallbackResponse(response)
         setNewDirections(true);
       } else {
-        console.log('walking response: ', response)
+        // console.log('walking response: ', response)
       }
+    }
+  }
+
+  const showWeather = async (time) => {
+      const formatTime = dayjs(time).format("YYYY-MM-DD HH:mm:ss");
+      const result = await axios.get(process.env.REACT_APP_API_URL + "/bus/weather", {
+          params: {
+              time: formatTime,
+          }
+      })
+      .catch(error => {
+        console.log("error:", error)
+      });
+      await setWeather(result.data.weather);
+      // console.log(result.data.weather);
+  }
+
+  const predict = async (route, boarding, alighting, stops) => {
+      const day = dayjs(selectedDate).format("dddd");
+      const hour = dayjs(selectedDate).format("HH:00:00");
+      const result = await axios.get(process.env.REACT_APP_API_URL + "/bus/predict", {
+          params: {
+              route,
+              boarding,
+              alighting,
+              stops,
+              day,
+              hour,
+              temp: weather.temp,
+              weather: weather.main_description
+          }
+      })
+      .catch(error => {
+        console.log("error:", error);
+        return null;
+      });
+
+    if (result) {
+      return {
+        route,
+        boarding,
+        alighting,
+        stops,
+        day,
+        hour,
+        temp: weather.temp,
+        weather: weather.main_description,
+        duration: Math.round(result.data.prediction)
+      }
+    }
+  }
+
+    useEffect(() => {
+    if (window.navigator.geolocation) {
+      window.navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log("position:", position);
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setCurrentPos(pos);
+          if (origin === "" && destination === "") {
+            if ((mapBounds.south <= pos.lat && pos.lat <= mapBounds.north) && (mapBounds.west <= pos.lng && pos.lng <= mapBounds.east)) {
+              setOrigin("Current Location")
+              console.log(pos);
+              setNewDirections(true);
+              setCurrentPos(pos.lat.toString() + "," + pos.lng.toString())
+              setOriginError("");
+            }
+            else {
+              console.log("Current location out of bounds! Leaving Origin blank.")
+            }
+          }
+        },
+        () => {
+          console.log("The Geolocation service failed.");
+          setCurrentPos(null);
+        }
+      );
+    } else {
+      // Browser doesn't support Geolocation
+      console.log("Your browser doesn't support geolocation.");
+      setCurrentPos(null);
+    }
+});
+
+  const getOrigin = () => {
+    if (origin === "Current Location" && currentPos) {
+      return (
+        currentPos
+      );
+    }
+    else {
+      return (
+        origin
+      )
     }
   }
 
@@ -241,7 +363,12 @@ function MapContainer({menu, setMenu}) {
         mapContainerStyle={containerStyle}
         center={center}
         zoom = { 14 }
-        options={{streetViewControl: false, strictBounds: false, mapTypeControl: false, styles: (settings.darkMode ? darkModeStyle : [])}}
+        mapOptions={{clickableIcons: false}}
+        options={{streetViewControl: false, strictBounds: false, mapTypeControl: false, clickableIcons: false, styles: (settings.darkMode ? darkModeStyle : [  {
+          featureType: "poi",
+          elementType: "labels",
+          stylers: [{visibility: "off",}]
+        }])}}
       >
         {menu === 'Home' && <Home
         menu={menu}
@@ -270,11 +397,12 @@ function MapContainer({menu, setMenu}) {
         walkingCallbackResponse={walkingCallbackResponse}
         originError={originError}
         destinationError={destinationError}
+        prediction={prediction}
+        setPrediction={setPrediction}
         />}
         {/* Conditionally render views */}
         {menu === 'Profile' && <Profile display={menu === 'Profile'} setMenu={setMenu} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
-        {menu === 'Settings' && <Settings display={menu === 'Settings'} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
-        {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings} leaveArrive={leaveArrive} walkingCallbackResponse={walkingCallbackResponse} walking={walking} setWalking={setWalking}/>}
+        {menu === 'Results' && <Results menu={menu} setMenu={setMenu} prediction={prediction} selectedDate={selectedDate} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings} leaveArrive={leaveArrive} walkingCallbackResponse={walkingCallbackResponse} walking={walking} setWalking={setWalking}/>}
         {/* Display bus stops */}
         {settings.showStops && <BusStops />}
         {settings.showLeap && <Leap />}
@@ -285,7 +413,7 @@ function MapContainer({menu, setMenu}) {
                 destination !== '' &&
                 origin !== '' &&
                 newDirections === false &&
-                leaveArrive === "Leave At:" &&
+                leaveArrive === "Leave:" &&
                 originError === "" &&
                 destinationError === ""
               ) && (
@@ -293,7 +421,7 @@ function MapContainer({menu, setMenu}) {
                 <DirectionsService
                   options={{
                     destination: destination,
-                    origin: origin,
+                    origin: getOrigin(),
                     travelMode: 'TRANSIT',
                     transitOptions: {
                       departureTime: dayjs(selectedDate).toDate(),
@@ -321,7 +449,7 @@ function MapContainer({menu, setMenu}) {
                 destination !== '' &&
                 origin !== '' &&
                 newDirections === false &&
-                leaveArrive === "Arrive At:" &&
+                leaveArrive === "Arrive:" &&
                 originError === "" &&
                 destinationError === ""
               ) && (
@@ -373,6 +501,7 @@ function MapContainer({menu, setMenu}) {
                 />
               )
             }
+            {currentPos && <CurrentLocation position={currentPos}/>}
       </GoogleMap>
       }
     </div>

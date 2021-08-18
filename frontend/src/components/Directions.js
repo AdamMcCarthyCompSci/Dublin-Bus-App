@@ -7,11 +7,10 @@ import { DateTimePicker, TimePicker } from "@material-ui/pickers";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 
-export function Directions({onOriginChanged, onOriginLoad, origin, darkBackground, darkForeground, darkText, originError, onDestinationChanged, onDestinationLoad, destination, destinationError, leaveArrive, setLeaveArrive, setNewDirections, selectedDate, setSelectedDate, setMenu, showWeather, favouriteRoute, saveFavourite, setFavouriteView, favouriteTitle, handleTitleChange}) {
+export function Directions({onOriginChanged, onOriginLoad, origin, darkBackground, darkForeground, darkText, originError, onDestinationChanged, onDestinationLoad, destination, destinationError, leaveArrive, setLeaveArrive, setNewDirections, selectedDate, setSelectedDate, setMenu, favouriteRoute, saveFavourite, setFavouriteView, favouriteTitle, handleTitleChange, setPrediction}) {
   const useStyles = makeStyles((theme) => ({
     searchPaper: {
       padding: '2px 4px',
@@ -51,9 +50,11 @@ const classes = useStyles();
           className={classes.input}
           value={favouriteTitle}
           onChange={handleTitleChange}
-          placeholder={favouriteTitle ? favouriteTitle : "Enter a title"}
-          label={"Stop title"}
           variant="outlined"
+          placeholder={favouriteTitle ? favouriteTitle : "Enter a title"}
+          error={favouriteTitle.length > 25}
+          label={favouriteTitle.length > 25 ? "Title cannot be more than 25 characters" : ""}
+//           variant="outlined"
           inputProps={{ 'aria-label': 'search google maps', style: {color: darkText} }}
         />
         }
@@ -62,34 +63,36 @@ const classes = useStyles();
         onPlacesLoad={onOriginLoad} 
         place={origin} 
         search={"Origin Search"}
-        label={"Search origin"}
+        label={"Origin"}
         darkBackground={darkBackground}
         darkForeground={darkForeground}
         darkText={darkText}
         error={originError}
-        style={{marginTop: '16px'}}
+        style={{marginTop: '10px'}}
         />
         <PlacesSearch 
         onPlacesChanged={onDestinationChanged} 
         onPlacesLoad={onDestinationLoad} 
         place={destination} 
         search={"Destination Search"}
-        label={"Search destination"}
+        label={"Destination"}
         darkBackground={darkBackground}
         darkForeground={darkForeground}
         darkText={darkText}
         error={destinationError}
-        style={{marginTop: '16px'}}
+        style={{marginTop: '10px'}}
         />
 
-        <Grid container spacing={1} alignItems="center" className={styles.dateAndButtonContainer} style={{marginTop: "16px", marginBottom: "16px"}}>
+        <Grid container spacing={1} alignItems="center" className={styles.dateAndButtonContainer} style={{marginTop: "10px", marginBottom: "20px"}}>
           
           {!favouriteRoute && 
-          <Grid item xs={12} md={3}>
+
+//         <Paper className={styles.datePickerContainer} style={{backgroundColor: darkForeground}}>
+          <Grid item xs={12} md={2}>
           <LeaveArriveButton leaveArrive={leaveArrive} setLeaveArrive={setLeaveArrive} setNewDirections={setNewDirections}/>
           </Grid>
           }
-        <Grid item xs={12} md={favouriteRoute ? 12 : 9}>
+        <Grid item xs={12} md={favouriteRoute ? 12 : 10}>
           {favouriteRoute &&
           <MuiPickersUtilsProvider utils={DayJsUtils}>
             <TimePicker
@@ -136,10 +139,9 @@ const classes = useStyles();
           fullWidth
           onClick={() => {
             setMenu('Results');
-            showWeather(selectedDate);
             setNewDirections(false);
-            // Call prediction
-          }}> 
+            setPrediction(null);
+          }}>
             Submit 
           </Button>
         }
@@ -157,31 +159,28 @@ const classes = useStyles();
           </Button>
         }
 
-        {origin !== "" && destination !== "" && originError === "" && destinationError === "" &&
+        {origin !== "" && destination !== "" && originError === "" && destinationError === "" && favouriteTitle.length <= 25 &&
         favouriteRoute && 
           <Button
           className={styles.favouriteSubmitButton}
           variant="contained" 
           color="primary"
-          size="large"
-          fullWidth
+          style={{marginTop:"-20px"}}
           onClick={() => {
             saveFavourite(favouriteTitle ? favouriteTitle : "Unnamed Route", origin, destination, selectedDate);
             setNewDirections(false);
             setFavouriteView(true);
-            // Call prediction
-          }}> 
+          }}>
             Submit 
           </Button>
         }
-        {((origin === "" || destination === "") || (originError !== "" || destinationError !== "")) && 
+        {(((origin === "" || destination === "") || (originError !== "" || destinationError !== "")) || favouriteTitle.length > 25 ) && 
         favouriteRoute &&
           <Button
           className={styles.favouriteSubmitButton}
           variant="contained" 
           color="primary"
-          size="large"
-          fullWidth
+          style={{marginTop:"-20px"}}
           disabled
           > 
             Submit 

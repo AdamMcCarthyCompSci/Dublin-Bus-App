@@ -7,20 +7,21 @@ import AutorenewIcon from '@material-ui/icons/Autorenew';
 export function LeaveArriveButton({leaveArrive, setLeaveArrive, setNewDirections}) {
 
     const handleLeaveArrive = () => {
-        setLeaveArrive((leaveArrive === 'Leave At:') ? 'Arrive At:' : 'Leave At:');
+        setLeaveArrive((leaveArrive === 'Leave:') ? 'Arrive:' : 'Leave:');
         setNewDirections(true);
     }
 
     return (
         <React.Fragment>
-            {leaveArrive === 'Leave At:'
+            {leaveArrive === 'Leave:'
             &&
-            <Zoom in={leaveArrive === 'Leave At:'}>
+            <Zoom in={leaveArrive === 'Leave:'}>
                 <Button
                     variant="contained"
                     color="primary"
                     startIcon={<LoopIcon/>}
                     size="large"
+                    style={{paddingTop: "15px", paddingBottom: "15px"}}
                     fullWidth
                     onClick={() => handleLeaveArrive()}
                 >
@@ -29,14 +30,15 @@ export function LeaveArriveButton({leaveArrive, setLeaveArrive, setNewDirections
             </Zoom>
             }
 
-            {leaveArrive === 'Arrive At:'
+            {leaveArrive === 'Arrive:'
             &&
-            <Zoom in={leaveArrive === 'Arrive At:'}>
+            <Zoom in={leaveArrive === 'Arrive:'}>
                 <Button
                     variant="contained"
                     color="primary"
                     startIcon={<AutorenewIcon/>}
                     size="large"
+                    style={{paddingTop: "15px", paddingBottom: "15px"}}
                     fullWidth
                     onClick={() => handleLeaveArrive()}
                 >
