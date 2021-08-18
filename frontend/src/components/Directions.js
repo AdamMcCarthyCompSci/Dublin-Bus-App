@@ -7,11 +7,10 @@ import { DateTimePicker, TimePicker } from "@material-ui/pickers";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 
-export function Directions({onOriginChanged, onOriginLoad, origin, darkBackground, darkForeground, darkText, originError, onDestinationChanged, onDestinationLoad, destination, destinationError, leaveArrive, setLeaveArrive, setNewDirections, selectedDate, setSelectedDate, setMenu, showWeather, favouriteRoute, saveFavourite, setFavouriteView, favouriteTitle, handleTitleChange}) {
+export function Directions({onOriginChanged, onOriginLoad, origin, darkBackground, darkForeground, darkText, originError, onDestinationChanged, onDestinationLoad, destination, destinationError, leaveArrive, setLeaveArrive, setNewDirections, selectedDate, setSelectedDate, setMenu, favouriteRoute, saveFavourite, setFavouriteView, favouriteTitle, handleTitleChange, setPrediction}) {
   const useStyles = makeStyles((theme) => ({
     searchPaper: {
       padding: '2px 4px',
@@ -140,10 +139,9 @@ const classes = useStyles();
           fullWidth
           onClick={() => {
             setMenu('Results');
-            showWeather(selectedDate);
             setNewDirections(false);
-            // Call prediction
-          }}> 
+            setPrediction(null);
+          }}>
             Submit 
           </Button>
         }
@@ -172,8 +170,7 @@ const classes = useStyles();
             saveFavourite(favouriteTitle ? favouriteTitle : "Unnamed Route", origin, destination, selectedDate);
             setNewDirections(false);
             setFavouriteView(true);
-            // Call prediction
-          }}> 
+          }}>
             Submit 
           </Button>
         }

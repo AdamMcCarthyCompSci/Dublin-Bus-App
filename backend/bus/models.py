@@ -73,6 +73,8 @@ class DublinBusRoutes(models.Model):
     platecode = models.IntegerField(db_column='PlateCode')  # Field name made lowercase.
     shortcommonname_en = models.CharField(db_column='ShortCommonName_en', max_length=25, blank=True, null=True)  # Field name made lowercase.
     stopsequence = models.IntegerField(db_column='StopSequence')  # Field name made lowercase.
+    lat = models.IntegerField(db_column='StopLat')  # Field name made lowercase.
+    lon = models.IntegerField(db_column='StopLon')  # Field name made lowercase.
 
     class Meta:
         managed = False
