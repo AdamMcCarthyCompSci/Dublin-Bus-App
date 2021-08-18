@@ -6,12 +6,11 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import Slide from '@material-ui/core/Slide';
 import SwipeableViews from "react-swipeable-views";
-import Routes from "./Routes.js";
+import Pricing  from "./Pricing.js";
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { Directions } from "./Directions";
@@ -33,8 +32,8 @@ import Zoom from '@material-ui/core/Zoom';
         {...other}
       >
         {value === index && (
-          <Box p={3}>
-            <Typography>{children}</Typography>
+          <Box p={3} style={{ height: '304px', overflowY: 'scroll' }}>
+            {children}
           </Box>
         )}
       </div>
@@ -56,25 +55,11 @@ import Zoom from '@material-ui/core/Zoom';
   }
 
 
-export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive, callbackResponse, walkingCallbackResponse, originError, destinationError}) {
+export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive, callbackResponse, walkingCallbackResponse, originError, destinationError, prediction, setPrediction}) {
     const [value, setValue] = React.useState(0);
     const [expand, setExpand] = React.useState(true);
     const theme = useTheme();
     const [logged] = useAuth();
-
-    const showWeather = async (time) => {
-      const formatTime = dayjs(time).format("YYYY-MM-DD HH:mm:ss");
-      const result = await axios.get(process.env.REACT_APP_API_URL + "/bus/weather", {
-          params: {
-              time: formatTime,
-          }
-      })
-      .catch(error => {
-        console.log("error:", error)
-      });
-      setWeather(result.data.weather);
-      console.log(result.data.weather);
-  }
 
     // Event handler for tabs
     const handleChange = (event, newValue) => {
@@ -141,11 +126,12 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           setMenu={setMenu}
-          showWeather={showWeather}
           favouriteTitle
           favouriteRoute={false}
           setFavouriteView={null}
           favouriteTitle={""}
+          prediction={prediction}
+          setPrediction={setPrediction}
         />
         </div>
 
@@ -157,8 +143,12 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
 
 
 
-        <Routes logged={logged} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>
-
+            <Pricing
+                logged={logged}
+                darkBackground={darkBackground}
+                darkForeground={darkForeground}
+                darkText={darkText}
+            />
 
 
         </TabPanel>
@@ -189,7 +179,6 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           setMenu={setMenu}
-          showWeather={showWeather}
         />
 
 

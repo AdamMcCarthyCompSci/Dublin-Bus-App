@@ -11,8 +11,10 @@ import Grid from '@material-ui/core/Grid';
 import DirectionsWalkIcon from '@material-ui/icons/DirectionsWalk';
 import DirectionsBusIcon from '@material-ui/icons/DirectionsBus';
 import { Scrollbars } from 'react-custom-scrollbars';
+import dayjs from 'dayjs';
+import Alert from "@material-ui/lab/Alert";
 
-export function Results({menu, setMenu, callbackResponse, weather, settings, leaveArrive, walkingCallbackResponse, walking, setWalking}) {
+export function Results({menu, setMenu, callbackResponse, weather, settings, leaveArrive, walkingCallbackResponse, walking, setWalking, selectedDate, prediction}) {
     const [expand, setExpand] = React.useState(false);
     const [response, setResponse] = React.useState(null);
     const [walkingResponse, setWalkingResponse] = React.useState(null);
@@ -20,13 +22,13 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
 
     useEffect(() => {
         setResponse(callbackResponse ? callbackResponse.routes[0].legs[0] : null);
-        console.log("response", callbackResponse ? callbackResponse.routes[0].legs[0] : null);
-    }, [callbackResponse, menu]);
+        // console.log("response", callbackResponse ? callbackResponse.routes[0].legs[0] : null);
+    }, [callbackResponse, prediction, menu]);
 
     useEffect(() => {
         const goodWeather = ["01d", "01n", "02d", "02n", "03d", "03n", "04d", "04n"];
         setWalkingResponse(walkingCallbackResponse ? walkingCallbackResponse.routes[0].legs[0] : null);
-        console.log("walkingResponse", walkingCallbackResponse ? walkingCallbackResponse.routes[0].legs[0] : null);
+        // console.log("walkingResponse", walkingCallbackResponse ? walkingCallbackResponse.routes[0].legs[0] : null);
         setWalkingConditions(walkingCallbackResponse ? [walkingCallbackResponse.routes[0].legs[0].distance.value < 2000, weather.feels_like > 10, goodWeather.includes(weather.icon)] : [null]);
     }, [walkingCallbackResponse, menu, weather]);
 
@@ -54,22 +56,50 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
     }
 
     const displayPredictedTime = () => {
-        if ("arrival_time" in response && "departure_time" in response) {
-            return (
-                (leaveArrive === "Leave:" ? "arrival" : "departure") + " time: " + (leaveArrive === "Leave:" ? response.arrival_time.text : response.departure_time.text) + "(" + response.duration.text + ")"
-            )
-        }
-        else {
-            return (
-                "Duration: " + response.duration.text
-            )
+        const steps = [...response.steps];
+        const stepDuration = steps.reduce((total, s) => {
+            return total + s.duration.value;
+        }, 0);
+        const totalDuration = response.duration.value;
+        const dwellTime = totalDuration - stepDuration;
+
+        if (prediction && prediction.length > 0) {
+            const predictionDuration = steps.reduce((total, s) => {
+                const predictionStep = prediction.find(p => p && s.travel_mode === 'TRANSIT' && s.transit.line.short_name === p.route);
+                if (predictionStep) {
+                    console.log('Our prediction: ' + Math.round(predictionStep.duration / 60) + ' vs Google prediction: ' + Math.round(s.duration.value / 60));
+                    return total + predictionStep.duration;
+                }
+                return total + s.duration.value;
+            }, dwellTime);
+
+            console.log('Google prediction: ' + Math.round(totalDuration / 60));
+            console.log('Our prediction: ' + Math.round(predictionDuration / 60));
+
+            if (leaveArrive === "Leave:") {
+                const predictionArrival = dayjs(selectedDate).add(predictionDuration, 'seconds').format("HH:mma");
+                return "arrival time: " + predictionArrival + " (" +  Math.round(predictionDuration / 60) + " minutes)";
+            } else {
+                const predictionDeparture = dayjs(selectedDate).subtract(predictionDuration, 'seconds').format("HH:mma");
+                return "departure time: " + predictionDeparture + " (" + Math.round(predictionDuration / 60) + " minutes)";
+            }
+        } else {
+            if ("arrival_time" in response && "departure_time" in response) {
+                return (
+                    (leaveArrive === "Leave:" ? "arrival" : "departure") + " time: " + (leaveArrive === "Leave:" ? response.arrival_time.text : response.departure_time.text) + "(" + response.duration.text + ")"
+                )
+            } else {
+                return (
+                    "Duration: " + response.duration.text
+                )
+            }
         }
     }
 
     return (
         <div className={styles.directionsPaperContainer}>
         <React.Fragment>
-        {(!walkingConditions.includes(false) && walking === null && response !== null && walkingResponse !== null) &&
+        {(!walkingConditions.includes(false) && walking === null && response !== null && walkingResponse !== null && prediction !== null) &&
         <Slide direction="up" in={menu==='Results'} mountOnEnter unmountOnExit>
             <Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984"}}>
             <Grid container spacing={0}>
@@ -122,7 +152,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
 
 
 
-            {((walkingConditions.includes(false) && response !== null && walkingResponse !== null) || (walking !== null && response !== null && walkingResponse !== null)) && (
+            {((walkingConditions.includes(false) && response !== null && walkingResponse !== null && prediction !== null) || (walking !== null && response !== null && walkingResponse !== null && prediction !== null)) && (
             <React.Fragment>
             <Zoom in={expand} mountOnEnter unmountOnExit>
             <div className={styles.stepsFade}></div>
@@ -132,9 +162,9 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
             <div className={styles.stepsContainer}>
             <Scrollbars style={{ height: getStepsHeight(response.steps) }}>
             {response.steps.map((step) => (
-                        <Zoom in={menu==='Results'} mountOnEnter unmountOnExit>
+                        <Zoom key={step.instructions} in={menu==='Results'} mountOnEnter unmountOnExit>
             <Paper elevation={3} className={styles.stepPaper} style={{backgroundColor: "#757de8"}}>
-                <p key={step.instructions} className={styles.directionsText}> {step.instructions} {departureStop(step)}</p>
+                <p className={styles.directionsText}> {step.instructions} {departureStop(step)}</p>
             </Paper>
             </Zoom>))}
             </Scrollbars>
@@ -145,9 +175,9 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
             <div className={styles.stepsContainer}>
             <Scrollbars style={{ height: getStepsHeight(walkingResponse.steps) }}>
             {walkingResponse.steps.map((step) => (
-                        <Zoom in={menu==='Results'} mountOnEnter unmountOnExit>
+                        <Zoom key={step.instructions} in={menu==='Results'} mountOnEnter unmountOnExit>
             <Paper elevation={3} className={styles.stepPaper} style={{backgroundColor: "#757de8"}}>
-                <p><div key={step.instructions} className={styles.walkingDirectionsText} dangerouslySetInnerHTML={{__html: step.instructions}} /></p>
+                <p><div className={styles.walkingDirectionsText} dangerouslySetInnerHTML={{__html: step.instructions}} /></p>
             </Paper>
             </Zoom>))}
             </Scrollbars>
@@ -178,9 +208,22 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
                     </Zoom>
                     }
                     </Fab>
+                    {!walking && <div style={{marginTop: '16px'}}>
+                        {(prediction && prediction.length > 0) ?
+                            (response.steps.filter(s => s.travel_mode === 'TRANSIT').length === prediction.length) ?
+                                <Alert severity="success"
+                                       style={{justifyContent: 'center'}}>The {(leaveArrive === "Leave:" ? "arrival" : "departure")} time
+                                    was predicted using our model</Alert>
+                                : <Alert severity="success"
+                                         style={{justifyContent: 'center'}}>The {(leaveArrive === "Leave:" ? "arrival" : "departure")} time
+                                    was predicted using a hybrid of our model and Google Maps</Alert>
+                            : <Alert severity="success"
+                                     style={{justifyContent: 'center'}}>The {(leaveArrive === "Leave:" ? "arrival" : "departure")} time
+                                was predicted using Google Maps</Alert>}
+                    </div>}
                     <p className={styles.directionsText}><b>To {response.end_address} ({response.distance.text})</b></p>
                     {(walking === false || walking === null) &&
-                        <p className={styles.directionsText}><i>Predicted {displayPredictedTime()}</i></p>
+                    <p className={styles.directionsText}><i>Predicted {displayPredictedTime()}</i></p>
                     }
                     {walking === true &&
                         <p className={styles.directionsText}><i>Walking Distance: {walkingResponse.distance.text} ({walkingResponse.duration.text})</i></p>
@@ -197,7 +240,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
 
             </React.Fragment>
             )}
-            {callbackResponse === null && (
+            {(callbackResponse === null || prediction === null) && (
                 <div className={styles.directionsPaperContainer}>
                 <Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984", padding: "5px"}}>
                 <Grid container spacing={0}>

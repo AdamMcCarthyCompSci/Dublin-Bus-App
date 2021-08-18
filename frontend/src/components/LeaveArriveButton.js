@@ -8,42 +8,42 @@ export function LeaveArriveButton({leaveArrive, setLeaveArrive, setNewDirections
 
     const handleLeaveArrive = () => {
         setLeaveArrive((leaveArrive === 'Leave:') ? 'Arrive:' : 'Leave:');
-        setNewDirections(true); 
+        setNewDirections(true);
     }
 
     return (
         <React.Fragment>
             {leaveArrive === 'Leave:'
             &&
-            <Zoom in={leaveArrive === 'Leave:'}> 
-            <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            fullWidth
-            startIcon={<LoopIcon />}
-            style={{marginTop: "-10px"}}
-            onClick={() => handleLeaveArrive()}
-            >
-                {leaveArrive}
-            </Button>
+            <Zoom in={leaveArrive === 'Leave:'}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<LoopIcon/>}
+                    size="large"
+                    style={{paddingTop: "15px", paddingBottom: "15px"}}
+                    fullWidth
+                    onClick={() => handleLeaveArrive()}
+                >
+                    {leaveArrive}
+                </Button>
             </Zoom>
             }
 
             {leaveArrive === 'Arrive:'
             &&
             <Zoom in={leaveArrive === 'Arrive:'}>
-            <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            fullWidth
-            startIcon={<AutorenewIcon />}
-            style={{marginTop: "-10px"}}
-            onClick={() => handleLeaveArrive()}
-            >
-                {leaveArrive}
-            </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AutorenewIcon/>}
+                    size="large"
+                    style={{paddingTop: "15px", paddingBottom: "15px"}}
+                    fullWidth
+                    onClick={() => handleLeaveArrive()}
+                >
+                    {leaveArrive}
+                </Button>
             </Zoom>
             }
         </React.Fragment>

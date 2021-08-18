@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { GoogleMap, useLoadScript, DirectionsService, DirectionsRenderer, Circle } from '@react-google-maps/api';
+import { GoogleMap, useLoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 import styles from './Map.module.css';
 import { BusStops } from "./BusStops";
 import { CurrentLocation } from "./CurrentLocation";
@@ -8,6 +8,7 @@ import { Home } from './Home';
 import Profile from './Profile';
 import { Results } from "./Results.js"
 import dayjs from 'dayjs';
+import axios from "axios";
 
 
 const containerStyle = {
@@ -15,7 +16,7 @@ const containerStyle = {
   height: '100vh'
 };
 
-let center = { lat: 53.345804, lng: -6.26031 };
+const center = { lat: 53.345804, lng: -6.26031 };
 const mapBounds = {
   north: 54.345804,
   south: 52.345804,
@@ -40,7 +41,7 @@ const darkModeStyle = [
   {
     featureType: "poi",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#d59563"}],
+    stylers: [{ color: "#d59563" }],
   },
   {
     featureType: "poi.park",
@@ -112,6 +113,7 @@ const darkModeStyle = [
 function MapContainer({menu, setMenu, settings, setSettings, darkBackground, darkForeground, darkText}) {
   const [originBox, setOriginBox] = React.useState('');
   const [destinationBox, setDestinationBox] = React.useState('');
+  const [prediction, setPrediction] = React.useState(null);
   const [callbackResponse, setCallbackResponse] = React.useState(null);
   const [walkingCallbackResponse, setWalkingCallbackResponse] = React.useState(null);
   const [origin, setOrigin] = React.useState('');
@@ -196,28 +198,105 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
     setDestinationBox(ref);
   };
 
-  const directionsCallback = (response) => {
-    console.log(response)
-
+  const directionsCallback = async (response) => {
+    // console.log(response)
     if (response !== null) {
       if (response.status === 'OK') {
+        await showWeather(selectedDate);
         setCallbackResponse(response)
         setNewDirections(true);
       } else {
-        console.log('response: ', response)
+        // console.log('response: ', response)
       }
     }
   }
 
+  useEffect(() => {
+    async function fetchPrediction() {
+      if (weather && callbackResponse) {
+        const steps = callbackResponse.routes[0].legs[0].steps;
+        const buses = steps.filter(s => s.travel_mode === 'TRANSIT');
+        const predictions = [];
+
+        for (const bus of buses) {
+          const route = bus.transit.line.short_name;
+          const boardingStop = bus.transit.departure_stop.name.match(/stop (.*)$/);
+          const boardingStopId = boardingStop ? boardingStop[1] : null;
+          const alightingStop = bus.transit.arrival_stop.name.match(/stop (.*)$/);
+          const alightingStopId = alightingStop ? alightingStop[1] : null;
+          const stops = bus.transit.num_stops;
+
+          if (route && (boardingStopId && alightingStopId) || (boardingStopId && !alightingStopId && stops) || (!boardingStopId && alightingStopId && stops)) {
+            const prediction = await predict(route, boardingStopId, alightingStopId, stops);
+            if(prediction) {
+              predictions.push(prediction);
+            }
+          }
+        }
+        setPrediction(predictions);
+      }
+    }
+    fetchPrediction();
+  }, [weather])
+
   const walkingDirectionsCallback = (response) => {
-    console.log("Walking:", response)
+    // console.log("Walking:", response)
 
     if (response !== null) {
       if (response.status === 'OK') {
         setWalkingCallbackResponse(response)
         setNewDirections(true);
       } else {
-        console.log('walking response: ', response)
+        // console.log('walking response: ', response)
+      }
+    }
+  }
+
+  const showWeather = async (time) => {
+      const formatTime = dayjs(time).format("YYYY-MM-DD HH:mm:ss");
+      const result = await axios.get(process.env.REACT_APP_API_URL + "/bus/weather", {
+          params: {
+              time: formatTime,
+          }
+      })
+      .catch(error => {
+        console.log("error:", error)
+      });
+      await setWeather(result.data.weather);
+      // console.log(result.data.weather);
+  }
+
+  const predict = async (route, boarding, alighting, stops) => {
+      const day = dayjs(selectedDate).format("dddd");
+      const hour = dayjs(selectedDate).format("HH:00:00");
+      const result = await axios.get(process.env.REACT_APP_API_URL + "/bus/predict", {
+          params: {
+              route,
+              boarding,
+              alighting,
+              stops,
+              day,
+              hour,
+              temp: weather.temp,
+              weather: weather.main_description
+          }
+      })
+      .catch(error => {
+        console.log("error:", error);
+        return null;
+      });
+
+    if (result) {
+      return {
+        route,
+        boarding,
+        alighting,
+        stops,
+        day,
+        hour,
+        temp: weather.temp,
+        weather: weather.main_description,
+        duration: Math.round(result.data.prediction)
       }
     }
   }
@@ -318,10 +397,12 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
         walkingCallbackResponse={walkingCallbackResponse}
         originError={originError}
         destinationError={destinationError}
+        prediction={prediction}
+        setPrediction={setPrediction}
         />}
         {/* Conditionally render views */}
-        {menu == 'Profile' && <Profile display={menu == 'Profile'} setMenu={setMenu} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
-        {menu === 'Results' && <Results menu={menu} setMenu={setMenu} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings} leaveArrive={leaveArrive} walkingCallbackResponse={walkingCallbackResponse} walking={walking} setWalking={setWalking}/>}
+        {menu === 'Profile' && <Profile display={menu === 'Profile'} setMenu={setMenu} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>}
+        {menu === 'Results' && <Results menu={menu} setMenu={setMenu} prediction={prediction} selectedDate={selectedDate} callbackResponse={callbackResponse} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText} weather={weather} settings={settings} leaveArrive={leaveArrive} walkingCallbackResponse={walkingCallbackResponse} walking={walking} setWalking={setWalking}/>}
         {/* Display bus stops */}
         {settings.showStops && <BusStops />}
         {settings.showLeap && <Leap />}
