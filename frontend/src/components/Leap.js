@@ -73,7 +73,7 @@ export function Leap() {
           }
         </MarkerClusterer>
         <Snackbar anchorOrigin={{ vertical, horizontal }} open={open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success">
+        <Alert onClose={handleClose} severity="info">
           {clickedLeap.shop_name} ({clickedLeap.town})
         </Alert>
         </Snackbar>

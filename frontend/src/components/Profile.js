@@ -175,6 +175,10 @@ class Profile extends React.Component {
                                 inputProps={{style: {color: this.props.darkText}}}
                                 onChange={this.onInputChangeProfile}
                                 fullWidth
+                                inputProps={{ style: {color: this.props.darkText} }}
+                                InputLabelProps={{
+                                  style: { color: this.props.darkText },
+                                }}
                             />
                             <TextField
                                 label="Last Name"
@@ -189,6 +193,10 @@ class Profile extends React.Component {
                                 inputProps={{style: {color: this.props.darkText}}}
                                 onChange={this.onInputChangeProfile}
                                 fullWidth
+                                inputProps={{ style: {color: this.props.darkText} }}
+                                InputLabelProps={{
+                                  style: { color: this.props.darkText },
+                                }}
                             />
                             <TextField
                                 label="Username"
@@ -203,6 +211,10 @@ class Profile extends React.Component {
                                 variant="outlined"
                                 inputProps={{style: {color: this.props.darkText}}}
                                 fullWidth
+                                inputProps={{ style: {color: this.props.darkText} }}
+                                InputLabelProps={{
+                                  style: { color: this.props.darkText },
+                                }}
                             />
                             <TextField
                                 label="Email"
@@ -217,6 +229,10 @@ class Profile extends React.Component {
                                 inputProps={{style: {color: this.props.darkText}}}
                                 onChange={this.onInputChangeProfile}
                                 fullWidth
+                                inputProps={{ style: {color: this.props.darkText} }}
+                                InputLabelProps={{
+                                  style: { color: this.props.darkText },
+                                }}
                             />
                             <FormControl
                                 variant="outlined"
@@ -225,7 +241,7 @@ class Profile extends React.Component {
                                 }}
                                 fullWidth
                             >
-                                <InputLabel>Fare Type</InputLabel>
+                                <InputLabel style={{color: this.props.darkText}}>Fare Type</InputLabel>
                                 <Select
                                     label="Fare Type"
                                     name="fare_type"
@@ -233,7 +249,8 @@ class Profile extends React.Component {
                                     variant="outlined"
                                     style={{
                                         marginBottom: '16px',
-                                        backgroundColor: this.props.darkForeground
+                                        backgroundColor: this.props.darkForeground,
+                                        color: this.props.darkText
                                     }}
                                     required
                                     onChange={this.onInputChangeProfile}
@@ -266,6 +283,10 @@ class Profile extends React.Component {
                                 value={this.state.old_password}
                                 onChange={this.onInputChange}
                                 fullWidth
+                                inputProps={{ style: {color: this.props.darkText} }}
+                                InputLabelProps={{
+                                  style: { color: this.props.darkText },
+                                }}
                             />
                             <TextField
                                 label="New password"
@@ -280,6 +301,10 @@ class Profile extends React.Component {
                                 inputProps={{style: {color: this.props.darkText}}}
                                 onChange={this.onInputChange}
                                 fullWidth
+                                inputProps={{ style: {color: this.props.darkText} }}
+                                InputLabelProps={{
+                                  style: { color: this.props.darkText },
+                                }}
                             />
                             <TextField
                                 label="Confirm new password"
@@ -294,6 +319,10 @@ class Profile extends React.Component {
                                 inputProps={{style: {color: this.props.darkText}}}
                                 onChange={this.onInputChange}
                                 fullWidth
+                                inputProps={{ style: {color: this.props.darkText} }}
+                                InputLabelProps={{
+                                  style: { color: this.props.darkText },
+                                }}
                             />
                             <Button id="btnChangePassword" variant="contained" color="primary"
                                     onClick={this.changePassword}>Change Password</Button>

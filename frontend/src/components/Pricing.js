@@ -113,6 +113,7 @@ class Pricing extends React.Component {
             this.setState({
                 pricingError: true
             })
+            console.log("ERROR");
         }
         // document.getElementById("price").scrollIntoView();
     }
@@ -181,16 +182,17 @@ class Pricing extends React.Component {
                         fullWidth
                         onClick={this.handleSubmit}
                         size="large"
+                        style={{marginBottom: "10px"}}
                     >
                         Submit
                     </Button>
                     }
                     {this.state.price && (this.props.logged ?
-                            (this.state.price.cost ? <Alert id="price" severity="info" style={{marginTop: '16px'}}>
+                            (this.state.price.cost ? <Alert id="price" severity="info" style={{marginTop: '16px', marginBottom: '16px'}}>
                                     Your journey will cost: €{this.state.price.cost}
                                 </Alert>
                                 :
-                                <Alert id="price" severity="info" style={{marginTop: '16px'}}>
+                                <Alert id="price" severity="info" style={{marginTop: '16px', marginBottom: '16px'}}>
                                     Your journey will cost:
                                     <ul style={{textAlign: 'left', marginBottom: 0}}>
                                         <li>Leap Card: €{this.state.price.leap}</li>
@@ -198,11 +200,12 @@ class Pricing extends React.Component {
                                     </ul>
                                 </Alert>)
                             :
-                            <Alert id="price" severity="info" style={{marginTop: '16px'}}>
+                            <Alert id="price" severity="info" style={{marginTop: '16px', marginBottom: '16px'}}>
                                 Your journey will cost: €{this.state.price.cost}
                             </Alert>
                     )}
-                    {this.state.pricingError && <Alert severity="error">An error has occurred!</Alert>}
+                    {this.state.pricingError && <Alert severity="error" style={{marginBottom: "30px"}}>An error has occurred!</Alert>}
+
                 </React.Fragment>
             )
         }

@@ -131,17 +131,6 @@ export function FloatingActionButton({menu, setMenu, setLogin, setRegister, sett
                                     }
                                     label="Display Leap"
                                 />
-                                <FormControlLabel
-                                    control={
-                                    <Switch
-                                        checked={settings.showWeather}
-                                        onChange={handleChange}
-                                        name="showWeather"
-                                        color="primary"
-                                    />
-                                    }
-                                    label="Display Weather"
-                                />
                             </div>
                         ) : (
                             <div>

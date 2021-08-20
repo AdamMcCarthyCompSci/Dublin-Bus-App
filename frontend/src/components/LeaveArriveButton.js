@@ -4,11 +4,12 @@ import LoopIcon from '@material-ui/icons/Loop';
 import Zoom from '@material-ui/core/Zoom';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 
-export function LeaveArriveButton({leaveArrive, setLeaveArrive, setNewDirections}) {
+export function LeaveArriveButton({leaveArrive, setLeaveArrive, setNewDirections, origin, destination, originError, destinationError}) {
 
     const handleLeaveArrive = () => {
         setLeaveArrive((leaveArrive === 'Leave:') ? 'Arrive:' : 'Leave:');
         setNewDirections(true);
+        console.log("ORIGIN:", origin, "DESTINATION:", destination, "ORIGINERROR:", originError, "DESTINATIONERROR", destinationError);
     }
 
     return (
