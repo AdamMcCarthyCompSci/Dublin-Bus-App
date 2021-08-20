@@ -89,7 +89,7 @@ const classes = useStyles();
 
 //         <Paper className={styles.datePickerContainer} style={{backgroundColor: darkForeground}}>
           <Grid item xs={12} md={2}>
-          <LeaveArriveButton leaveArrive={leaveArrive} setLeaveArrive={setLeaveArrive} setNewDirections={setNewDirections}/>
+          <LeaveArriveButton leaveArrive={leaveArrive} setLeaveArrive={setLeaveArrive} setNewDirections={setNewDirections} origin={origin} destination={destination} originError={originError} destinationError={destinationError}/>
           </Grid>
           }
         <Grid item xs={12} md={favouriteRoute ? 12 : 10}>
