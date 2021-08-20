@@ -20,7 +20,7 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
     const [loading, setLoading] = React.useState(false);
     const [favourites, setFavourites] = React.useState([]);
     const [favouriteView, setFavouriteView] = React.useState(true);
-    const [selectedTime, setSelectedTime] = React.useState(new Date());
+    const [selectedTime, setSelectedTime] = React.useState(dayjs());
     const [favouriteId, setFavouriteId] = React.useState("")
     const [favouriteTitle, setFavouriteTitle] = React.useState("")
     const [favouriteOrigin, setFavouriteOrigin] = React.useState('');

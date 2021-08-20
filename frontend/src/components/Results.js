@@ -80,10 +80,10 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
 
             if (leaveArrive === "Leave:") {
                 const predictionArrival = dayjs(selectedDate).add(predictionDuration, 'seconds').format("HH:mma");
-                return "arrival time: " + predictionArrival + " (" +  Math.round(predictionDuration / 60) + " minutes)";
+                return "arrival time: " + predictionArrival + " (Duration: " +  Math.round(predictionDuration / 60) + " minutes)";
             } else {
                 const predictionDeparture = dayjs(selectedDate).subtract(predictionDuration, 'seconds').format("HH:mma");
-                return "departure time: " + predictionDeparture + " (" + Math.round(predictionDuration / 60) + " minutes)";
+                return "departure time: " + predictionDeparture + " (Duration: " + Math.round(predictionDuration / 60) + " minutes)";
             }
         } else {
             if ("arrival_time" in response && "departure_time" in response) {
