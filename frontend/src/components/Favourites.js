@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
@@ -14,11 +13,15 @@ import styles from './Map.module.css';
 import { Directions } from "./Directions";
 import Zoom from '@material-ui/core/Zoom';
 import dayjs from 'dayjs';
+import {authFetch, useAuth} from "../auth";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
-export function Favourites({origin, darkBackground, darkForeground, darkText, destination, leaveArrive, setLeaveArrive, setMenu, showWeather, setNewDirections, setOrigin, setDestination, originError, destinationError, setSelectedDate}) {
+export function Favourites({origin, darkBackground, darkForeground, darkText, destination, leaveArrive, setLeaveArrive, setMenu, showWeather, setNewDirections, setOrigin, setDestination, originError, destinationError, setSelectedDate, setRegister, setLogin}) {
+    const [loading, setLoading] = React.useState(false);
     const [favourites, setFavourites] = React.useState([]);
     const [favouriteView, setFavouriteView] = React.useState(true);
     const [selectedTime, setSelectedTime] = React.useState(new Date());
+    const [favouriteId, setFavouriteId] = React.useState("")
     const [favouriteTitle, setFavouriteTitle] = React.useState("")
     const [favouriteOrigin, setFavouriteOrigin] = React.useState('');
     const [favouriteDestination, setFavouriteDestination] = React.useState('');
@@ -29,30 +32,28 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
     const [newFavouriteDirections, setNewFavouriteDirections] = React.useState(true);
     const [editingFavourite, setEditingFavourite] = React.useState(null);
 
-    useEffect( () => {
-      async function fetchData(){
-        const result = await axios({
-          url: process.env.REACT_APP_API_URL + '/user/',
-        })
-        setFavourites(result.data.favourites)
-        }
-      fetchData();
-    },
-    [])
+    const [logged] = useAuth();
+
+    const fetchFavourites = async () => {
+        await setLoading(true);
+        authFetch(
+            process.env.REACT_APP_API_URL + '/user/favourites'
+        ).then(data => {
+            data.json().then(result => {
+                setFavourites(result.favourites);
+            });
+        }).catch(error => {
+            console.log("error:", error)
+        }).finally(() => {
+            setLoading(false);
+        });
+    }
 
     useEffect( () => {
-      async function postData(){
-        const result = await axios({
-          method: 'POST',
-          url: process.env.REACT_APP_API_URL + '/user/',
-          data: {
-            favourites: favourites
-          }
-      })
-    }
-      postData();
-    }, 
-    [favourites])
+        if(logged) {
+          fetchFavourites();
+        }
+    },[logged])
 
     const mapBounds = {
         north: 54.345804,
@@ -139,33 +140,110 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
 
     const editFavourite = (index) => {
       const editing = favourites.filter((indexFavourite, favourite) => index === indexFavourite);
+      setFavouriteId(editing[0].id);
       setFavouriteTitle(editing[0].title);
       setFavouriteOrigin(editing[0].origin);
       setFavouriteDestination(editing[0].destination);
-      setSelectedTime(editing[0].time);
+      let date = new Date();
+      date.setHours(Number(dayjs(editing[0].time, "HH:mm:ss").format("HH")));
+      date.setMinutes(Number(dayjs(editing[0].time, "HH:mm:ss").format("mm")));
+      date = dayjs(date);
+      setSelectedTime(date);
       setEditingFavourite(editing[0]);
-      // Editing a favourite and changing to another view before submitting deletes the favourite as of right now 
-      setFavourites(favourites.filter((indexFavourite, favourite) => index !== indexFavourite));
         return (
             setFavouriteView(false)
         )
     }
 
-    const saveFavourite = (title, origin, destination, time) => {
-        setFavouriteTitle("");
-        setFavouriteOrigin("");
-        setFavouriteDestination("");
-        setSelectedTime(new Date());
-        setEditingFavourite("");
-        setFavourites([...favourites, {title: title, origin: origin, destination: destination, time: time}])
+    const saveFavourite = async () => {
+        if(favouriteId) {
+            authFetch(
+                process.env.REACT_APP_API_URL + '/user/favourites/' + favouriteId,
+                {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: favouriteTitle,
+                        origin: favouriteOrigin,
+                        destination: favouriteDestination,
+                        time: selectedTime.format("HH:mm")
+                    })
+                }
+            ).then(() => {
+                const updateFavourites = favourites.map(f => {
+                    if (f.id === favouriteId) {
+                        return {
+                            id: favouriteId,
+                            title: favouriteTitle,
+                            origin: favouriteOrigin,
+                            destination: favouriteDestination,
+                            time: selectedTime
+                        };
+                    }
+                    return f;
+                });
+                setFavourites(updateFavourites);
+                setFavouriteId("");
+                setFavouriteTitle("");
+                setFavouriteOrigin("");
+                setFavouriteDestination("");
+                setSelectedTime(new Date());
+                setEditingFavourite("");
+            }).catch(error => {
+                console.log("error:", error)
+            });
+        } else {
+            authFetch(
+                process.env.REACT_APP_API_URL + '/user/favourites',
+                {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: favouriteTitle,
+                        origin: favouriteOrigin,
+                        destination: favouriteDestination,
+                        time: selectedTime.format("HH:mm")
+                    })
+                }
+            ).then(() => {
+                setFavourites([...favourites, {
+                    title: favouriteTitle,
+                    origin: favouriteOrigin,
+                    destination: favouriteDestination,
+                    time: selectedTime
+                }]);
+                setFavouriteId("");
+                setFavouriteTitle("");
+                setFavouriteOrigin("");
+                setFavouriteDestination("");
+                setSelectedTime(new Date());
+                setEditingFavourite("");
+            }).catch(error => {
+                console.log("error:", error)
+            });
+        }
     }
 
     const deleteFavourite = (index) => {
-        setFavourites(favourites.filter((indexFavourite, favourite) => index !== indexFavourite))
+        const favourite = favourites.find((indexFavourite) => index === indexFavourite);
+        authFetch(
+            process.env.REACT_APP_API_URL + '/user/favourites/' + favourite.id,
+            {
+                method: "DELETE"
+            }
+        ).then(() => {
+            setFavourites(favourites.filter((indexFavourite) => index !== indexFavourite))
+        }).catch(error => {
+            console.log("error:", error)
+        });
     }
 
     const getFavouriteDescription = (favourite) => {
-      const description = "From " + favourite.origin + " to "  + favourite.destination + " at " + dayjs(favourite.time).format("HH:mm");
+      const description = "From " + favourite.origin + " to "  + favourite.destination + " at " + dayjs(favourite.time, "HH:mm:ss").format("HH:mm");
       return (
         description
       )
@@ -173,17 +251,14 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
 
     const selectFavourite = (favourite) => {
       const date = new Date();
-      console.log(originError, destinationError)
-      date.setHours(Number(dayjs(favourite.time).format("HH")));
-      date.setMinutes(Number(dayjs(favourite.time).format("mm")));
-      showWeather(date);
+      date.setHours(Number(dayjs(favourite.time, "HH:mm:ss").format("HH")));
+      date.setMinutes(Number(dayjs(favourite.time, "HH:mm:ss").format("mm")));
       setSelectedDate(date);
       setLeaveArrive("Arrive:");
       setOrigin(favourite.origin);
       setDestination(favourite.destination);
       setMenu('Results');
       setNewDirections(false);
-      // Call prediction
     }
 
     const handleTitleChange = (event) => {
@@ -192,6 +267,17 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
 
     return (
         <React.Fragment>
+            {logged ?
+                (loading ?
+                    <div style={{padding: '15px 0'}}>
+                        <CircularProgress />
+                        <div>
+                            <p style={{color: darkText, marginTop: '8px'}}>
+                                Retrieving favourites...
+                            </p>
+                        </div>
+                    </div>
+                    : <div>
             <Zoom in={!favouriteView} mountOnEnter unmountOnExit>
                 <Directions 
                     onOriginChanged={onFavouriteOriginChanged}
@@ -243,7 +329,7 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
                     {favourites.length === 0 &&
                     <p style={{color: darkText}}>Create a favourite route to see it here</p>}
                 {favourites.map((favourite, index) =>(
-                    <Paper className={styles.darkForeground} style={{backgroundColor: darkForeground, padding: "2px 4px", marginTop: "10px", marginBottom: "10px"}}>
+                    <Paper key={favourite.id} className={styles.darkForeground} style={{backgroundColor: darkForeground, padding: "2px 4px", marginTop: "10px", marginBottom: "10px"}}>
                     <Grid container spacing={0}>
                     <Grid item md={10} xs={8}>
                     <Button
@@ -281,6 +367,26 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
                 </Grid>
                 </Grid>
             }
+            </div>) :
+            <div>
+                <Typography>An account is required, please login or sign up!</Typography>
+                <div style={{ margin: '16px 0'}}>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => setLogin(true)}>
+                        <Typography>Login</Typography>
+                    </Button>
+                </div>
+                <div>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setRegister(true)}>
+                        <Typography>Create an account</Typography>
+                    </Button>
+                </div>
+            </div>}
         </React.Fragment>
     )
 }

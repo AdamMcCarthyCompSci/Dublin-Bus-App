@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import CustomUserSerializer
-from .models import AuthUser
+from .models import AuthUser, Favourite
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.backends import TokenBackend
 
@@ -21,7 +21,7 @@ class UserAccount(APIView):
     def get(self, request):
         token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
         data = TokenBackend(algorithm='HS256').decode(token, verify=False)
-        user_id = (data['user_id'])
+        user_id = data['user_id']
         profile = AuthUser.objects.get(pk=user_id)
 
         return Response({
@@ -44,7 +44,7 @@ class UserAccount(APIView):
     def put(self, request):
         token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
         data = TokenBackend(algorithm='HS256').decode(token, verify=False)
-        user_id = (data['user_id'])
+        user_id = data['user_id']
         profile = AuthUser.objects.get(pk=user_id)
 
         firstname = request.data['firstname']
@@ -62,11 +62,71 @@ class UserAccount(APIView):
     def delete(self, request):
         token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
         data = TokenBackend(algorithm='HS256').decode(token, verify=False)
-        user_id = (data['user_id'])
+        user_id = data['user_id']
         profile = User.objects.get(pk=user_id)
 
         profile.delete()
         return Response(status=204)
+
+
+class UserFavourites(APIView):
+    def get_permissions(self):
+        permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
+    def get(self, request):
+        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+        data = TokenBackend(algorithm='HS256').decode(token, verify=False)
+        user_id = data['user_id']
+
+        favourites = [
+            {"id": favourite.id, "title": favourite.title, "origin": favourite.origin,
+             "destination": favourite.destination, "time": favourite.time}
+            for favourite in AuthUser.objects.get(pk=user_id).favourite_set.all()]
+
+        return Response({
+            'favourites': favourites
+        }, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+        data = TokenBackend(algorithm='HS256').decode(token, verify=False)
+        user_id = data['user_id']
+
+        favourite = Favourite()
+        favourite.auth_user = AuthUser.objects.get(pk=user_id)
+        favourite.title = request.data['title']
+        favourite.origin = request.data['origin']
+        favourite.destination = request.data['destination']
+        favourite.time = request.data['time']
+        favourite.save()
+
+        return Response(status=status.HTTP_201_OK)
+
+    def put(self, request, favourite_id):
+        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+        data = TokenBackend(algorithm='HS256').decode(token, verify=False)
+        user_id = data['user_id']
+
+        favourite = Favourite.objects.filter(id=favourite_id, auth_user_id=user_id)[0]
+        favourite.title = request.data['title']
+        favourite.origin = request.data['origin']
+        favourite.destination = request.data['destination']
+        favourite.time = request.data['time']
+        favourite.save()
+
+        return Response(status=status.HTTP_200_OK)
+
+    def delete(self, request, favourite_id):
+        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+        data = TokenBackend(algorithm='HS256').decode(token, verify=False)
+        user_id = data['user_id']
+
+        favourite = Favourite.objects.filter(id=favourite_id, auth_user_id=user_id)[0]
+        favourite.delete()
+
+        return Response(status=204)
+
 
 
 @api_view(["PUT"])
@@ -74,7 +134,7 @@ class UserAccount(APIView):
 def change_password(request):
     token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
     data = TokenBackend(algorithm='HS256').decode(token, verify=False)
-    user_id = (data['user_id'])
+    user_id = data['user_id']
     profile = User.objects.get(pk=user_id)
 
     old_password = request.data['old_password']

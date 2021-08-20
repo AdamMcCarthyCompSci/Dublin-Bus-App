@@ -11,8 +11,6 @@ import PropTypes from 'prop-types';
 import Slide from '@material-ui/core/Slide';
 import SwipeableViews from "react-swipeable-views";
 import Pricing  from "./Pricing.js";
-import axios from 'axios';
-import dayjs from 'dayjs';
 import { Directions } from "./Directions";
 import { Favourites } from "./Favourites";
 import {useAuth} from "../auth";
@@ -55,7 +53,7 @@ import Zoom from '@material-ui/core/Zoom';
   }
 
 
-export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, weather, setWeather, selectedDate, setSelectedDate, newDirections, setNewDirections, leaveArrive, setLeaveArrive, callbackResponse, walkingCallbackResponse, originError, destinationError, prediction, setPrediction}) {
+export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, origin, onDestinationChanged, onDestinationLoad, setDestination, destination, darkBackground, darkForeground, darkText, showWeather, selectedDate, setSelectedDate, setNewDirections, leaveArrive, setLeaveArrive, originError, destinationError, prediction, setPrediction, setRegister, setLogin}) {
     const [value, setValue] = React.useState(0);
     const [expand, setExpand] = React.useState(true);
     const theme = useTheme();
@@ -125,7 +123,6 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           setMenu={setMenu}
-          favouriteTitle
           favouriteRoute={false}
           setFavouriteView={null}
           favouriteTitle={""}
@@ -176,6 +173,9 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           setMenu={setMenu}
+          showWeather={showWeather}
+          setRegister={setRegister}
+          setLogin={setLogin}
         />
 
 
