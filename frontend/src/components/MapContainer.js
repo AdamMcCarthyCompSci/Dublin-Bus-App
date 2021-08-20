@@ -137,23 +137,18 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
       }
       else if (originBox.getPlaces()[0].formatted_address === destination) {
         setOriginError("Origin cannot be the same as destination");
+        setOrigin(originBox.getPlaces()[0].formatted_address);
       }
       else if ((mapBounds.south <= lat && lat <= mapBounds.north) && (mapBounds.west <= lng && lng <= mapBounds.east)) {
-        if (originBox.getPlaces()[0].formatted_address !== destination) {
-          setDestinationError("");
-        }
+        setDestinationError("");
         setOrigin(originBox.getPlaces()[0].formatted_address);
         setOriginError("");
       }
       else {
-        // setOrigin("");
-        // setOriginBox("");
         setOriginError("Origin must be close to Dublin");
       }
     }
     catch {
-      // setOrigin("");
-      // setOriginBox("");
       setOriginError("Enter a valid Origin");
     }
     setNewDirections(true);
@@ -168,37 +163,33 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
       }
       else if (destinationBox.getPlaces()[0].formatted_address === origin) {
         setDestinationError("Destination cannot be the same as origin");
+        setDestination(destinationBox.getPlaces()[0].formatted_address);
       }
       else if ((mapBounds.south <= lat && lat <= mapBounds.north) && (mapBounds.west <= lng && lng <= mapBounds.east)) {
-        if (destinationBox.getPlaces()[0].formatted_address !== origin) {
-          setOriginError("");
-        }
+        setOriginError("");
         setDestination(destinationBox.getPlaces()[0].formatted_address);
         setDestinationError("");
       }
       else {
-        // setDestination("");
-        // setDestinationBox("");
         setDestinationError("Destination must be close to Dublin");
       }
     }
     catch {
-      // setDestination("");
-      // setDestinationBox("");
       setDestinationError("Enter a valid destination");
     }
     setNewDirections(true);
   }
 
   const onOriginLoad = ref => {
+    setOrigin("");
     setOriginBox(ref);
   };
   const onDestinationLoad = ref => {
+    setDestination("");
     setDestinationBox(ref);
   };
 
   const directionsCallback = async (response) => {
-    // console.log(response)
     if (response !== null) {
       if (response.status === 'OK') {
         await showWeather(selectedDate);

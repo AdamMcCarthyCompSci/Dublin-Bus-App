@@ -325,8 +325,7 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
                 </Grid>
                 }
                 <Grid item xs={12}>
-                <div style={{marginTop: "-10px"}}>
-                <Scrollbars style={{ height: 250 }}>
+                <div style={{marginTop: "-10px", height: "250px", overflowY: "scroll"}}>
                     {favourites.length === 0 &&
                     <p style={{color: darkText}}>Create a favourite route to see it here</p>}
                 {favourites.map((favourite, index) =>(
@@ -364,7 +363,6 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
                     </Grid>
                     </Paper>
                 ))}
-                </Scrollbars>
                 </div>
                 </Grid>
                 </Grid>

@@ -30,7 +30,7 @@ import Zoom from '@material-ui/core/Zoom';
         {...other}
       >
         {value === index && (
-          <Box p={3} style={{ height: '304px', overflowY: 'scroll' }}>
+          <Box p={3} style={{ height: '304px' }}>
             {children}
           </Box>
         )}
@@ -103,7 +103,6 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
         <TabPanel value={value} index={0} dir={theme.direction} style={{height:"400px"}}>
 
 
-        <div style={{marginBottom: "40px"}}>
         <Directions 
           onOriginChanged={onOriginChanged}
           onOriginLoad={onOriginLoad}
@@ -130,22 +129,20 @@ export function Home({menu, setMenu, onOriginChanged, onOriginLoad, setOrigin, o
           prediction={prediction}
           setPrediction={setPrediction}
         />
-        </div>
-
-
 
         </TabPanel>
         {/* Second tab, contains route dropdowns */}
         <TabPanel value={value} index={1} dir={theme.direction} style={{height:"400px"}}>
 
 
-
-            <Pricing
+        <Box p={3} style={{ height: '304px', overflowY: 'scroll' }}>
+        <Pricing
                 logged={logged}
                 darkBackground={darkBackground}
                 darkForeground={darkForeground}
                 darkText={darkText}
             />
+          </Box>
 
 
         </TabPanel>

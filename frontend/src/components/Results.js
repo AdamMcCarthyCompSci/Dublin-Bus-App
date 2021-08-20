@@ -13,9 +13,11 @@ import DirectionsBusIcon from '@material-ui/icons/DirectionsBus';
 import { Scrollbars } from 'react-custom-scrollbars';
 import dayjs from 'dayjs';
 import Alert from "@material-ui/lab/Alert";
+import Button from '@material-ui/core/Button';
 
 export function Results({menu, setMenu, callbackResponse, weather, settings, leaveArrive, walkingCallbackResponse, walking, setWalking, selectedDate, prediction}) {
     const [expand, setExpand] = React.useState(false);
+    const [showResults, setShowResults] = React.useState(true);
     const [response, setResponse] = React.useState(null);
     const [walkingResponse, setWalkingResponse] = React.useState(null);
     const [walkingConditions, setWalkingConditions] = React.useState([])
@@ -48,10 +50,10 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
     }
 
     const getStepsHeight = (steps) => {
-        if (steps.length < 5) {
+        if (steps.length < 3) {
             return steps.length*60;
         } else {
-            return 5*60;
+            return 3*60;
         }
     }
 
@@ -86,7 +88,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
         } else {
             if ("arrival_time" in response && "departure_time" in response) {
                 return (
-                    (leaveArrive === "Leave:" ? "arrival" : "departure") + " time: " + (leaveArrive === "Leave:" ? response.arrival_time.text : response.departure_time.text) + "(" + response.duration.text + ")"
+                    (leaveArrive === "Leave:" ? "arrival" : "departure") + " time: " + (leaveArrive === "Leave:" ? response.arrival_time.text : response.departure_time.text) + " (" + response.duration.text + ")"
                 )
             } else {
                 return (
@@ -99,7 +101,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
     return (
         <div className={styles.directionsPaperContainer}>
         <React.Fragment>
-        {(!walkingConditions.includes(false) && walking === null && response !== null && walkingResponse !== null && prediction !== null) &&
+        {(!walkingConditions.includes(false) && walking === null && response !== null && walkingResponse !== null && prediction !== null && showResults) &&
         <Slide direction="up" in={menu==='Results'} mountOnEnter unmountOnExit>
             <Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984"}}>
             <Grid container spacing={0}>
@@ -152,7 +154,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
 
 
 
-            {((walkingConditions.includes(false) && response !== null && walkingResponse !== null && prediction !== null) || (walking !== null && response !== null && walkingResponse !== null && prediction !== null)) && (
+            {((walkingConditions.includes(false) && response !== null && walkingResponse !== null && prediction !== null) || (walking !== null && response !== null && walkingResponse !== null && prediction !== null)) && (showResults) && (
             <React.Fragment>
             <Zoom in={expand} mountOnEnter unmountOnExit>
             <div className={styles.stepsFade}></div>
@@ -212,14 +214,11 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
                         {(prediction && prediction.length > 0) ?
                             (response.steps.filter(s => s.travel_mode === 'TRANSIT').length === prediction.length) ?
                                 <Alert severity="info"
-                                       style={{justifyContent: 'center'}}>The {(leaveArrive === "Leave:" ? "arrival" : "departure")} time
-                                    was predicted using our model</Alert>
+                                       style={{justifyContent: 'center'}}>Predicted using our model</Alert>
                                 : <Alert severity="info"
-                                         style={{justifyContent: 'center'}}>The {(leaveArrive === "Leave:" ? "arrival" : "departure")} time
-                                    was predicted using a hybrid of our model and Google Maps</Alert>
+                                         style={{justifyContent: 'center'}}>Predicted using a hybrid of our model and Google Maps</Alert>
                             : <Alert severity="info"
-                                     style={{justifyContent: 'center'}}>The {(leaveArrive === "Leave:" ? "arrival" : "departure")} time
-                                was predicted using Google Maps</Alert>}
+                                     style={{justifyContent: 'center'}}>Predicted using Google Maps</Alert>}
                     </div>}
                     <p className={styles.directionsText}><b>To {response.end_address} ({response.distance.text})</b></p>
                     {(walking === false || walking === null) &&
@@ -240,7 +239,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
 
             </React.Fragment>
             )}
-            {(callbackResponse === null || prediction === null) && (
+            {(callbackResponse === null || prediction === null) && (showResults) && (
                 <div className={styles.directionsPaperContainer}>
                 <Paper elevation={3} className={styles.stepTitlePaper} style={{backgroundColor: "#002984", padding: "5px"}}>
                 <Grid container spacing={0}>
@@ -261,7 +260,7 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
                 </Paper>
                 </div>
             )}
-
+        {callbackResponse !== null && prediction !== null && <Button className={styles.homeHide} fullWidth={true} variant="contained" color="primary" onClick={() => {setShowResults(!showResults)}}>{showResults && <Zoom in={showResults}><ExpandMoreIcon/></Zoom>}{!showResults && <Zoom in={!showResults}><ExpandLessIcon/></Zoom>}</Button>}
         </React.Fragment>
         </div>
     )
