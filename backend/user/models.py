@@ -114,3 +114,17 @@ class DjangoContentType(models.Model):
         managed = False
         db_table = 'django_content_type'
         unique_together = (('app_label', 'model'),)
+
+
+class Favourite(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    auth_user_id = models.IntegerField
+    title = models.CharField(max_length=100)
+    origin = models.CharField(max_length=100)
+    destination = models.CharField(max_length=100)
+    time = models.TimeField()
+    auth_user = models.ForeignKey(AuthUser, on_delete=models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_favourites'

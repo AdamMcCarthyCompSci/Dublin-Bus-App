@@ -211,13 +211,13 @@ export function Results({menu, setMenu, callbackResponse, weather, settings, lea
                     {!walking && <div style={{marginTop: '16px'}}>
                         {(prediction && prediction.length > 0) ?
                             (response.steps.filter(s => s.travel_mode === 'TRANSIT').length === prediction.length) ?
-                                <Alert severity="success"
+                                <Alert severity="info"
                                        style={{justifyContent: 'center'}}>The {(leaveArrive === "Leave:" ? "arrival" : "departure")} time
                                     was predicted using our model</Alert>
-                                : <Alert severity="success"
+                                : <Alert severity="info"
                                          style={{justifyContent: 'center'}}>The {(leaveArrive === "Leave:" ? "arrival" : "departure")} time
                                     was predicted using a hybrid of our model and Google Maps</Alert>
-                            : <Alert severity="success"
+                            : <Alert severity="info"
                                      style={{justifyContent: 'center'}}>The {(leaveArrive === "Leave:" ? "arrival" : "departure")} time
                                 was predicted using Google Maps</Alert>}
                     </div>}
