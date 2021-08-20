@@ -10,7 +10,6 @@ import { Results } from "./Results.js"
 import dayjs from 'dayjs';
 import axios from "axios";
 
-
 const containerStyle = {
   width: '100%',
   height: '100vh'
@@ -110,7 +109,7 @@ const darkModeStyle = [
   },
 ]
 
-function MapContainer({menu, setMenu, settings, setSettings, darkBackground, darkForeground, darkText}) {
+function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackground, darkForeground, darkText}) {
   const [originBox, setOriginBox] = React.useState('');
   const [destinationBox, setDestinationBox] = React.useState('');
   const [prediction, setPrediction] = React.useState(null);
@@ -385,18 +384,17 @@ function MapContainer({menu, setMenu, settings, setSettings, darkBackground, dar
         darkBackground={darkBackground}
         darkForeground={darkForeground}
         darkText={darkText}
-        weather={weather}
-        setWeather={setWeather}
+        showWeather={showWeather}
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
         newDirections={newDirections}
         setNewDirections={setNewDirections}
         leaveArrive={leaveArrive}
         setLeaveArrive={setLeaveArrive}
-        callbackResponse={callbackResponse}
-        walkingCallbackResponse={walkingCallbackResponse}
         originError={originError}
         destinationError={destinationError}
+        setRegister={setRegister}
+        setLogin={setLogin}
         prediction={prediction}
         setPrediction={setPrediction}
         />}

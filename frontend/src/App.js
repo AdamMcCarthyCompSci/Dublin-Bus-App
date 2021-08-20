@@ -24,7 +24,7 @@ function App() {
     return (
         <div className="App">
 
-            <MapContainer menu={menu} setMenu={setMenu} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>
+            <MapContainer menu={menu} setMenu={setMenu} settings={settings} setSettings={setSettings} setRegister={setRegister} setLogin={setLogin} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>
             <FloatingActionButton menu={menu} setMenu={setMenu} setLogin={setLogin} setRegister={setRegister} settings={settings} setSettings={setSettings} darkBackground={darkBackground} darkForeground={darkForeground} darkText={darkText}/>
             <UserRegister show={register} setRegister={setRegister} setLogin={setLogin}/>
             <UserSignIn show={login} setLogin={setLogin}/>
