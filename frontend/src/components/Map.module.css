@@ -19,9 +19,6 @@
     width: 100%;
     height: 400px;
 }
-.homePaper > div {
-    overflow-y: scroll;
-}
 .resultsPaper {
     width: 100%;
     height: 400px;
@@ -64,7 +61,7 @@
 }
 
 .favouriteSubmitButton {
-    /* margin-top: 10px; */
+    margin-top: 10px;
     width: 50%;
 }
 
@@ -151,10 +148,10 @@
         margin-left: 15%;
         margin-right: 15%;
         width: 70%;
-         margin-bottom: 10px;
+        /* margin-bottom: 10px; */
     }
     .homePaper {
-         margin-bottom: 10px;
+         /* margin-bottom: 10px; */
     }
     .profileContainer {
        margin-left: 15%;
@@ -174,5 +171,6 @@
     }
     .submitButton {
         width: 200px !important;
+        margin-bottom: 10px;
     }
 }

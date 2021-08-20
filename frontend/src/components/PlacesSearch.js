@@ -52,11 +52,15 @@ export function PlacesSearch({
                     placeholder={place ? place : search}
                     inputProps={{'aria-label': 'search google maps', style: {color: darkText}}}
                     error={error}
-                    label={label}
+                    label={error ? error : label}
                     style={style}
                     type="search"
                     variant="outlined"
                     fullWidth
+                    inputProps={{ style: {color: darkText} }}
+                    InputLabelProps={{
+                      style: { color: darkText },
+                    }}
                 />
             </StandaloneSearchBox>
         </React.Fragment>

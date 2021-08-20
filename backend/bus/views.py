@@ -12,12 +12,12 @@ from django.db import connection
 import glob
 import re
 
-pickle_files = glob.glob("bus/pickle/*")
+pickle_files = glob.glob("bus\pickle\*")
 models = {}
 
 for pickle_file in pickle_files:
     with open(os.path.join(settings.BASE_DIR, pickle_file), 'rb') as handle:
-        p = re.compile("bus/pickle/xgb_reg_model_(.*)\.pkl")
+        p = re.compile("bus\\\\pickle\\\\xgb_reg_model_(.*)\.pkl")
         route_id = p.search(pickle_file).group(1)
         models[route_id] = pickle.load(handle)
 

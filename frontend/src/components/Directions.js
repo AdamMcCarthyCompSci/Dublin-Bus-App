@@ -83,7 +83,7 @@ const classes = useStyles();
         style={{marginTop: '10px'}}
         />
 
-        <Grid container spacing={1} alignItems="center" className={styles.dateAndButtonContainer} style={{marginTop: "10px", marginBottom: "20px"}}>
+        <Grid container spacing={1} alignItems="center" className={styles.dateAndButtonContainer} style={{marginTop: "10px", marginBottom: "10px"}}>
           
           {!favouriteRoute && 
 
@@ -165,7 +165,6 @@ const classes = useStyles();
           className={styles.favouriteSubmitButton}
           variant="contained" 
           color="primary"
-          style={{marginTop:"-20px"}}
           onClick={() => {
             saveFavourite(favouriteTitle ? favouriteTitle : "Unnamed Route", origin, destination, selectedDate);
             setNewDirections(false);
@@ -180,7 +179,6 @@ const classes = useStyles();
           className={styles.favouriteSubmitButton}
           variant="contained" 
           color="primary"
-          style={{marginTop:"-20px"}}
           disabled
           > 
             Submit 
