@@ -250,7 +250,7 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
           }
       })
       .catch(error => {
-        console.log("error:", error)
+        console.error("error:", error);
       });
       await setWeather(result.data.weather);
       // console.log(result.data.weather);
@@ -272,7 +272,7 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
           }
       })
       .catch(error => {
-        console.log("error:", error);
+        console.error("error:", error);
         return null;
       });
 
@@ -295,7 +295,7 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
     if (window.navigator.geolocation) {
       window.navigator.geolocation.getCurrentPosition(
         (position) => {
-          console.log("position:", position);
+          // console.log("position:", position);
           const pos = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
@@ -304,7 +304,7 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
           if (origin === "" && destination === "") {
             if ((mapBounds.south <= pos.lat && pos.lat <= mapBounds.north) && (mapBounds.west <= pos.lng && pos.lng <= mapBounds.east)) {
               setOrigin("Current Location")
-              console.log(pos);
+              // console.log(pos);
               setNewDirections(true);
               setCurrentPos(pos.lat.toString() + "," + pos.lng.toString())
               setOriginError("");
