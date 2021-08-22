@@ -81,10 +81,9 @@
 .directionsPaperContainer {
     position: absolute;
     bottom: 0;
-    margin-left: 15%;
     height: auto;
     text-align: center;
-    width: 70%;
+    width: 100%;
     /* margin-bottom: 10px; */
 }
 
@@ -171,5 +170,9 @@
     .submitButton {
         width: 200px !important;
         margin-bottom: 10px;
+    }
+    .directionsPaperContainer {
+        width: 70%;
+        margin-left: 15%;       
     }
 }

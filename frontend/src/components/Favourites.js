@@ -8,19 +8,18 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { Scrollbars } from 'react-custom-scrollbars';
 import styles from './Map.module.css';
 import { Directions } from "./Directions";
 import Zoom from '@material-ui/core/Zoom';
 import dayjs from 'dayjs';
-import {authFetch, useAuth} from "../auth";
+import {authFetch, useAuth, logout} from "../auth";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 export function Favourites({origin, darkBackground, darkForeground, darkText, destination, leaveArrive, setLeaveArrive, setMenu, showWeather, setNewDirections, setOrigin, setDestination, originError, destinationError, setSelectedDate, setRegister, setLogin}) {
     const [loading, setLoading] = React.useState(false);
     const [favourites, setFavourites] = React.useState([]);
     const [favouriteView, setFavouriteView] = React.useState(true);
-    const [selectedTime, setSelectedTime] = React.useState(new Date());
+    const [selectedTime, setSelectedTime] = React.useState(dayjs());
     const [favouriteId, setFavouriteId] = React.useState("")
     const [favouriteTitle, setFavouriteTitle] = React.useState("")
     const [favouriteOrigin, setFavouriteOrigin] = React.useState('');
@@ -39,11 +38,17 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
         authFetch(
             process.env.REACT_APP_API_URL + '/user/favourites'
         ).then(data => {
-            data.json().then(result => {
-                setFavourites(result.favourites);
-            });
+            if (data) {
+                if (data.status === 401) {
+                    logout();
+                } else if (data.status === 200) {
+                    data.json().then(result => {
+                        setFavourites(result.favourites);
+                    });
+                }
+            }
         }).catch(error => {
-            console.log("error:", error)
+            console.error("error:", error);
         }).finally(() => {
             setLoading(false);
         });
@@ -171,28 +176,34 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
                         time: selectedTime.format("HH:mm")
                     })
                 }
-            ).then(() => {
-                const updateFavourites = favourites.map(f => {
-                    if (f.id === favouriteId) {
-                        return {
-                            id: favouriteId,
-                            title: favouriteTitle,
-                            origin: favouriteOrigin,
-                            destination: favouriteDestination,
-                            time: selectedTime
-                        };
+            ).then(data => {
+                if (data) {
+                    if (data.status === 401) {
+                        logout();
+                    } else if (data.status === 200) {
+                        const updateFavourites = favourites.map(f => {
+                            if (f.id === favouriteId) {
+                                return {
+                                    id: favouriteId,
+                                    title: favouriteTitle,
+                                    origin: favouriteOrigin,
+                                    destination: favouriteDestination,
+                                    time: selectedTime
+                                };
+                            }
+                            return f;
+                        });
+                        setFavourites(updateFavourites);
+                        setFavouriteId("");
+                        setFavouriteTitle("");
+                        setFavouriteOrigin("");
+                        setFavouriteDestination("");
+                        setSelectedTime(new Date());
+                        setEditingFavourite("");
                     }
-                    return f;
-                });
-                setFavourites(updateFavourites);
-                setFavouriteId("");
-                setFavouriteTitle("");
-                setFavouriteOrigin("");
-                setFavouriteDestination("");
-                setSelectedTime(new Date());
-                setEditingFavourite("");
+                }
             }).catch(error => {
-                console.log("error:", error)
+                console.error("error:", error);
             });
         } else {
             authFetch(
@@ -209,21 +220,27 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
                         time: selectedTime.format("HH:mm")
                     })
                 }
-            ).then(() => {
-                setFavourites([...favourites, {
-                    title: favouriteTitle,
-                    origin: favouriteOrigin,
-                    destination: favouriteDestination,
-                    time: selectedTime
-                }]);
-                setFavouriteId("");
-                setFavouriteTitle("");
-                setFavouriteOrigin("");
-                setFavouriteDestination("");
-                setSelectedTime(new Date());
-                setEditingFavourite("");
+            ).then(data => {
+                if (data) {
+                    if (data.status === 401) {
+                        logout();
+                    } else if (data.status === 201) {
+                        setFavourites([...favourites, {
+                            title: favouriteTitle,
+                            origin: favouriteOrigin,
+                            destination: favouriteDestination,
+                            time: selectedTime
+                        }]);
+                        setFavouriteId("");
+                        setFavouriteTitle("");
+                        setFavouriteOrigin("");
+                        setFavouriteDestination("");
+                        setSelectedTime(new Date());
+                        setEditingFavourite("");
+                    }
+                }
             }).catch(error => {
-                console.log("error:", error)
+                console.error("error:", error);
             });
         }
     }
@@ -235,10 +252,16 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
             {
                 method: "DELETE"
             }
-        ).then(() => {
-            setFavourites(favourites.filter((indexFavourite) => index !== indexFavourite))
+        ).then(data => {
+            if (data) {
+                if (data.status === 401) {
+                    logout();
+                } else if (data.status === 200) {
+                    setFavourites(favourites.filter((indexFavourite) => index !== indexFavourite))
+                }
+            }
         }).catch(error => {
-            console.log("error:", error)
+            console.error("error:", error);
         });
     }
 
@@ -308,7 +331,7 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
             
             {favouriteView &&
                 <Grid container spacing={0}>
-                {favourites.length < 10 &&  
+                {(!favourites || favourites.length < 10) &&
                 <Grid item xs={12}>
                     <Tooltip title="Create favourite" aria-label="Create favourite" style={{marginTop: "-10px", marginBottom: "20px"}}>
                         <Fab color="primary" aria-label="menu" onClick={() => createFavourite()}>
@@ -317,7 +340,7 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
                     </Tooltip>
                 </Grid>
                 }
-                {favourites.length >= 10 &&
+                {(favourites && favourites.length >= 10) &&
                 <Grid item xs={12}>
                 <Paper className={styles.darkForeground} style={{backgroundColor: darkForeground, padding: "2px 4px",marginTop: "-10px", marginBottom: "20px"}}>
                 <p style={{color: darkText}}>You have reached the max number of favourites. Delete a favourite to free up space.</p>
@@ -326,43 +349,55 @@ export function Favourites({origin, darkBackground, darkForeground, darkText, de
                 }
                 <Grid item xs={12}>
                 <div style={{marginTop: "-10px", height: "250px", overflowY: "scroll"}}>
-                    {favourites.length === 0 &&
-                    <p style={{color: darkText}}>Create a favourite route to see it here</p>}
-                {favourites.map((favourite, index) =>(
-                    <Paper key={favourite.id} className={styles.darkForeground} style={{backgroundColor: darkForeground, padding: "2px 4px", marginTop: "10px", marginBottom: "10px"}}>
-                    <Grid container spacing={0}>
-                    <Grid item md={10} xs={8}>
-                    <Button
-                    fullWidth={true}
-                    variant="contained"
-                    color="primary"
-                    onClick={() => selectFavourite(favourite)}>
-                        <Typography>{favourite.title}</Typography> 
-                    </Button>
-                    </Grid>
-                    <Grid item md={1} xs={2}>
-                    <Tooltip title="Edit favourite" aria-label="Edit favourite">
-                        <Fab color="primary" size="small" aria-label="edit" className={styles.editDeleteIcons} onClick={() => editFavourite(favourite)}>
-                            <EditIcon/>
-                        </Fab>
-                    </Tooltip>
-                    </Grid>
-                    <Grid item md={1} xs={2}>
-                    <Tooltip title="Delete favourite" aria-label="Delete favourite">
-                        <Fab color="secondary" size="small" aria-label="delete" className={styles.editDeleteIcons} onClick={() => {if (window.confirm('Are you sure you want to delete this favourite?')) deleteFavourite(favourite)}}>
-                            <DeleteIcon/>
-                        </Fab>
-                    </Tooltip>
-                    </Grid>
-                    </Grid>
-                    <Grid container spacing={0}>
-                        <Grid item xs={10}>
-                        <p style={{color: darkText}}>{getFavouriteDescription(favourite)}</p>
-                        </Grid>
-                        <Grid item xs={2}></Grid>
-                    </Grid>
-                    </Paper>
-                ))}
+                    {(!favourites || favourites.length === 0) ?
+                        <p style={{color: darkText}}>Create a favourite route to see it here</p> :
+                        <div>{
+                            favourites.map((favourite, index) => (
+                                <Paper key={favourite.id} className={styles.darkForeground} style={{
+                                    backgroundColor: darkForeground,
+                                    padding: "2px 4px",
+                                    marginTop: "10px",
+                                    marginBottom: "10px"
+                                }}>
+                                    <Grid container spacing={0}>
+                                        <Grid item md={10} xs={8}>
+                                            <Button
+                                                fullWidth={true}
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={() => selectFavourite(favourite)}>
+                                                <Typography>{favourite.title}</Typography>
+                                            </Button>
+                                        </Grid>
+                                        <Grid item md={1} xs={2}>
+                                            <Tooltip title="Edit favourite" aria-label="Edit favourite">
+                                                <Fab color="primary" size="small" aria-label="edit"
+                                                     className={styles.editDeleteIcons}
+                                                     onClick={() => editFavourite(favourite)}>
+                                                    <EditIcon/>
+                                                </Fab>
+                                            </Tooltip>
+                                        </Grid>
+                                        <Grid item md={1} xs={2}>
+                                            <Tooltip title="Delete favourite" aria-label="Delete favourite">
+                                                <Fab color="secondary" size="small" aria-label="delete"
+                                                     className={styles.editDeleteIcons} onClick={() => {
+                                                    if (window.confirm('Are you sure you want to delete this favourite?')) deleteFavourite(favourite)
+                                                }}>
+                                                    <DeleteIcon/>
+                                                </Fab>
+                                            </Tooltip>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container spacing={0}>
+                                        <Grid item xs={10}>
+                                            <p style={{color: darkText}}>{getFavouriteDescription(favourite)}</p>
+                                        </Grid>
+                                        <Grid item xs={2}></Grid>
+                                    </Grid>
+                                </Paper>
+                            ))
+                        }</div>}
                 </div>
                 </Grid>
                 </Grid>
