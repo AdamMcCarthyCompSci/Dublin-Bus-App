@@ -1,5 +1,6 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
+from django.db import IntegrityError, DatabaseError
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
@@ -33,13 +34,18 @@ class UserAccount(APIView):
         }, status=status.HTTP_200_OK)
 
     def post(self, request):
-        serializer = CustomUserSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            if user:
-                json = serializer.data
-                return Response(json, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = CustomUserSerializer(data=request.data)
+            if serializer.is_valid():
+                user = serializer.save()
+                if user:
+                    json = serializer.data
+                    return Response(json, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except IntegrityError:
+            return Response({'username': ['Username already exists']}, status=status.HTTP_400_BAD_REQUEST)
+        except DatabaseError:
+            return Response({'error': True, 'content': 'Database error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def put(self, request):
         token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
@@ -49,10 +55,12 @@ class UserAccount(APIView):
 
         firstname = request.data['firstname']
         lastname = request.data['lastname']
+        email = request.data['email']
         fare_type = request.data['fare_type']
 
         profile.first_name = firstname
         profile.last_name = lastname
+        profile.email = email
         profile.fare_type = fare_type
 
         profile.save()
@@ -66,7 +74,7 @@ class UserAccount(APIView):
         profile = User.objects.get(pk=user_id)
 
         profile.delete()
-        return Response(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class UserFavourites(APIView):
@@ -101,7 +109,7 @@ class UserFavourites(APIView):
         favourite.time = request.data['time']
         favourite.save()
 
-        return Response(status=status.HTTP_201_OK)
+        return Response(status=status.HTTP_201_CREATED)
 
     def put(self, request, favourite_id):
         token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
@@ -125,7 +133,7 @@ class UserFavourites(APIView):
         favourite = Favourite.objects.filter(id=favourite_id, auth_user_id=user_id)[0]
         favourite.delete()
 
-        return Response(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 

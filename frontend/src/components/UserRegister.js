@@ -105,15 +105,42 @@ class UserRegister extends React.Component {
                 email: this.state.email,
                 password: this.state.password
             }
-        }, this.state).then(res => {
-            if (res.status === 201) {
-                this.handleClose();
-                this.props.setLogin(true);
+        }, this.state).then(data => {
+            if (data) {
+                if (data.status === 201) {
+                    this.handleClose();
+                    this.props.setLogin(true);
+                } else if (data.status === 400) {
+                    data.json().then(result => {
+                        if (result.password) {
+                            console.log('Password');
+                        }
+                    });
+                }
             }
-        }).catch(() => {
-            this.setState({
-                errors: ['request']
-            });
+        }).catch(error => {
+            if (error.response) {
+                if (error.response.status === 400) {
+                    if (error.response.data && error.response.data.password) {
+                        this.setState({
+                            errors: ['password']
+                        });
+                    }
+                    if (error.response.data && error.response.data.username) {
+                        this.setState({
+                            errors: ['username']
+                        });
+                    }
+                } else {
+                    this.setState({
+                        errors: ['request']
+                    });
+                }
+            } else {
+                this.setState({
+                    errors: ['request']
+                });
+            }
         })
     }
 
@@ -125,12 +152,18 @@ class UserRegister extends React.Component {
                 open={this.props.show}
                 onClose={this.handleClose}
             >
-                <DialogTitle>Register</DialogTitle>
+                <DialogTitle style={{paddingBottom: '0'}}>Register</DialogTitle>
                 <form onSubmit={this.submitRegister}>
                     <DialogContent>
                         {this.state.errors.includes("request") &&
-                        <Alert severity="error" style={{marginBottom: '16px'}}>Error registering - please check your
-                            name, username, email and password!</Alert>}
+                        <Alert severity="error" style={{marginBottom: '16px'}}>Error registering - please check all your
+                            information is correct!</Alert>}
+                        {this.state.errors.includes("username") &&
+                        <Alert severity="error" style={{marginBottom: '16px'}}>Error registering - username already
+                            exists!</Alert>}
+                        {this.state.errors.includes("password") &&
+                        <Alert severity="error" style={{marginBottom: '16px'}}>Error registering - password must be at
+                            least 8 characters in length</Alert>}
                         <TextField
                             autoFocus
                             name="first_name"
@@ -253,7 +286,6 @@ class UserRegister extends React.Component {
                                 {buttonText}
                             </Button>
                         </div>
-
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">
@@ -261,7 +293,10 @@ class UserRegister extends React.Component {
                         </Button>
                         <Button id='register' type="submit" onClick={this.validateForm} variant="contained"
                                 color="primary"
-                                disabled={!this.state.privacyCheckbox || !this.state.ageCheckbox || this.state.password !== this.state.confirm_password}>
+                                disabled={!this.state.first_name || !this.state.last_name || !this.state.email
+                                || !this.state.username || !this.state.privacyCheckbox || !this.state.ageCheckbox
+                                || !this.state.password || !this.state.confirm_password
+                                || this.state.password !== this.state.confirm_password}>
                             Register
                         </Button>
                     </DialogActions>

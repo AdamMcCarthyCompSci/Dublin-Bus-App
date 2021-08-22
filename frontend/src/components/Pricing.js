@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import {authFetch} from "../auth";
+import {authFetch, logout} from "../auth";
 import styles from './Map.module.css';
 import Routes from "./Routes";
 import InputLabel from '@material-ui/core/InputLabel';
@@ -83,16 +83,26 @@ class Pricing extends React.Component {
     async showPrice(route, direction, start, end, fare) {
         try {
             if (this.props.logged) {
-                const result = await authFetch(process.env.REACT_APP_API_URL + "/bus/price?" + new URLSearchParams({
+                authFetch(process.env.REACT_APP_API_URL + "/bus/price?" + new URLSearchParams({
                     route,
                     direction,
                     start,
                     end
-                }));
-                const json = await result.json();
-                this.setState({
-                    price: json,
-                    pricingError: false
+                })).then(data => {
+                    if (data) {
+                        if (data.status === 401) {
+                            logout();
+                        } else if (data.status === 200) {
+                            data.json().then(result => {
+                                this.setState({
+                                    price: result,
+                                    pricingError: false
+                                });
+                            });
+                        }
+                    }
+                }).catch(error => {
+                    console.error("error:", error);
                 });
             } else {
                 const result = await axios.get(process.env.REACT_APP_API_URL + "/bus/price", {
