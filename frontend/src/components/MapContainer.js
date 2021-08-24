@@ -295,7 +295,7 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
     if (window.navigator.geolocation) {
       window.navigator.geolocation.getCurrentPosition(
         (position) => {
-          // console.log("position:", position);
+          console.log("position:", position);
           const pos = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
@@ -306,7 +306,8 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
               setOrigin("Current Location")
               // console.log(pos);
               setNewDirections(true);
-              setCurrentPos(pos.lat.toString() + "," + pos.lng.toString())
+              setCurrentPos(pos)
+
               setOriginError("");
             }
             else {
@@ -324,7 +325,7 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
       console.log("Your browser doesn't support geolocation.");
       setCurrentPos(null);
     }
-});
+}, [origin, destination]);
 
   const getOrigin = () => {
     if (origin === "Current Location" && currentPos) {
@@ -422,7 +423,7 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
                 <DirectionsService
                 options={{
                   destination: destination,
-                  origin: origin,
+                  origin: getOrigin(),
                   travelMode: 'WALKING',
                   drivingOptions: {
                     departureTime: dayjs(selectedDate).toDate(),
@@ -446,7 +447,7 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
                 <DirectionsService
                   options={{
                     destination: destination,
-                    origin: origin,
+                    origin: getOrigin(),
                     travelMode: 'TRANSIT',
                     transitOptions: {
                       arrivalTime: dayjs(selectedDate).toDate(),
@@ -458,7 +459,7 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
                 <DirectionsService
                 options={{
                   destination: destination,
-                  origin: origin,
+                  origin: getOrigin(),
                   travelMode: 'WALKING',
                   transitOptions: {
                     arrivalTime: dayjs(selectedDate).toDate(),
