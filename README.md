@@ -1,8 +1,52 @@
 # Dublin-Bus-App
 
-cd into frontend folder and type 'npm start' in terminal
-cd into backend folder and type 'python manage.py runserver' in terminal
+![](./images/Homepage.png)
 
-Install 'requirements.txt'
-Check out 'localhost:3000' for webview
-Check out 'localhost:8000/admin' and 'localhost:8000/bus' for backend API
+This project involves analysing historic Dublin Bus and weather data in order to create
+dynamic travel time estimates. Based on data analysis of historic Dublin Bus data,
+the web application, when presented with any bus route, departure time, the day of the week and
+current weather conditions, produces an accurate estimate of travel time for the complete
+route and sections of the route.
+The site is built as a desktop-first application but is responsive to allow it to work seamlessly
+on smaller view ports like phones and tablets.
+
+The finished web application can be view at https://d11kr48bq6bduz.cloudfront.net/
+
+## Installation Instructions
+
+Clone repository
+
+`cd` into project folder
+
+Activate virtualenv and run `pip install requirements.txt`.
+
+`cd` into frontend folder, run `npm install` to install all node modules.
+
+When both have been installed, `cd` into backend folder where manage.py is located and
+run `python manage.py runserver`.
+
+Then `cd` into the frontend folder and run `npm run start`.
+
+This will then open `localhost:3000` in the web browser.
+
+## Some Application Features
+
+### To Walk or to Bus
+
+![](./images/WalkOrBus.png)
+
+### Journey Step by Step
+
+![](./images/JourneyPlanner.png)
+
+### Route Pricing
+
+![](./images/Pricing.png)
+
+### Favorites
+
+![](./images/Favorites.png)
+
+### Dark Mode
+
+![](./images/DarkMode.png)
