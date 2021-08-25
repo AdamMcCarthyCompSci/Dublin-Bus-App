@@ -33,11 +33,19 @@ class Profile extends React.Component {
         authFetch(
             process.env.REACT_APP_API_URL + '/user/'
         ).then(data => {
-            data.json().then(result => {
-                this.setState({
-                    profile: result
-                });
-            });
+            if (data) {
+                if (data.status === 401) {
+                    logout();
+                } else if (data.status === 200) {
+                    data.json().then(result => {
+                        this.setState({
+                            profile: result
+                        });
+                    });
+                }
+            }
+        }).catch(error => {
+            console.error("error:", error);
         });
     }
 
@@ -67,16 +75,20 @@ class Profile extends React.Component {
                 },
                 body: JSON.stringify(this.state.profile)
             }
-        ).then(res => {
-            if (res.status === 200) {
-                this.setState({
-                    show_profile_alert: true
-                });
-                setTimeout(() => {
+        ).then(data => {
+            if (data) {
+                if (data.status === 401) {
+                    logout();
+                } else if (data.status === 200) {
                     this.setState({
-                        show_profile_alert: false
+                        show_profile_alert: true
                     });
-                }, 5000);
+                    setTimeout(() => {
+                        this.setState({
+                            show_profile_alert: false
+                        });
+                    }, 5000);
+                }
             }
         }).catch(() => {
             this.setState({
@@ -100,23 +112,27 @@ class Profile extends React.Component {
                     confirm_password: this.state.confirm_password,
                 })
             }
-        ).then(res => {
-            if (res.status === 200) {
-                this.setState(
-                    {
-                        old_password: '',
-                        new_password: '',
-                        confirm_password: ''
-                    }
-                );
-                this.setState({
-                    show_password_alert: true
-                });
-                setTimeout(() => {
+        ).then(data => {
+            if (data) {
+                if (data.status === 401) {
+                    logout();
+                } else if (data.status === 200) {
+                    this.setState(
+                        {
+                            old_password: '',
+                            new_password: '',
+                            confirm_password: ''
+                        }
+                    );
                     this.setState({
-                        show_password_alert: false
+                        show_password_alert: true
                     });
-                }, 5000);
+                    setTimeout(() => {
+                        this.setState({
+                            show_password_alert: false
+                        });
+                    }, 5000);
+                }
             }
         }).catch(() => {
             this.setState({
@@ -131,11 +147,17 @@ class Profile extends React.Component {
             {
                 method: "DELETE"
             }
-        ).then(res => {
-            if (res.status === 204) {
-                logout();
-                this.props.setMenu("Home");
+        ).then(data => {
+            if (data) {
+                if (data.status === 401) {
+                    logout();
+                } else if (data.status === 204) {
+                    logout();
+                    this.props.setMenu("Home");
+                }
             }
+        }).catch(error => {
+            console.error("error:", error);
         });
     }
 
@@ -162,107 +184,110 @@ class Profile extends React.Component {
                             <Alert severity="success" style={{
                                 marginBottom: '16px'
                             }}>You have successfully updated your profile!</Alert>}
-                            <TextField
-                                label="First Name"
-                                name="firstname"
-                                value={this.state.profile.firstname || ''}
-                                type="text"
-                                style={{
-                                    marginBottom: '16px',
-                                    backgroundColor: this.props.darkForeground,
-                                }}
-                                variant="outlined"
-                                inputProps={{style: {color: this.props.darkText}}}
-                                onChange={this.onInputChangeProfile}
-                                fullWidth
-                                inputProps={{ style: {color: this.props.darkText} }}
-                                InputLabelProps={{
-                                  style: { color: this.props.darkText },
-                                }}
-                            />
-                            <TextField
-                                label="Last Name"
-                                name="lastname"
-                                value={this.state.profile.lastname || ''}
-                                type="text"
-                                style={{
-                                    marginBottom: '16px',
-                                    backgroundColor: this.props.darkForeground
-                                }}
-                                variant="outlined"
-                                inputProps={{style: {color: this.props.darkText}}}
-                                onChange={this.onInputChangeProfile}
-                                fullWidth
-                                inputProps={{ style: {color: this.props.darkText} }}
-                                InputLabelProps={{
-                                  style: { color: this.props.darkText },
-                                }}
-                            />
-                            <TextField
-                                label="Username"
-                                value={this.state.profile.username || ''}
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                                style={{
-                                    marginBottom: '16px',
-                                    backgroundColor: this.props.darkForeground
-                                }}
-                                variant="outlined"
-                                inputProps={{style: {color: this.props.darkText}}}
-                                fullWidth
-                                inputProps={{ style: {color: this.props.darkText} }}
-                                InputLabelProps={{
-                                  style: { color: this.props.darkText },
-                                }}
-                            />
-                            <TextField
-                                label="Email"
-                                name="email"
-                                value={this.state.profile.email || ''}
-                                type="text"
-                                style={{
-                                    marginBottom: '16px',
-                                    backgroundColor: this.props.darkForeground
-                                }}
-                                variant="outlined"
-                                inputProps={{style: {color: this.props.darkText}}}
-                                onChange={this.onInputChangeProfile}
-                                fullWidth
-                                inputProps={{ style: {color: this.props.darkText} }}
-                                InputLabelProps={{
-                                  style: { color: this.props.darkText },
-                                }}
-                            />
-                            <FormControl
-                                variant="outlined"
-                                style={{
-                                    marginBottom: '16px'
-                                }}
-                                fullWidth
-                            >
-                                <InputLabel style={{color: this.props.darkText}}>Fare Type</InputLabel>
-                                <Select
-                                    label="Fare Type"
-                                    name="fare_type"
-                                    value={this.state.profile.fare_type || ''}
-                                    variant="outlined"
+                            <form onSubmit={this.updateProfile}>
+                                <TextField
+                                    label="First Name"
+                                    name="firstname"
+                                    value={this.state.profile.firstname || ''}
+                                    type="text"
                                     style={{
                                         marginBottom: '16px',
                                         backgroundColor: this.props.darkForeground,
-                                        color: this.props.darkText
+                                    }}
+                                    variant="outlined"
+                                    onChange={this.onInputChangeProfile}
+                                    fullWidth
+                                    inputProps={{style: {color: this.props.darkText}}}
+                                    InputLabelProps={{
+                                        style: {color: this.props.darkText},
                                     }}
                                     required
+                                />
+                                <TextField
+                                    label="Last Name"
+                                    name="lastname"
+                                    value={this.state.profile.lastname || ''}
+                                    type="text"
+                                    style={{
+                                        marginBottom: '16px',
+                                        backgroundColor: this.props.darkForeground
+                                    }}
+                                    variant="outlined"
                                     onChange={this.onInputChangeProfile}
+                                    fullWidth
+                                    inputProps={{style: {color: this.props.darkText}}}
+                                    InputLabelProps={{
+                                        style: {color: this.props.darkText},
+                                    }}
+                                    required
+                                />
+                                <TextField
+                                    label="Username"
+                                    value={this.state.profile.username || ''}
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
+                                    style={{
+                                        marginBottom: '16px',
+                                        backgroundColor: this.props.darkForeground
+                                    }}
+                                    variant="outlined"
+                                    fullWidth
+                                    inputProps={{style: {color: this.props.darkText}}}
+                                    InputLabelProps={{
+                                        style: {color: this.props.darkText},
+                                    }}
+                                    required
+                                />
+                                <TextField
+                                    label="Email"
+                                    name="email"
+                                    value={this.state.profile.email || ''}
+                                    type="email"
+                                    style={{
+                                        marginBottom: '16px',
+                                        backgroundColor: this.props.darkForeground
+                                    }}
+                                    variant="outlined"
+                                    onChange={this.onInputChangeProfile}
+                                    fullWidth
+                                    inputProps={{style: {color: this.props.darkText}}}
+                                    InputLabelProps={{
+                                        style: {color: this.props.darkText},
+                                    }}
+                                    required
+                                />
+                                <FormControl
+                                    variant="outlined"
+                                    style={{
+                                        marginBottom: '16px'
+                                    }}
+                                    fullWidth
                                 >
-                                    <MenuItem value="Adult">Adult</MenuItem>
-                                    <MenuItem value="Child (Under 19)">Child (Under 19)</MenuItem>
-                                    <MenuItem value="Child (Under 16)">Child (Under 16)</MenuItem>
-                                </Select>
-                            </FormControl>
-                            <Button id="btnUpdateInfo" variant="contained" color="primary"
-                                    onClick={this.updateProfile}>Update
-                                Information</Button>
+                                    <InputLabel style={{color: this.props.darkText}}>Fare Type</InputLabel>
+                                    <Select
+                                        label="Fare Type"
+                                        name="fare_type"
+                                        value={this.state.profile.fare_type || ''}
+                                        variant="outlined"
+                                        style={{
+                                            marginBottom: '16px',
+                                            backgroundColor: this.props.darkForeground,
+                                            color: this.props.darkText
+                                        }}
+                                        required
+                                        onChange={this.onInputChangeProfile}
+                                    >
+                                        <MenuItem value="Adult">Adult</MenuItem>
+                                        <MenuItem value="Child (Under 19)">Child (Under 19)</MenuItem>
+                                        <MenuItem value="Child (Under 16)">Child (Under 16)</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <Button id="btnUpdateInfo" type="submit" variant="contained" color="primary"
+                                        disabled={!this.state.profile.firstname || !this.state.profile.lastname
+                                        || !this.state.profile.email || !this.state.profile.username}>
+                                    Update Information</Button>
+                            </form>
                             <h1 style={{
                                 marginTop: '48px'
                             }}>Change password</h1>
@@ -275,7 +300,6 @@ class Profile extends React.Component {
                                 name="old_password"
                                 type="password"
                                 variant="outlined"
-                                inputProps={{style: {color: this.props.darkText}}}
                                 style={{
                                     marginBottom: '16px',
                                     backgroundColor: this.props.darkForeground
@@ -298,9 +322,9 @@ class Profile extends React.Component {
                                     backgroundColor: this.props.darkForeground
                                 }}
                                 value={this.state.new_password}
-                                inputProps={{style: {color: this.props.darkText}}}
                                 onChange={this.onInputChange}
                                 fullWidth
+                                helperText="Password must be at least 8 characters in length"
                                 inputProps={{ style: {color: this.props.darkText} }}
                                 InputLabelProps={{
                                   style: { color: this.props.darkText },
@@ -316,7 +340,6 @@ class Profile extends React.Component {
                                     backgroundColor: this.props.darkForeground
                                 }}
                                 value={this.state.confirm_password}
-                                inputProps={{style: {color: this.props.darkText}}}
                                 onChange={this.onInputChange}
                                 fullWidth
                                 inputProps={{ style: {color: this.props.darkText} }}
@@ -325,7 +348,12 @@ class Profile extends React.Component {
                                 }}
                             />
                             <Button id="btnChangePassword" variant="contained" color="primary"
-                                    onClick={this.changePassword}>Change Password</Button>
+                                    onClick={this.changePassword}
+                                    disabled={!this.state.old_password || !this.state.new_password
+                                    || !this.state.confirm_password || this.state.old_password.length < 8
+                                    || this.state.new_password.length < 8 || this.state.confirm_password.length < 8
+                                    || this.state.new_password !== this.state.confirm_password}
+                            >Change Password</Button>
                             <h1 style={{
                                 marginTop: '48px'
                             }}>Delete account</h1>

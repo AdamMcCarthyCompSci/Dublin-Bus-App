@@ -250,7 +250,7 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
           }
       })
       .catch(error => {
-        console.log("error:", error)
+        console.error("error:", error);
       });
       await setWeather(result.data.weather);
       // console.log(result.data.weather);
@@ -272,7 +272,7 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
           }
       })
       .catch(error => {
-        console.log("error:", error);
+        console.error("error:", error);
         return null;
       });
 
@@ -304,9 +304,10 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
           if (origin === "" && destination === "") {
             if ((mapBounds.south <= pos.lat && pos.lat <= mapBounds.north) && (mapBounds.west <= pos.lng && pos.lng <= mapBounds.east)) {
               setOrigin("Current Location")
-              console.log(pos);
+              // console.log(pos);
               setNewDirections(true);
-              setCurrentPos(pos.lat.toString() + "," + pos.lng.toString())
+              setCurrentPos(pos)
+
               setOriginError("");
             }
             else {
@@ -324,7 +325,7 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
       console.log("Your browser doesn't support geolocation.");
       setCurrentPos(null);
     }
-});
+}, [origin, destination]);
 
   const getOrigin = () => {
     if (origin === "Current Location" && currentPos) {
@@ -422,7 +423,7 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
                 <DirectionsService
                 options={{
                   destination: destination,
-                  origin: origin,
+                  origin: getOrigin(),
                   travelMode: 'WALKING',
                   drivingOptions: {
                     departureTime: dayjs(selectedDate).toDate(),
@@ -446,7 +447,7 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
                 <DirectionsService
                   options={{
                     destination: destination,
-                    origin: origin,
+                    origin: getOrigin(),
                     travelMode: 'TRANSIT',
                     transitOptions: {
                       arrivalTime: dayjs(selectedDate).toDate(),
@@ -458,7 +459,7 @@ function MapContainer({menu, setMenu, settings, setRegister, setLogin, darkBackg
                 <DirectionsService
                 options={{
                   destination: destination,
-                  origin: origin,
+                  origin: getOrigin(),
                   travelMode: 'WALKING',
                   transitOptions: {
                     arrivalTime: dayjs(selectedDate).toDate(),
