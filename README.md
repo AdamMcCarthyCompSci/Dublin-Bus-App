@@ -10,7 +10,7 @@ route and sections of the route.
 The site is built as a desktop-first application but is responsive to allow it to work seamlessly
 on smaller view ports like phones and tablets.
 
-The finished web application can be view at https://d11kr48bq6bduz.cloudfront.net/
+The finished web application can be viewed at https://d11kr48bq6bduz.cloudfront.net/
 
 ## Installation Instructions
 
