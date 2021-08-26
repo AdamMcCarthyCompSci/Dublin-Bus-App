@@ -43,7 +43,7 @@ This will then open `localhost:3000` in the web browser.
 
 ![](./images/Pricing.png)
 
-### Favorites
+### Favourites
 
 ![](./images/Favorites.png)
 
